@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Abyss — Deep-Sea Specimens · The Unusual Museum</title>
+<meta name="description" content="A dark interactive 3D specimen lab: a humpback anglerfish and a Pacific viperfish, held in glass tanks at the bottom of the sea.">
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="loading">
+  <div class="load-inner">
+    <div class="load-glyph">◉</div>
+    <p>Descending to the specimen lab…</p>
+  </div>
+</div>
+
+<div id="webgl-fail" hidden>
+  <div class="fail-card">
+    <h2>The tanks stay dark</h2>
+    <p>Your browser could not start WebGL, so the specimens cannot be shown. Try a recent desktop or mobile browser with hardware acceleration enabled.</p>
+    <a href="../index.html">← Back to The Unusual Museum</a>
+  </div>
+</div>
+
+<header class="hud top">
+  <a class="back" href="../index.html">← Unusual Museum</a>
+  <div class="title-block">
+    <h1>The Abyss</h1>
+    <p class="subtitle">Deep-Sea Specimen Lab · Bathypelagic Collection</p>
+  </div>
+  <div class="depth-gauge" aria-hidden="true">
+    <span class="dg-label">DEPTH</span>
+    <span class="dg-value" id="depth-value">−1,842 m</span>
+  </div>
+</header>
+
+<canvas id="scene"></canvas>
+<div id="labels"></div>
+<div id="tooltip" hidden></div>
+
+<aside id="info-panel" class="panel" hidden>
+  <button id="panel-close" class="panel-close" aria-label="Close specimen file">×</button>
+  <p class="panel-kicker">Specimen <span id="p-index">01</span> · Live Tank</p>
+  <h2 id="p-name">—</h2>
+  <p class="p-sci" id="p-sci">—</p>
+  <p class="p-tag" id="p-tag">—</p>
+  <dl class="p-stats">
+    <div><dt>Depth range</dt><dd id="p-depth">—</dd></div>
+    <div><dt>Size</dt><dd id="p-size">—</dd></div>
+  </dl>
+  <p class="p-desc" id="p-desc">—</p>
+  <p class="p-fact" id="p-fact">—</p>
+</aside>
+
+<nav class="hud bottom">
+  <div class="switcher" role="group" aria-label="Specimen switcher">
+    <button id="prev-btn" class="ctl" aria-label="Previous specimen">‹</button>
+    <button id="tank-0-btn" class="ctl spec-btn active">Specimen 01 · Anglerfish</button>
+    <button id="tank-1-btn" class="ctl spec-btn">Specimen 02 · Viperfish</button>
+    <button id="tank-2-btn" class="ctl spec-btn">Specimen 03 · Dumbo Octopus</button>
+    <button id="next-btn" class="ctl" aria-label="Next specimen">›</button>
+    <button id="both-btn" class="ctl">View all tanks</button>
+  </div>
+  <div class="lab-controls">
+    <button id="sonar-btn" class="ctl accent">⌖ Sonar pulse</button>
+    <label class="slider-wrap" for="glow-slider">
+      <span>Bioluminescence</span>
+      <input type="range" id="glow-slider" min="0" max="200" value="100">
+    </label>
+  </div>
+</nav>
+
+<footer class="hint">Drag to orbit · Scroll to zoom · Click a tank to open its specimen file</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+/* Elementum — dark laboratory theme shared with the Unusual Museum family. */
+:root{
+  --bg:#070a12; --panel:rgba(13,19,32,.82); --panel-border:rgba(120,170,255,.18);
+  --text:#e8eef7; --muted:#9fb0c3; --accent:#6ee7ff; --accent2:#b388eb;
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:radial-gradient(1200px 700px at 50% -10%, #101b31 0%, var(--bg) 60%);
+  color:var(--text); font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  overflow:hidden;
+}
+#stage{position:fixed; inset:0}
+#stage canvas{display:block}
+
+/* ---------- loading / failure ---------- */
+#loading{
+  position:fixed; inset:0; z-index:60; display:flex; flex-direction:column; gap:16px;
+  align-items:center; justify-content:center; background:var(--bg); color:var(--muted);
+}
+#loading[hidden]{display:none}
+.spinner{
+  width:46px;height:46px;border-radius:50%;
+  border:3px solid rgba(110,231,255,.2); border-top-color:var(--accent);
+  animation:spin 0.9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+#webgl-fail{
+  position:fixed; inset:0; z-index:61; display:flex; flex-direction:column; gap:8px;
+  align-items:center; justify-content:center; text-align:center; padding:24px; background:var(--bg);
+}
+#webgl-fail[hidden]{display:none}
+
+/* ---------- header ---------- */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:20; pointer-events:none;
+  display:flex; align-items:flex-start; gap:18px; padding:16px 20px;
+}
+header .back{
+  pointer-events:auto; color:var(--accent); text-decoration:none; font-size:.9rem;
+  background:var(--panel); border:1px solid var(--panel-border); padding:8px 12px; border-radius:999px;
+  backdrop-filter:blur(10px); white-space:nowrap;
+}
+header .back:hover{border-color:var(--accent)}
+.titles{pointer-events:none}
+.titles h1{
+  margin:0; font-size:2rem; letter-spacing:.04em; line-height:1;
+  background:linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.titles p{margin:6px 0 0; color:var(--muted); font-size:.92rem; max-width:520px}
+.autorotate{
+  pointer-events:auto; margin-left:auto; color:var(--muted); font-size:.88rem; cursor:pointer;
+  background:var(--panel); border:1px solid var(--panel-border); border-radius:999px; padding:8px 12px;
+  backdrop-filter:blur(10px); display:flex; align-items:center; gap:7px; white-space:nowrap;
+}
+
+/* ---------- controls ---------- */
+#controls{
+  position:fixed; left:20px; bottom:52px; z-index:20; width:min(430px, calc(100vw - 40px));
+  display:flex; flex-direction:column; gap:10px;
+}
+#search{
+  width:100%; padding:11px 14px; border-radius:12px; border:1px solid var(--panel-border);
+  background:var(--panel); color:var(--text); font-size:.95rem; outline:none; backdrop-filter:blur(10px);
+}
+#search:focus{border-color:var(--accent)}
+#chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{
+  border:1px solid var(--panel-border); background:var(--panel); color:var(--text);
+  border-radius:999px; padding:5px 11px 5px 8px; font-size:.78rem; cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px; backdrop-filter:blur(8px);
+}
+.chip .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.chip:hover{border-color:var(--accent)}
+.chip.active{border-color:#fff; box-shadow:0 0 0 1px #fff inset}
+
+/* ---------- info panel ---------- */
+#info-panel{
+  position:fixed; top:96px; right:20px; z-index:20; width:min(340px, calc(100vw - 40px));
+  background:var(--panel); border:1px solid var(--panel-border); border-radius:var(--radius);
+  padding:18px 20px; backdrop-filter:blur(14px); box-shadow:0 18px 40px rgba(0,0,0,.45);
+  max-height:calc(100vh - 170px); overflow-y:auto;
+}
+#info-panel h2{margin:0 0 8px; font-size:1.25rem}
+#info-panel p{color:var(--muted); line-height:1.5; font-size:.92rem}
+.hint-small{font-size:.82rem !important}
+.info-head{display:flex; gap:14px; align-items:center; margin-bottom:10px}
+#info-symbol{
+  font-size:2.1rem; font-weight:700; min-width:74px; height:74px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center; color:#0b0f16;
+  background:var(--accent); flex:none;
+}
+#info-name{margin:0}
+#info-meta{margin:2px 0 0 !important}
+.facts{display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; margin:12px 0}
+.facts div{background:rgba(255,255,255,.04); border-radius:10px; padding:8px 10px}
+.facts dt{font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted)}
+.facts dd{margin:3px 0 0; font-size:.95rem; font-weight:600}
+#info-blurb{color:var(--text) !important; font-size:.95rem !important}
+.info-actions{display:flex; gap:8px; margin-top:12px}
+.info-actions button{
+  flex:1; padding:10px 12px; border-radius:10px; border:1px solid var(--accent);
+  background:rgba(110,231,255,.12); color:var(--text); font-size:.9rem; cursor:pointer;
+}
+.info-actions button:hover{background:rgba(110,231,255,.25)}
+#back-btn{border-color:var(--panel-border); background:rgba(255,255,255,.05)}
+
+/* ---------- atom caption / tooltip / footer ---------- */
+#atom-caption{
+  position:fixed; left:50%; bottom:96px; transform:translateX(-50%); z-index:20;
+  background:var(--panel); border:1px solid var(--panel-border); border-radius:999px;
+  padding:8px 18px; font-size:.92rem; backdrop-filter:blur(10px); white-space:nowrap;
+}
+#atom-caption[hidden]{display:none}
+#tooltip{
+  position:fixed; z-index:30; pointer-events:none; background:rgba(8,12,20,.92);
+  border:1px solid var(--panel-border); border-radius:10px; padding:7px 11px;
+  font-size:.82rem; line-height:1.45; color:var(--text); max-width:240px;
+}
+#tooltip[hidden]{display:none}
+#tooltip .tt-sym{font-weight:700; font-size:1rem}
+#tooltip .tt-sub{color:var(--muted)}
+footer{
+  position:fixed; left:0; right:0; bottom:0; z-index:15; text-align:center;
+  padding:10px 12px; color:var(--muted); font-size:.8rem; pointer-events:none;
+  background:linear-gradient(transparent, rgba(4,6,10,.75));
+}
+
+/* ---------- mobile: bottom sheets ---------- */
+@media (max-width:760px){
+  .titles h1{font-size:1.45rem}
+  .titles p{display:none}
+  header{padding:12px}
+  #info-panel{
+    top:auto; bottom:118px; right:12px; left:12px; width:auto; max-height:38vh; padding:14px 16px;
+  }
+  #controls{left:12px; bottom:44px; width:calc(100vw - 24px)}
+  #atom-caption{bottom:auto; top:70px; font-size:.82rem}
+  footer{display:none}
+}

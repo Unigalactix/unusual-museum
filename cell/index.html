@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CellVerse — Interactive 3D Cell Explorer</title>
+<meta name="description" content="CellVerse is an interactive 3D animal cell you can rotate, zoom and explore in your browser. Built by Rajesh Kodaganti." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+  <canvas id="scene" aria-label="Interactive 3D model of an animal cell"></canvas>
+
+  <div id="labels" aria-hidden="true"></div>
+  <div id="tooltip" aria-hidden="true"></div>
+
+  <div id="loading" role="status">
+    <div class="loader-ring"></div>
+    <p class="loader-title">CellVerse</p>
+    <p class="loader-sub">Growing your cell…</p>
+  </div>
+
+  <div id="webgl-fail" hidden>
+    <div class="fail-card">
+      <h2>WebGL is not available</h2>
+      <p>CellVerse needs WebGL to render the 3D cell. Please try a modern browser
+         with hardware acceleration enabled — the rest of the page, including the
+         organelle guide, still works below.</p>
+    </div>
+  </div>
+
+  <header class="panel glass" id="site-header">
+    <p class="byline"><a href="../index.html" style="color:inherit">← Unusual Museum</a></p>
+    <h1><span class="logo-dot"></span>CellVerse</h1>
+    <p class="subtitle">Interactive 3D Cell Explorer — spin a living animal cell, tap any organelle, and see what it does.</p>
+    <p class="byline">Built by Rajesh Kodaganti</p>
+  </header>
+
+  <aside class="panel glass" id="sidebar" aria-label="Organelle explorer">
+    <div class="sidebar-head">
+      <h2>Explore the cell</h2>
+      <input id="search" type="search" placeholder="Search organelles…" aria-label="Search organelles" />
+    </div>
+    <ul id="organelle-list"></ul>
+    <p id="no-results" hidden>No organelles match that search.</p>
+
+    <div class="controls">
+      <div class="control-row">
+        <label for="explode">Exploded view</label>
+        <input id="explode" type="range" min="0" max="100" value="0" />
+      </div>
+      <div class="control-row">
+        <label for="xray">X-ray membrane</label>
+        <input id="xray" type="checkbox" />
+      </div>
+      <div class="control-row btn-row">
+        <button id="toggle-rotate" class="btn" aria-pressed="true">Auto-rotate: On</button>
+        <button id="toggle-labels" class="btn" aria-pressed="true">Labels: On</button>
+        <button id="reset-view" class="btn accent">Reset view</button>
+      </div>
+    </div>
+  </aside>
+
+  <section class="panel glass" id="info-panel" aria-live="polite">
+    <p class="info-eyebrow">Now exploring</p>
+    <h2 id="info-name">The whole cell</h2>
+    <p id="info-tagline">One cell, a dozen tiny machines working together.</p>
+    <p id="info-desc">Every structure inside this cell has a job — making energy, building proteins, recycling waste and protecting the DNA. Click any organelle in the model, or pick one from the list, to explore it up close.</p>
+    <p id="info-fact-wrap"><span class="fact-label">Did you know?</span> <span id="info-fact">Your body contains roughly 37 trillion cells, and almost every one of them carries a full copy of your DNA.</span></p>
+  </section>
+
+  <footer id="hint-bar">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click an organelle</footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

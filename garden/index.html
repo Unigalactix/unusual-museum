@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdant — The 3D Garden: Lentils, Vegetables &amp; Leafy Greens</title>
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="loading"><div class="sprout">🌱</div><p>Sowing the garden…</p></div>
+<div id="webgl-fail" hidden>
+  <h2>🌧️ The garden could not grow here</h2>
+  <p>Your browser could not start WebGL, which Verdant needs to render its 3D garden. Try a recent version of Chrome, Edge, Firefox or Safari with hardware acceleration enabled.</p>
+</div>
+
+<header>
+  <a class="back" href="../index.html">← Unusual Museum</a>
+  <div class="title-block">
+    <h1>Verdant</h1>
+    <p>The 3D Garden — Lentils, Vegetables &amp; Leafy Greens</p>
+  </div>
+  <nav id="zone-nav">
+    <button data-zone="lentils">🫘 Lentils &amp; Legumes</button>
+    <button data-zone="vegetables">🥕 Vegetable Garden</button>
+    <button data-zone="leafy">🥬 Leafy Greens</button>
+    <button data-zone="all" class="active">🌻 Whole Garden</button>
+  </nav>
+</header>
+
+<aside id="panel">
+  <div class="panel-tools">
+    <input id="search" type="search" placeholder="Search the garden… (try ‘dal’ or ‘paneer’)">
+    <label class="toggle"><input type="checkbox" id="labels-toggle" checked> Labels</label>
+  </div>
+  <div id="item-list"></div>
+  <article id="info" hidden>
+    <button id="info-close" aria-label="Close">×</button>
+    <div id="info-zone" class="chip"></div>
+    <h2 id="info-name"></h2>
+    <div id="info-alt"></div>
+    <p id="info-tagline" class="tagline"></p>
+    <h3>🥗 Nutrition</h3><p id="info-nutrition"></p>
+    <h3>🍳 In the kitchen</h3><p id="info-uses"></p>
+    <h3>🌿 Garden note</h3><p id="info-fact"></p>
+  </article>
+</aside>
+
+<div id="tooltip" hidden></div>
+<div id="labels"></div>
+<canvas id="scene"></canvas>
+
+<footer>Drag to wander · Scroll to zoom · Click a bowl, vegetable or leafy bunch to meet it</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

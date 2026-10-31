@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BodyVerse — Interactive 3D Human Body Explorer · The Unusual Museum</title>
+<meta name="description" content="Explore the human body in interactive 3D: brain, heart, lungs, liver, kidneys and more. Rotate, zoom and click any organ to learn how it works." />
+<link rel="stylesheet" href="css/styles.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="loader">
+  <div class="loader-ring"></div>
+  <p>Assembling the body…</p>
+</div>
+
+<div id="webgl-error" hidden>
+  <h2>WebGL isn't available</h2>
+  <p>BodyVerse needs WebGL to render the 3D body. Please try a modern browser with hardware acceleration enabled.</p>
+</div>
+
+<canvas id="scene"></canvas>
+<div id="labels"></div>
+<div id="tooltip"></div>
+
+<header class="panel" id="site-header">
+  <a class="back-link" href="../index.html">← Unusual Museum</a>
+  <h1>Body<span class="accent">Verse</span></h1>
+  <p class="subtitle">An interactive 3D tour of the human body's major organs</p>
+</header>
+
+<aside class="panel" id="explorer">
+  <div class="explorer-head">
+    <h2>Organ Explorer</h2>
+    <input id="search" type="search" placeholder="Search organs…" aria-label="Search organs" />
+    <div id="system-chips"></div>
+  </div>
+  <div id="organ-list"></div>
+</aside>
+
+<section class="panel" id="info-panel">
+  <button id="info-close" aria-label="Close info panel">×</button>
+  <p id="info-system" class="info-system">Welcome</p>
+  <h2 id="info-name">Explore the body</h2>
+  <p id="info-tagline">Click any organ — or pick one from the explorer — to see what it does.</p>
+  <p id="info-desc">Drag to rotate the figure and scroll to zoom. The heart beats and the lungs breathe on their own; use the controls below to pull the organs apart, make the body transparent, or pause the motion.</p>
+  <div id="info-fact-wrap" hidden>
+    <h3>Did you know?</h3>
+    <p id="info-fact"></p>
+  </div>
+</section>
+
+<div class="panel" id="controls">
+  <div class="control-row">
+    <label for="explode">Explode</label>
+    <input id="explode" type="range" min="0" max="100" value="0" />
+  </div>
+  <div class="control-row">
+    <label for="xray">X-ray</label>
+    <input id="xray" type="range" min="0" max="100" value="35" />
+  </div>
+  <div class="control-row buttons">
+    <button id="labels-toggle" class="toggle active">Labels</button>
+    <button id="rotate-toggle" class="toggle active">Rotate</button>
+    <button id="motion-toggle" class="toggle active">Motion</button>
+    <button id="reset-view">Reset view</button>
+  </div>
+</div>
+
+<footer id="hint">Drag to rotate · Scroll to zoom · Click an organ &nbsp;·&nbsp; Part of <strong>The Unusual Museum</strong> · Built by Rajesh Kodaganti</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

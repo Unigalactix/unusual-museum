@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmos — Interactive 3D Solar System &amp; Stars · The Unusual Museum</title>
+<meta name="description" content="An interactive 3D solar system you can fly through — all eight planets, the Moon, Pluto, an asteroid belt — plus an inspector for a dozen of the best-known stars in the night sky.">
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="loading">
+  <div class="load-inner">
+    <div class="load-glyph">✦</div>
+    <p>Charting the solar system…</p>
+  </div>
+</div>
+
+<div id="webgl-fail" hidden>
+  <div class="fail-card">
+    <h2>The sky stays dark</h2>
+    <p>Your browser could not start WebGL, so the solar system cannot be shown. Try a recent desktop or mobile browser with hardware acceleration enabled.</p>
+    <a href="../index.html">← Back to The Unusual Museum</a>
+  </div>
+</div>
+
+<header class="hud top">
+  <a class="back" href="../index.html">← Unusual Museum</a>
+  <div class="title-block">
+    <h1>Cosmos</h1>
+    <p class="subtitle">Interactive 3D Solar System &amp; Known Stars</p>
+  </div>
+  <div class="scale-note" aria-hidden="true">
+    <span class="sn-label">SCALE</span>
+    <span class="sn-value">Stylised — sizes &amp; distances compressed so everything fits on one screen</span>
+  </div>
+</header>
+
+<canvas id="scene"></canvas>
+<div id="labels"></div>
+<div id="tooltip" hidden></div>
+
+<!-- Explorer panel: bodies & stars lists -->
+<aside id="explorer" class="explorer">
+  <div class="tabs" role="tablist" aria-label="Catalogue">
+    <button id="tab-bodies" class="tab active" role="tab">Solar System</button>
+    <button id="tab-stars" class="tab" role="tab">Known Stars</button>
+  </div>
+  <input id="search" type="search" placeholder="Search…" aria-label="Search the catalogue">
+  <div id="body-list" class="list"></div>
+  <div id="star-list" class="list" hidden></div>
+  <button id="back-to-system" class="wide-btn" hidden>← Back to Solar System</button>
+</aside>
+
+<!-- Info panel -->
+<aside id="info-panel" class="panel" hidden>
+  <button id="panel-close" class="panel-close" aria-label="Close details">×</button>
+  <p class="panel-kicker" id="p-kicker">Planet</p>
+  <h2 id="p-name">—</h2>
+  <p class="p-tag" id="p-tag">—</p>
+  <dl class="p-stats" id="p-stats"></dl>
+  <p class="p-desc" id="p-desc">—</p>
+  <p class="p-fact" id="p-fact">—</p>
+  <button id="release-btn" class="wide-btn">Release camera / Reset view</button>
+</aside>
+
+<!-- Bottom controls -->
+<nav class="hud bottom">
+  <div class="controls-left">
+    <label class="slider-wrap" for="speed-slider">
+      <span>Orbit speed</span>
+      <input type="range" id="speed-slider" min="0" max="300" value="100">
+    </label>
+    <button id="pause-btn" class="ctl">⏸ Pause orbits</button>
+  </div>
+  <div class="controls-right">
+    <button id="labels-btn" class="ctl active">Labels</button>
+    <button id="orbits-btn" class="ctl active">Orbit lines</button>
+    <div class="segmented" role="group" aria-label="Size mode">
+      <button id="size-visible" class="seg active">Visible sizes</button>
+      <button id="size-real" class="seg">More realistic</button>
+    </div>
+  </div>
+</nav>
+
+<footer class="hint">Drag to orbit · Scroll to zoom · Click a planet to follow it · Pick a star to inspect it up close</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

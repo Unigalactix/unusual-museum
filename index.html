@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Unusual Museum — Interactive 3D Galleries</title>
+<meta name="description" content="The Unusual Museum: seven interactive 3D galleries you can rotate, zoom and explore — a living cell, the human body, creatures that never existed, deep-sea specimens, the cosmos, all 118 elements, and a garden of lentils, vegetables and leafy greens. Built by Rajesh Kodaganti." />
+<style>
+  :root{
+    --bg:#07080f; --panel:rgba(255,255,255,.055); --stroke:rgba(255,255,255,.12);
+    --text:#eef0ff; --muted:#a7abc9; --accent:#ffb454;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:radial-gradient(1200px 700px at 50% -10%, #1b2040 0%, var(--bg) 55%) fixed, var(--bg);
+    color:var(--text); font-family:"Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height:100vh; padding:48px 20px 64px;}
+  .wrap{max-width:1080px; margin:0 auto}
+  header{text-align:center; margin-bottom:14px}
+  .eyebrow{letter-spacing:.35em; text-transform:uppercase; font-size:12px; color:var(--accent); font-weight:700}
+  h1{font-size:clamp(38px, 6vw, 64px); font-weight:800; line-height:1.05; margin:14px 0 12px;
+     background:linear-gradient(92deg,#fff 20%, #ffd9a0 45%, #9fd8ff 75%); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .sub{color:var(--muted); font-size:clamp(15px,2.2vw,18px); max-width:720px; margin:0 auto; line-height:1.55}
+  .stats{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:26px 0 34px}
+  .stat{background:var(--panel); border:1px solid var(--stroke); border-radius:999px; padding:8px 16px; font-size:13.5px; color:var(--muted)}
+  .stat b{color:var(--text)}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:18px}
+  a.card{display:block; text-decoration:none; color:inherit; background:var(--panel); border:1px solid var(--stroke);
+    border-radius:20px; padding:24px 22px 20px; position:relative; overflow:hidden;
+    transition:transform .25s ease, border-color .25s ease, background .25s ease}
+  a.card:hover{transform:translateY(-5px); border-color:rgba(255,255,255,.35); background:rgba(255,255,255,.085)}
+  a.card::before{content:""; position:absolute; inset:0 0 auto 0; height:4px; background:var(--c, #fff)}
+  .icon{font-size:38px; line-height:1}
+  .card h2{font-size:22px; margin:14px 0 4px}
+  .wing{font-size:11.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:700}
+  .card p{color:var(--muted); font-size:14.5px; line-height:1.55; margin-top:8px}
+  .count{display:inline-block; margin-top:14px; font-size:12.5px; color:var(--text); background:rgba(255,255,255,.09);
+    border:1px solid var(--stroke); padding:5px 11px; border-radius:999px}
+  .go{position:absolute; right:18px; bottom:16px; color:var(--muted); font-size:18px}
+  a.card:hover .go{color:var(--text)}
+  footer{text-align:center; color:var(--muted); font-size:13.5px; margin-top:44px; line-height:1.7}
+  footer b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Est. 2026 · Admission: free · Everything is touchable</p>
+    <h1>The Unusual Museum</h1>
+    <p class="sub">Seven galleries of things you can spin, zoom and take apart in your browser —
+      from a single living cell to the edge of the observable universe, by way of creatures that never existed
+      and a bowl of lentils. Every exhibit is real 3D: drag to rotate, scroll to zoom, click anything that catches your eye.</p>
+    <div class="stats">
+      <span class="stat"><b>7</b> galleries</span>
+      <span class="stat"><b>118</b> elements</span>
+      <span class="stat"><b>40</b> garden exhibits</span>
+      <span class="stat"><b>18</b> organs</span>
+      <span class="stat"><b>14</b> organelles</span>
+      <span class="stat"><b>12</b> famous stars</span>
+      <span class="stat"><b>0</b> exhibits behind glass</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    <a class="card" href="cell/" style="--c:#57e6a9">
+      <div class="icon">🧬</div>
+      <h2>CellVerse</h2><span class="wing">Gallery I · The Living Cell</span>
+      <p>A living animal cell, floating in the dark. Pull it apart with the exploded view, X-ray the membrane,
+         and tap the mitochondria, nucleus, Golgi and friends to see what each tiny machine does.</p>
+      <span class="count">14 organelles</span><span class="go">→</span>
+    </a>
+
+    <a class="card" href="body/" style="--c:#ff7a90">
+      <div class="icon">🫀</div>
+      <h2>BodyVerse</h2><span class="wing">Gallery II · The Human Body</span>
+      <p>A glass figure with everything inside: a heart that actually beats, lungs that breathe, brain, liver,
+         kidneys, stomach, intestines and the great vessels — arranged by body system.</p>
+      <span class="count">18 organs</span><span class="go">→</span>
+    </a>
+
+    <a class="card" href="museum/" style="--c:#ffb454">
+      <div class="icon">🐉</div>
+      <h2>Mythos Museum</h2><span class="wing">Gallery III · Creatures That Never Existed</span>
+      <p>The Phoenix, the Kraken, a Dragon and a Unicorn, on pedestals in a marble hall.
+         Grab one and spin it, zoom into the Kraken's suckers, then flip the hall from day to dusk.</p>
+      <span class="count">4 legendary exhibits</span><span class="go">→</span>
+    </a>
+
+    <a class="card" href="abyss/" style="--c:#4fd8e8">
+      <div class="icon">🐙</div>
+      <h2>The Abyss</h2><span class="wing">Gallery IV · Deep-Sea Specimens</span>
+      <p>Three specimens in glass tanks, 1,800 metres down: the glowing anglerfish, the unclosable fangs of the
+         viperfish, and a dumbo octopus flapping its ears through the dark.</p>
+      <span class="count">3 specimens</span><span class="go">→</span>
+    </a>
+
+    <a class="card" href="space/" style="--c:#9fb4ff">
+      <div class="icon">🪐</div>
+      <h2>Cosmos</h2><span class="wing">Gallery V · Solar System &amp; Stars</span>
+      <p>The Sun and all eight planets on their orbits — ride along with Earth, count Saturn's rings —
+         then visit twelve famous stars standing next to the Sun, for scale. Betelgeuse is rude.</p>
+      <span class="count">8 planets · 12 stars</span><span class="go">→</span>
+    </a>
+
+    <a class="card" href="elements/" style="--c:#c792ff">
+      <div class="icon">⚛️</div>
+      <h2>Elementum</h2><span class="wing">Gallery VI · The Periodic Table</span>
+      <p>All 118 elements as minted 3D tiles in the classic table. Pick any one and open its atom:
+         a nucleus built from its actual protons and neutrons, electrons orbiting in their real shells.</p>
+      <span class="count">118 elements</span><span class="go">→</span>
+    </a>
+
+    <a class="card" href="garden/" style="--c:#8ee06a">
+      <div class="icon">🥬</div>
+      <h2>Verdant</h2><span class="wing">Gallery VII · The Garden</span>
+      <p>A sunlit greenhouse market: every kind of lentil in heaped bowls, eighteen vegetables in their crates,
+         and twelve leafy greens swaying in the beds — each with its nutrition and its best dishes.</p>
+      <span class="count">40 exhibits</span><span class="go">→</span>
+    </a>
+  </main>
+
+  <footer>
+    <p><b>The Unusual Museum</b> — built with Three.js and vanilla JavaScript. No exhibits were harmed; several were rotated at high speed.</p>
+    <p>Built by Rajesh Kodaganti · <a href="https://github.com/Unigalactix" style="color:inherit">github.com/Unigalactix</a></p>
+  </footer>
+</div>
+</body>
+</html>

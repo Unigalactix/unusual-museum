@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementum — The Periodic Table in 3D · Unusual Museum</title>
+<meta name="description" content="All 118 elements as an interactive 3D periodic table, with a live atom viewer for every element. Part of The Unusual Museum by Rajesh Kodaganti.">
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="loading"><div class="spinner"></div><p>Assembling 118 elements…</p></div>
+<div id="webgl-fail" hidden>
+  <h2>WebGL unavailable</h2>
+  <p>Elementum needs WebGL to render the 3D table. Please try a modern browser with hardware acceleration enabled.</p>
+</div>
+
+<header>
+  <a class="back" href="../index.html">← Unusual Museum</a>
+  <div class="titles">
+    <h1>Elementum</h1>
+    <p>The periodic table, rebuilt in 3D — every one of the 118 elements, and the atom inside each tile.</p>
+  </div>
+  <label class="autorotate"><input type="checkbox" id="autorotate-toggle"> Auto-rotate</label>
+</header>
+
+<main id="stage"></main>
+<div id="tooltip" hidden></div>
+
+<section id="controls" aria-label="Table controls">
+  <input id="search" type="search" placeholder="Search name, symbol or number…" autocomplete="off">
+  <div id="chips" role="group" aria-label="Filter by category"></div>
+</section>
+
+<aside id="info-panel" aria-live="polite">
+  <div id="info-empty">
+    <h2>Pick an element</h2>
+    <p>Drag to orbit the table, scroll to zoom. Hover a tile to preview it, click it to fly in — then open the <strong>Atom view</strong> to watch its electrons circle the nucleus.</p>
+    <p class="hint-small">Tiles are coloured by family. Use the chips below the table to isolate a family, or search for any element by name, symbol or atomic number.</p>
+  </div>
+  <div id="info-content" hidden>
+    <div class="info-head">
+      <div id="info-symbol">Fe</div>
+      <div>
+        <h2 id="info-name">Iron</h2>
+        <p id="info-meta">26 · Transition metal</p>
+      </div>
+    </div>
+    <dl class="facts">
+      <div><dt>Atomic mass</dt><dd id="info-mass">—</dd></div>
+      <div><dt>Group / Period</dt><dd id="info-group">—</dd></div>
+      <div><dt>State at 25 °C</dt><dd id="info-state">—</dd></div>
+      <div><dt>Electron shells</dt><dd id="info-shells">—</dd></div>
+    </dl>
+    <p id="info-blurb"></p>
+    <div class="info-actions">
+      <button id="atom-btn" type="button">⚛ View atom</button>
+      <button id="back-btn" type="button" hidden>← Back to table</button>
+    </div>
+  </div>
+</aside>
+
+<div id="atom-caption" hidden>
+  <span id="atom-caption-text"></span>
+</div>
+
+<footer>Drag to rotate · Scroll to zoom · Click a tile to inspect it · Built by Rajesh Kodaganti</footer>
+
+<script>
+  window.__elementumTimer = setTimeout(function () {
+    if (!window.__elementumReady) {
+      document.getElementById('loading').hidden = true;
+      document.getElementById('webgl-fail').hidden = false;
+    }
+  }, 12000);
+</script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
