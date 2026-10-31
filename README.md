@@ -1,6 +1,6 @@
 # The Unusual Museum
 
-**Twelve interactive 3D galleries you can rotate, zoom and explore in the browser** — a living cell, the human body, creatures that never existed, deep-sea specimens, the solar system and its stars, all 118 elements, a garden of lentils, vegetables and leafy greens, dinosaurs, microbes, gemstones, real NASA spacecraft, and glowing fungi.
+**Thirteen interactive 3D galleries you can rotate, zoom and explore in the browser** — a living cell, the human body, creatures that never existed, deep-sea specimens, the solar system and its stars, all 118 elements, a garden of lentils, vegetables and leafy greens, dinosaurs, microbes, gemstones, real NASA spacecraft, glowing fungi, and deep space.
 
 🔗 **Live site:** https://unigalactix.github.io/unusual-museum/
 
@@ -22,6 +22,7 @@ Every exhibit is real, explorable 3D built with [Three.js](https://threejs.org/)
 | [GemVerse](gems/) | The jeweller's vault — 8 gemstones with Mohs hardness, formulas and faceted physical materials |
 | [MissionVerse](mission/) | Real spacecraft — NASA's own public-domain 3D models: ISS, JWST, Hubble, Perseverance, Saturn V |
 | [FungiVerse](fungi/) | The forest floor — 8 fungi with honest edibility labels and a day ⇄ night glow mode |
+| [GalaxyVerse](galaxy/) | Deep space — both NASA JWST models, Cassiopeia A in three data releases, 3 more remnants, 6 particle galaxies, Sagittarius A* |
 
 ## Quality bar
 
@@ -56,7 +57,7 @@ GitHub Pages, deployed from the `main` branch root. The root `.nojekyll` keeps f
 
 ```
 index.html        — the museum hall (hub)
-cell/  body/  museum/  abyss/  space/  elements/  garden/  dino/  micro/  gems/  mission/  fungi/
+cell/  body/  museum/  abyss/  space/  elements/  garden/  dino/  micro/  gems/  mission/  fungi/  galaxy/
   index.html  css/styles.css  js/*.js   — each gallery is fully self-contained
 ```
 

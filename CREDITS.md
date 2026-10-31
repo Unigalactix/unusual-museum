@@ -71,3 +71,12 @@ and may be used freely; NASA endorsement is not implied.
 | Saturn V | mission/assets/models/saturn-v.glb | 3D Models/Saturn V |
 
 Full source paths are also listed in mission/model-sources.txt.
+
+## NASA 3D models — GalaxyVerse (public domain)
+
+Same NASA 3D Resources source as MissionVerse. Files in galaxy/assets/models/:
+James Webb Space Telescope (A) detailed and (B) lightweight variants;
+Cassiopeia A supernova remnant in three data releases (original, 2023, 2025);
+Cygnus Loop; G292.0+1.8; Crab Nebula. Full catalogue with source paths:
+galaxy/model-catalogue.md. The six galaxies and Sagittarius A* in GalaxyVerse
+are original procedural particle renders, not models.

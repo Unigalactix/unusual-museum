@@ -1,0 +1,362 @@
+/* GalaxyVerse — gallery styling. Deep-sky indigo and violet, Webb-gold signal.
+   Layout follows the museum three-section system: LEFT data column
+   (header + info panel) · CENTER stage only · RIGHT switcher + controls.
+   340px side columns, 272px at tablet, single-column stack on mobile. */
+
+:root {
+  --margin: 20px;
+  --accent: #9d8cff;
+  --accent-soft: rgba(157, 140, 255, 0.55);
+  --signal: #ffcf7d;
+  --ink: #ece9f7;
+  --ink-dim: #a49ec2;
+  --panel-bg: rgba(12, 11, 28, 0.82);
+  --panel-border: rgba(157, 140, 255, 0.32);
+  --col-bg: #070a18;
+  --night: #030409;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--night);
+  color: var(--ink);
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ================= THREE-SECTION LAYOUT ================= */
+
+.layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr) 340px;
+  height: 100vh;
+  height: 100dvh;
+}
+.col-left, .col-right {
+  background: var(--col-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: var(--margin);
+  min-height: 0;
+  min-width: 0;
+}
+.col-left { border-right: 1px solid var(--panel-border); }
+.col-right { border-left: 1px solid var(--panel-border); }
+
+.stage-wrap { position: relative; min-width: 0; min-height: 0; }
+#stage { position: absolute; inset: 0; }
+#stage canvas { display: block; }
+
+/* ---------- header (inside left column) ---------- */
+
+.topbar { flex: none; }
+
+.back-link {
+  display: inline-block;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.back-link:hover { text-decoration: underline; }
+
+.topbar h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.05;
+}
+
+.subtitle {
+  margin: 3px 0 0;
+  color: var(--ink-dim);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* ---------- info panel (left column, fills) ---------- */
+
+.panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 22px 18px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-soft) transparent;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 11.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.panel h2 {
+  margin: 0 0 4px;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.origin {
+  margin: 0 0 10px;
+  color: var(--ink-dim);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.tagline {
+  margin: 0 0 12px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--signal);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+.stats > div {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(157, 140, 255, 0.16);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.stats dt {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 3px;
+}
+.stats dd { margin: 0; font-size: 13.5px; font-weight: 600; line-height: 1.35; }
+
+.description {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.fact {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--signal);
+  background: rgba(255, 207, 125, 0.08);
+  border-radius: 0 6px 6px 0;
+}
+.fact-label {
+  margin: 0 0 4px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+.fact-text { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--ink); }
+
+/* ---------- switcher list (right column, fills) ---------- */
+
+.list-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 18px 14px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-soft) transparent;
+}
+
+.list-heading {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.exhibit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.group-heading {
+  margin: 14px 0 2px;
+  color: var(--signal);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.group-heading:first-child { margin-top: 0; }
+
+.exhibit-item {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(157, 140, 255, 0.18);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.exhibit-item:hover { border-color: var(--accent); background: rgba(157, 140, 255, 0.1); }
+.exhibit-item:active { transform: scale(0.98); }
+.exhibit-item.active {
+  border-color: var(--signal);
+  background: rgba(255, 207, 125, 0.1);
+  box-shadow: 0 0 0 1px rgba(255, 207, 125, 0.35), 0 0 18px rgba(255, 207, 125, 0.12);
+}
+.exhibit-item .ci-name { display: block; font-size: 14.5px; font-weight: 600; line-height: 1.3; }
+.exhibit-item .ci-meta { display: block; margin-top: 2px; font-size: 12px; color: var(--ink-dim); letter-spacing: 0.03em; }
+
+.list-note {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-dim);
+}
+
+/* ---------- controls card (right column, bottom) ---------- */
+
+.controls-card {
+  flex: none;
+  padding: 14px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn, .nav-btn {
+  appearance: none;
+  font: inherit;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(157, 140, 255, 0.3);
+  border-radius: 8px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.btn:hover, .nav-btn:hover { border-color: var(--accent); background: rgba(157, 140, 255, 0.12); }
+.btn[aria-pressed="true"] { border-color: var(--signal); color: var(--signal); }
+
+.nav-row { display: flex; gap: 10px; }
+.nav-btn { flex: 1; }
+
+/* ---------- hint (inside stage, bottom) ---------- */
+
+.hint {
+  position: absolute;
+  z-index: 15;
+  left: 0; right: 0;
+  bottom: 12px;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--ink-dim);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  padding: 0 12px;
+}
+
+/* ---------- overlays ---------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--night);
+  color: var(--ink-dim);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 24px;
+  transition: opacity 0.5s ease;
+}
+.overlay.gone { opacity: 0; pointer-events: none; }
+.overlay-error { background: rgba(3, 4, 9, 0.97); line-height: 1.6; }
+
+.spinner {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 3px solid rgba(157, 140, 255, 0.2);
+  border-top-color: var(--accent);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* The fail overlay must obey its hidden attribute (author display rules would otherwise override it) */
+#webgl-fail[hidden]{display:none !important}
+
+/* ---------- tablet: 272px side columns ---------- */
+
+@media (max-width: 1023px) {
+  .layout { grid-template-columns: 272px minmax(0, 1fr) 272px; }
+  .col-left, .col-right { padding: 14px; gap: 12px; }
+  .topbar h1 { font-size: 27px; }
+  .subtitle { font-size: 12px; }
+  .panel h2 { font-size: 22px; }
+}
+
+/* ---------- mobile: single-column stack ----------
+   header -> stage (56vh) -> switcher -> data -> controls */
+
+@media (max-width: 640px) {
+  :root { --margin: 12px; }
+
+  html, body { height: auto; overflow-x: hidden; overflow-y: auto; }
+  .layout { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
+  .col-left, .col-right { display: contents; }
+
+  .col-left .topbar { order: 1; margin: var(--margin) var(--margin) 0; }
+  .topbar h1 { font-size: 22px; }
+  .subtitle { font-size: 10.5px; }
+
+  .stage-wrap {
+    order: 2;
+    height: 56vh;
+    min-height: 320px;
+    flex: none;
+    margin: var(--margin) var(--margin) 0;
+  }
+
+  .col-right .list-panel { order: 3; margin: var(--margin) var(--margin) 0; flex: none; overflow: visible; }
+  .col-left .panel { order: 4; margin: var(--margin) var(--margin) 0; flex: none; overflow: visible; }
+  .col-right .controls-card { order: 5; margin: var(--margin); }
+
+  .panel h2 { font-size: 21px; }
+  .hint { font-size: 11.5px; }
+}

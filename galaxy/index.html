@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GalaxyVerse — Webb, Supernova Remnants &amp; Galaxies in 3D · The Unusual Museum</title>
+<meta name="description" content="Fifteen deep-sky exhibits in interactive 3D: both NASA models of the James Webb Space Telescope, three generations of Cassiopeia A and other supernova remnants as real NASA 3D models, six great galaxies rendered as particle systems, and Sagittarius A*. Part of The Unusual Museum.">
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<div class="layout">
+  <aside class="col-left">
+<header class="topbar">
+  <div class="brand-block">
+    <a class="back-link" href="../index.html">&larr; Unusual Museum</a>
+    <h1>GalaxyVerse</h1>
+    <p class="subtitle">The Deep-Sky Wing</p>
+  </div>
+</header>
+
+<aside id="panel" class="panel" aria-live="polite">
+  <p class="eyebrow" id="panel-eyebrow">Welcome to the deep sky</p>
+  <h2 id="panel-name">Fifteen exhibits, one dark stage</h2>
+  <p class="origin" id="panel-origin">NASA models · particle galaxies · one black hole</p>
+  <p class="tagline" id="panel-tagline">An observatory, three generations of one exploded star, six galaxies — and the dark heart of our own.</p>
+  <dl class="stats" id="panel-stats">
+    <div><dt>Type</dt><dd id="stat-type">Mixed collection</dd></div>
+    <div><dt>Distance</dt><dd id="stat-distance">—</dd></div>
+    <div><dt>Size</dt><dd id="stat-size">—</dd></div>
+  </dl>
+  <p class="description" id="panel-description">Pick an exhibit from the switcher on the right and it takes the stage alone, large in the dark. The telescopes and supernova remnants are NASA&rsquo;s own 3D models, downloaded the first time you choose them; the galaxies are rendered live as particle systems of tens of thousands of stars, because no model file of a galaxy exists — only maps like this.</p>
+  <div class="fact" id="panel-fact-wrap">
+    <p class="fact-label">Did you know?</p>
+    <p class="fact-text" id="panel-fact">NASA publishes its 3D models free for anyone — the same archive behind this wing also flies in MissionVerse, one gallery over.</p>
+  </div>
+</aside>
+  </aside>
+
+  <div class="stage-wrap">
+<main id="stage" aria-label="Interactive 3D deep-sky gallery"></main>
+<footer class="hint">Drag to orbit &middot; Scroll to zoom &middot; &larr; &rarr; keys change exhibit<br>Built by Rajesh Kodaganti &middot; Models: NASA 3D Resources (public domain) &middot; Galaxies rendered as particle systems</footer>
+  </div>
+
+  <aside class="col-right">
+<aside class="list-panel" aria-label="Exhibit switcher">
+  <p class="list-heading">Exhibit Switcher</p>
+  <div id="exhibit-list" class="exhibit-list"></div>
+  <p class="list-note">NASA models load the first time you pick them — the larger Cassiopeia A files may take a few seconds — and are then kept for the rest of your visit.</p>
+</aside>
+
+<aside class="controls-card" aria-label="Stage controls">
+  <button id="rotate-toggle" class="btn" type="button" aria-pressed="true">Rotation: On</button>
+  <div class="nav-row">
+    <button id="prev-btn" class="nav-btn" type="button" aria-label="Previous exhibit">&#8249; Prev</button>
+    <button id="next-btn" class="nav-btn" type="button" aria-label="Next exhibit">Next &#8250;</button>
+  </div>
+</aside>
+  </aside>
+</div>
+
+<div id="loading" class="overlay">
+  <div class="spinner" aria-hidden="true"></div>
+  <p>Opening the deep-sky wing&hellip;</p>
+</div>
+
+<div id="webgl-fail" class="overlay overlay-error" hidden>
+  <p><strong>The deep-sky wing could not open.</strong><br>Your browser does not seem to support WebGL, which the 3D view needs. Try a recent version of Chrome, Edge, Firefox or Safari.</p>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
