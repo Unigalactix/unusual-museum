@@ -27,55 +27,66 @@
   <p>BodyVerse needs WebGL to render the 3D body. Please try a modern browser with hardware acceleration enabled.</p>
 </div>
 
-<canvas id="scene"></canvas>
 <div id="labels"></div>
 <div id="tooltip"></div>
 
-<header class="panel" id="site-header">
-  <a class="back-link" href="../index.html">← Unusual Museum</a>
-  <h1>Body<span class="accent">Verse</span></h1>
-  <p class="subtitle">An interactive 3D tour of the human body's major organs</p>
-</header>
+<div class="layout">
+  <!-- LEFT: data — header card + selected-organ detail -->
+  <aside class="col-left">
+    <header class="panel" id="site-header">
+      <a class="back-link" href="../index.html">← Unusual Museum</a>
+      <h1>Body<span class="accent">Verse</span></h1>
+      <p class="subtitle">An interactive 3D tour of the human body's major organs</p>
+    </header>
 
-<aside class="panel" id="explorer">
-  <div class="explorer-head">
-    <h2>Organ Explorer</h2>
-    <input id="search" type="search" placeholder="Search organs…" aria-label="Search organs" />
-    <div id="system-chips"></div>
-  </div>
-  <div id="organ-list"></div>
-</aside>
+    <section class="panel" id="info-panel">
+      <button id="info-close" aria-label="Close info panel">×</button>
+      <p id="info-system" class="info-system">Welcome</p>
+      <h2 id="info-name">Explore the body</h2>
+      <p id="info-tagline">Click any organ — or pick one from the explorer — to see what it does.</p>
+      <p id="info-desc">Drag to rotate the figure and scroll to zoom. The heart beats and the lungs breathe on their own; use the controls to pull the organs apart, make the body transparent, or pause the motion.</p>
+      <div id="info-fact-wrap" hidden>
+        <h3>Did you know?</h3>
+        <p id="info-fact"></p>
+      </div>
+    </section>
+  </aside>
 
-<section class="panel" id="info-panel">
-  <button id="info-close" aria-label="Close info panel">×</button>
-  <p id="info-system" class="info-system">Welcome</p>
-  <h2 id="info-name">Explore the body</h2>
-  <p id="info-tagline">Click any organ — or pick one from the explorer — to see what it does.</p>
-  <p id="info-desc">Drag to rotate the figure and scroll to zoom. The heart beats and the lungs breathe on their own; use the controls below to pull the organs apart, make the body transparent, or pause the motion.</p>
-  <div id="info-fact-wrap" hidden>
-    <h3>Did you know?</h3>
-    <p id="info-fact"></p>
-  </div>
-</section>
+  <!-- CENTER: the 3D stage -->
+  <section class="col-center" id="stage">
+    <canvas id="scene"></canvas>
+    <footer id="hint">Drag to rotate · Scroll to zoom · Click an organ &nbsp;·&nbsp; Part of <strong>The Unusual Museum</strong> · Built by Rajesh Kodaganti</footer>
+  </section>
 
-<div class="panel" id="controls">
-  <div class="control-row">
-    <label for="explode">Explode</label>
-    <input id="explode" type="range" min="0" max="100" value="0" />
-  </div>
-  <div class="control-row">
-    <label for="xray">X-ray</label>
-    <input id="xray" type="range" min="0" max="100" value="35" />
-  </div>
-  <div class="control-row buttons">
-    <button id="labels-toggle" class="toggle active">Labels</button>
-    <button id="rotate-toggle" class="toggle active">Rotate</button>
-    <button id="motion-toggle" class="toggle active">Motion</button>
-    <button id="reset-view">Reset view</button>
-  </div>
+  <!-- RIGHT: switcher + options -->
+  <aside class="col-right">
+    <aside class="panel" id="explorer">
+      <div class="explorer-head">
+        <h2>Organ Explorer</h2>
+        <input id="search" type="search" placeholder="Search organs…" aria-label="Search organs" />
+        <div id="system-chips"></div>
+      </div>
+      <div id="organ-list"></div>
+    </aside>
+
+    <div class="panel" id="controls">
+      <div class="control-row">
+        <label for="explode">Explode</label>
+        <input id="explode" type="range" min="0" max="100" value="0" />
+      </div>
+      <div class="control-row">
+        <label for="xray">X-ray</label>
+        <input id="xray" type="range" min="0" max="100" value="35" />
+      </div>
+      <div class="control-row buttons">
+        <button id="labels-toggle" class="toggle active">Labels</button>
+        <button id="rotate-toggle" class="toggle active">Rotate</button>
+        <button id="motion-toggle" class="toggle active">Motion</button>
+        <button id="reset-view">Reset view</button>
+      </div>
+    </div>
+  </aside>
 </div>
-
-<footer id="hint">Drag to rotate · Scroll to zoom · Click an organ &nbsp;·&nbsp; Part of <strong>The Unusual Museum</strong> · Built by Rajesh Kodaganti</footer>
 
 <script type="module" src="js/main.js"></script>
 </body>

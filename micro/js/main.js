@@ -92,26 +92,21 @@ controls.minDistance = 3.5;
 controls.maxDistance = 36;
 
 /* ------------------------------------------------------------------ */
-/* Responsive framing (same system as CellVerse): the canvas fills the */
-/* viewport on desktop/tablet and becomes a 56vh block in the mobile   */
-/* column layout, so all sizing / projection math goes through the     */
-/* canvas rect. A view offset shifts the projected centre into the     */
-/* free space beside the docked panels on wider screens.               */
+/* Three-section layout framing: the canvas fills the centre stage    */
+/* column (a 56vh block in the mobile stack), so all sizing /          */
+/* projection math goes through the canvas rect, and the subject is    */
+/* framed dead-centre — no view offset.                                */
 /* ------------------------------------------------------------------ */
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2(-10, -10);
-const VIEW_SHIFT_DESKTOP = 150;
-const VIEW_SHIFT_TABLET = 110;
 function viewRect() { return canvas.getBoundingClientRect(); }
 function viewShiftX() {
-  const w = window.innerWidth;
-  if (w < 641) return 0;
-  return w < 1024 ? VIEW_SHIFT_TABLET : VIEW_SHIFT_DESKTOP;
+  /* Three-section layout: the stage is its own column, so the subject
+     is framed dead-centre — no view offset at any width. */
+  return 0;
 }
 function applyViewOffset() {
-  const s = viewShiftX();
-  if (s) camera.setViewOffset(window.innerWidth, window.innerHeight, s, 0, window.innerWidth, window.innerHeight);
-  else camera.clearViewOffset();
+  camera.clearViewOffset();
 }
 function resizeView() {
   const r = viewRect();
@@ -841,8 +836,9 @@ function updateLabels() {
     const wp = u.root.getWorldPosition(new THREE.Vector3());
     const projected = wp.clone().project(camera);
     const behind = projected.z > 1;
-    const x = rect.left + (projected.x * 0.5 + 0.5) * rect.width;
-    const y = rect.top + (-projected.y * 0.5 + 0.5) * rect.height;
+    /* #labels lives inside #stage, so project into stage-relative px */
+    const x = (projected.x * 0.5 + 0.5) * rect.width;
+    const y = (-projected.y * 0.5 + 0.5) * rect.height;
     div.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -160%)`;
     let priority = 10;
     if (u === selectedUnit) priority = 1000;

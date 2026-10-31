@@ -544,10 +544,10 @@ for (const item of FUNGI) {
   registry.set(item.id, { data: item, group: mound.group, ring: mound.ring, ringMat: mound.ringMat, mycelium: mound.mycelium, labelEl: el, labelY: 2.5, swayPhase: rngPos() * 6.28 });
 }
 
-/* ------------------------- framing beside the panel ----------------------- */
+/* --------------------- framing: clearing centred in stage ---------------- */
 function layoutShift() {
   const w = stage.clientWidth;
-  world.position.x = w > 1023 ? -3.4 : w > 640 ? -1.8 : 0;
+  world.position.x = 0; // three-section layout: clearing centred in the stage column
   if (glowLight.userData.moundPos) glowLight.position.copy(glowLight.userData.moundPos).add(world.position);
 }
 function resize() {

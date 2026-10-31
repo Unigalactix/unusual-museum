@@ -1,13 +1,27 @@
 /* Verdant — light, fresh greenhouse theme */
+/* Layout: three sections — left data column / centre 3D stage / right
+   switcher column. Component styles below the layout block are the
+   original greenhouse theme, retargeted from fixed overlays to the grid. */
 :root{
   --ink:#23402a; --ink-soft:#4a6b52; --paper:rgba(255,255,252,.88);
   --line:rgba(70,120,80,.25); --accent:#3d9142; --accent-2:#e8a33d;
   --shadow:0 12px 32px rgba(46,90,50,.18);
+  --panel-dark:#1f3526; --panel-dark-2:#182a1e; --divider:#0f1f14;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;font-family:"Avenir Next","Segoe UI",system-ui,sans-serif;color:var(--ink);
   background:linear-gradient(#aee3f7,#e8f7e4)}
-#scene{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+
+/* ------------------------------- layout --------------------------------- */
+.layout{display:grid;grid-template-columns:340px 1fr 340px;height:100vh;height:100dvh;width:100%;overflow:hidden}
+.col-left{display:flex;flex-direction:column;gap:.75rem;padding:14px;min-height:0;overflow:hidden;z-index:15;
+  background:linear-gradient(var(--panel-dark),var(--panel-dark-2));border-right:1px solid var(--divider)}
+.col-right{display:flex;flex-direction:column;gap:.6rem;padding:14px;min-height:0;overflow:hidden;z-index:15;
+  background:linear-gradient(var(--panel-dark),var(--panel-dark-2));border-left:1px solid var(--divider)}
+.stage{position:relative;min-width:0;min-height:0;overflow:hidden;background:linear-gradient(#aee3f7,#e8f7e4)}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+
+/* ------------------------- fixed status overlays ------------------------ */
 #loading{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;gap:.4rem;align-items:center;justify-content:center;
   background:linear-gradient(#bfeafb,#eaf8e6);font-size:1.05rem;color:var(--ink-soft);transition:opacity .6s}
 #loading .sprout{font-size:3rem;animation:bob 1.4s ease-in-out infinite}
@@ -15,25 +29,28 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:"Avenir Next","Segoe 
 #webgl-fail{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding:2rem;background:#f4faf1}
 #webgl-fail[hidden]{display:none}
-header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:flex-start;gap:1rem;padding:12px 20px;pointer-events:none}
-header>*{pointer-events:auto}
-.back{align-self:center;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);
+
+/* --------------------------- left column: header ------------------------ */
+header{display:flex;flex-direction:column;align-items:flex-start;gap:.6rem;flex:none}
+.back{align-self:flex-start;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);
   padding:.42rem .8rem;border-radius:999px;font-size:.86rem;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
 .back:hover{background:#fff}
-.title-block{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:.45rem 1rem .55rem;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+.title-block{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:.45rem 1rem .55rem;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
 .title-block h1{margin:0;font-size:1.55rem;letter-spacing:.04em;color:#2c6e33}
 .title-block p{margin:.05rem 0 0;font-size:.8rem;color:var(--ink-soft)}
-#zone-nav{margin-left:auto;display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-end}
+
+/* -------------------------- right column: switcher ---------------------- */
+#zone-nav{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-start;flex:none}
 #zone-nav button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;
   padding:.5rem .85rem;font-size:.85rem;cursor:pointer;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
 #zone-nav button:hover{background:#fff}
 #zone-nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-#panel{position:fixed;top:96px;left:20px;bottom:52px;z-index:15;width:320px;display:flex;flex-direction:column;gap:.6rem}
+#panel{width:auto}
 .panel-tools{display:flex;gap:.5rem;align-items:center;background:var(--paper);border:1px solid var(--line);
-  border-radius:14px;padding:.5rem .6rem;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+  border-radius:14px;padding:.5rem .6rem;box-shadow:var(--shadow);backdrop-filter:blur(8px);flex:none}
 #search{flex:1;min-width:0;border:1px solid var(--line);border-radius:9px;padding:.45rem .6rem;font-size:.85rem;background:#fff;color:var(--ink)}
 .toggle{font-size:.8rem;color:var(--ink-soft);white-space:nowrap;cursor:pointer}
-#item-list{flex:1;overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;
+#item-list{flex:1;min-height:0;overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;
   box-shadow:var(--shadow);backdrop-filter:blur(8px);padding:.55rem .6rem}
 #item-list h4{margin:.65rem .2rem .35rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--accent)}
 #item-list h4:first-child{margin-top:.1rem}
@@ -44,8 +61,10 @@ header>*{pointer-events:auto}
 #item-list .dot{width:.72rem;height:.72rem;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
 #item-list .alt{color:var(--ink-soft);font-size:.75rem}
 #item-list .empty{padding:.6rem .4rem;color:var(--ink-soft);font-size:.85rem}
+
+/* ---------------------------- left column: info ------------------------- */
 #info{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
-  backdrop-filter:blur(10px);padding:.85rem 1rem .95rem;max-height:52%;overflow-y:auto}
+  backdrop-filter:blur(10px);padding:.85rem 1rem .95rem;flex:1;min-height:0;overflow-y:auto}
 #info[hidden]{display:none}
 #info-close{position:absolute;top:.35rem;right:.55rem;border:0;background:none;font-size:1.25rem;color:var(--ink-soft);cursor:pointer}
 .chip{display:inline-block;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;background:rgba(232,163,61,.25);
@@ -55,26 +74,38 @@ header>*{pointer-events:auto}
 .tagline{font-weight:600;color:#38633f}
 #info h3{margin:.7rem 0 .15rem;font-size:.85rem}
 #info p{margin:.1rem 0;font-size:.88rem;line-height:1.45}
-#tooltip{position:fixed;z-index:30;pointer-events:none;background:rgba(28,54,34,.92);color:#f2fbf0;font-size:.8rem;
+
+/* ----------------------------- centre stage ----------------------------- */
+#tooltip{position:absolute;z-index:30;pointer-events:none;background:rgba(28,54,34,.92);color:#f2fbf0;font-size:.8rem;
   padding:.3rem .6rem;border-radius:8px;transform:translate(12px,14px);white-space:nowrap}
-#labels{position:fixed;inset:0;z-index:10;pointer-events:none;overflow:hidden}
+#tooltip[hidden]{display:none}
+#labels{position:absolute;inset:0;z-index:10;pointer-events:none;overflow:hidden}
 .label{position:absolute;transform:translate(-50%,-130%);font-size:.68rem;font-weight:600;color:#1f4426;
   background:rgba(255,255,255,.78);border:1px solid var(--line);padding:.1rem .42rem;border-radius:999px;white-space:nowrap}
-footer{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;z-index:20;background:var(--paper);
+footer{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;z-index:20;background:var(--paper);
   border:1px solid var(--line);border-radius:999px;padding:.4rem 1rem;font-size:.8rem;color:var(--ink-soft);
-  box-shadow:var(--shadow);backdrop-filter:blur(8px);white-space:nowrap;max-width:94vw;text-overflow:ellipsis;overflow:hidden}
+  box-shadow:var(--shadow);backdrop-filter:blur(8px);white-space:nowrap;max-width:94%;text-overflow:ellipsis;overflow:hidden}
+
+/* ------------------------------ breakpoints ----------------------------- */
 @media (max-width:1023px){
-  #panel{width:284px}
+  .layout{grid-template-columns:272px 1fr 272px}
   .title-block p{display:none}
   #zone-nav button{font-size:.8rem;padding:.45rem .7rem}
 }
 @media (max-width:640px){
-  header{flex-wrap:wrap;padding:12px;gap:.6rem}
+  /* Single-column stack. The side asides become display:contents so their
+     children join the stack directly, in the order:
+     header -> stage (56vh) -> switcher (list) -> data (info) -> controls. */
+  .layout{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow-y:auto;overflow-x:hidden}
+  .col-left,.col-right{display:contents}
+  header{order:1;margin:12px 12px 0;width:calc(100% - 24px)}
   .title-block h1{font-size:1.25rem}
-  #zone-nav{margin-left:0;order:3;width:100%;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+  .title-block p{display:block}
+  .stage{order:2;flex:0 0 56vh;height:56vh;margin:12px 12px 0;width:calc(100% - 24px);border-radius:16px}
+  #item-list{order:3;display:block;flex:none;margin:12px 12px 0;width:calc(100% - 24px);max-height:38vh}
+  #info{order:4;flex:none;margin:12px 12px 0;width:calc(100% - 24px);max-height:44vh}
+  #zone-nav{order:5;margin:12px 12px 0;width:calc(100% - 24px);flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
   #zone-nav button{font-size:.76rem;padding:.42rem .6rem;white-space:nowrap;flex:none}
-  #panel{top:auto;left:12px;right:12px;bottom:12px;width:auto;max-height:44vh}
-  #item-list{display:block;flex:none;max-height:15vh}
-  #info{max-height:36vh}
+  .panel-tools{order:6;margin:12px;width:calc(100% - 24px)}
   footer{display:none}
 }

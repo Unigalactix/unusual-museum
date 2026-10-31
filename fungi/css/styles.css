@@ -128,3 +128,40 @@ footer .smallprint{font-size:.68rem;letter-spacing:.02em;margin-top:.1rem}
   #info{position:static;order:4;width:auto;max-height:none;margin:var(--mx) var(--mx) 0}
   footer{position:static;order:5;transform:none;max-width:none;margin:var(--mx)}
 }
+
+/* ================= THREE-SECTION LAYOUT =================
+   Desktop: LEFT data column (header + info) · CENTER stage ·
+   RIGHT switcher column (controls + search/list). */
+.layout{display:grid;grid-template-columns:340px minmax(0,1fr) 340px;height:100vh;height:100dvh}
+.col-left,.col-right{display:flex;flex-direction:column;gap:.7rem;padding:var(--mx);min-height:0;min-width:0;
+  background:rgba(255,255,255,.35)}
+body.night .col-left,body.night .col-right{background:rgba(0,0,0,.32)}
+.col-left{border-right:1px solid var(--line)}
+.col-right{border-left:1px solid var(--line)}
+.col-left header{position:static;flex-direction:column;max-width:none;gap:.55rem}
+.col-left #info{position:static;width:auto;max-height:none;flex:1;min-height:0;overflow-y:auto}
+.layout > #stage{position:relative;min-width:0;min-height:0}
+#stage footer{position:absolute;left:50%;bottom:var(--mx);max-width:min(680px,94%)}
+.col-right .controls{flex:none}
+.col-right #panel{position:static;width:auto;flex:1;min-height:0}
+
+/* ---------- tablet: 272px side columns ---------- */
+@media (max-width:1023px){
+  .layout{grid-template-columns:272px minmax(0,1fr) 272px}
+  .col-left,.col-right{padding:14px}
+  .col-left #info{width:auto}
+}
+
+/* ---------- mobile: single-column stack ----------
+   header -> stage (56vh) -> switcher -> data -> controls */
+@media (max-width:640px){
+  .layout{display:flex;flex-direction:column;height:auto}
+  .col-left,.col-right{display:contents}
+  .col-left header{order:1;margin:var(--mx) var(--mx) 0}
+  .layout > #stage{order:2;height:56vh;flex:none;margin:var(--mx) var(--mx) 0;border-radius:16px;overflow:hidden}
+  .col-right #panel{order:3;width:auto;margin:var(--mx) var(--mx) 0}
+  .col-left #info{order:4;width:auto;margin:var(--mx) var(--mx) 0;flex:none}
+  .col-right .controls{order:5;display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin:var(--mx) var(--mx) 0}
+  .col-right .controls .toggle{grid-column:1/-1}
+  #stage footer{position:absolute}
+}

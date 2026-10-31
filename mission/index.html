@@ -17,6 +17,8 @@
 </head>
 <body>
 
+<div class="layout">
+  <aside class="col-left">
 <header class="topbar">
   <div class="brand-block">
     <a class="back-link" href="../index.html">&larr; Unusual Museum</a>
@@ -24,16 +26,6 @@
     <p class="subtitle">Real Machines, Real Missions</p>
   </div>
 </header>
-
-<main id="stage" aria-label="Interactive 3D spacecraft gallery"></main>
-
-<div id="tooltip" role="status"></div>
-
-<aside class="list-panel" aria-label="Spacecraft list">
-  <p class="list-heading">The Fleet</p>
-  <ul id="craft-list" class="craft-list"></ul>
-  <p class="list-note">Every model is a real NASA 3D scan, served from NASA&rsquo;s public-domain 3D Resources collection.</p>
-</aside>
 
 <aside id="panel" class="panel" aria-live="polite">
   <p class="eyebrow" id="panel-eyebrow">Welcome aboard</p>
@@ -51,13 +43,26 @@
     <p class="fact-text" id="panel-fact">NASA publishes these models free for anyone to explore &mdash; the same files used by educators, filmmakers and museum builders around the world.</p>
   </div>
 </aside>
+  </aside>
 
+  <div class="stage-wrap">
+<main id="stage" aria-label="Interactive 3D spacecraft gallery"></main>
 <footer class="hint">Drag to orbit &middot; Scroll to zoom &middot; Click a spacecraft to visit it<br>Built by Rajesh Kodaganti &middot; Models: NASA 3D Resources (public domain)</footer>
+  </div>
+
+  <aside class="col-right">
+<aside class="list-panel" aria-label="Spacecraft list">
+  <p class="list-heading">The Fleet</p>
+  <ul id="craft-list" class="craft-list"></ul>
+  <p class="list-note">Every model is a real NASA 3D scan, served from NASA&rsquo;s public-domain 3D Resources collection.</p>
+</aside>
+  </aside>
+</div>
+
+<div id="tooltip" role="status"></div>
 
 <div id="loading" class="overlay">
   <div class="spinner" aria-hidden="true"></div>
-  <p>Launching MissionVerse&hellip;</p>
-</div>
 
 <div id="webgl-fail" class="overlay overlay-error" hidden>
   <p><strong>Mission control could not open the gallery.</strong><br>Your browser does not seem to support WebGL, which the 3D view needs. Try a recent version of Chrome, Edge, Firefox or Safari.</p>

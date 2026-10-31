@@ -32,55 +32,64 @@
   </div>
 </div>
 
-<header class="hud top">
-  <a class="back" href="../index.html">← Unusual Museum</a>
-  <div class="title-block">
-    <h1>The Abyss</h1>
-    <p class="subtitle">Deep-Sea Specimen Lab · Bathypelagic Collection</p>
-  </div>
-  <div class="depth-gauge" aria-hidden="true">
-    <span class="dg-label">DEPTH</span>
-    <span class="dg-value" id="depth-value">−1,842 m</span>
-  </div>
-</header>
+<div class="layout">
 
-<canvas id="scene"></canvas>
-<div id="labels"></div>
-<div id="tooltip" hidden></div>
+  <aside class="col-left">
+    <header class="hud top header-card">
+      <a class="back" href="../index.html">← Unusual Museum</a>
+      <div class="title-block">
+        <h1>The Abyss</h1>
+        <p class="subtitle">Deep-Sea Specimen Lab · Bathypelagic Collection</p>
+      </div>
+      <div class="depth-gauge" aria-hidden="true">
+        <span class="dg-label">DEPTH</span>
+        <span class="dg-value" id="depth-value">−1,842 m</span>
+      </div>
+    </header>
 
-<aside id="info-panel" class="panel" hidden>
-  <button id="panel-close" class="panel-close" aria-label="Close specimen file">×</button>
-  <p class="panel-kicker">Specimen <span id="p-index">01</span> · Live Tank</p>
-  <h2 id="p-name">—</h2>
-  <p class="p-sci" id="p-sci">—</p>
-  <p class="p-tag" id="p-tag">—</p>
-  <dl class="p-stats">
-    <div><dt>Depth range</dt><dd id="p-depth">—</dd></div>
-    <div><dt>Size</dt><dd id="p-size">—</dd></div>
-  </dl>
-  <p class="p-desc" id="p-desc">—</p>
-  <p class="p-fact" id="p-fact">—</p>
-</aside>
+    <aside id="info-panel" class="panel" hidden>
+      <button id="panel-close" class="panel-close" aria-label="Close specimen file">×</button>
+      <p class="panel-kicker">Specimen <span id="p-index">01</span> · Live Tank</p>
+      <h2 id="p-name">—</h2>
+      <p class="p-sci" id="p-sci">—</p>
+      <p class="p-tag" id="p-tag">—</p>
+      <dl class="p-stats">
+        <div><dt>Depth range</dt><dd id="p-depth">—</dd></div>
+        <div><dt>Size</dt><dd id="p-size">—</dd></div>
+      </dl>
+      <p class="p-desc" id="p-desc">—</p>
+      <p class="p-fact" id="p-fact">—</p>
+    </aside>
+  </aside>
 
-<nav class="hud bottom">
-  <div class="switcher" role="group" aria-label="Specimen switcher">
-    <button id="prev-btn" class="ctl" aria-label="Previous specimen">‹</button>
-    <button id="tank-0-btn" class="ctl spec-btn active">Specimen 01 · Anglerfish</button>
-    <button id="tank-1-btn" class="ctl spec-btn">Specimen 02 · Viperfish</button>
-    <button id="tank-2-btn" class="ctl spec-btn">Specimen 03 · Dumbo Octopus</button>
-    <button id="next-btn" class="ctl" aria-label="Next specimen">›</button>
-    <button id="both-btn" class="ctl">View all tanks</button>
-  </div>
-  <div class="lab-controls">
-    <button id="sonar-btn" class="ctl accent">⌖ Sonar pulse</button>
-    <label class="slider-wrap" for="glow-slider">
-      <span>Bioluminescence</span>
-      <input type="range" id="glow-slider" min="0" max="200" value="100">
-    </label>
-  </div>
-</nav>
+  <section class="stage" id="stage" aria-label="3D specimen stage">
+    <canvas id="scene"></canvas>
+    <div id="labels"></div>
+    <div id="tooltip" hidden></div>
+    <footer class="hint">Drag to orbit · Scroll to zoom · Click a tank to open its specimen file</footer>
+  </section>
 
-<footer class="hint">Drag to orbit · Scroll to zoom · Click a tank to open its specimen file</footer>
+  <aside class="col-right">
+    <nav class="hud bottom">
+      <div class="switcher" role="group" aria-label="Specimen switcher">
+        <button id="prev-btn" class="ctl" aria-label="Previous specimen">‹</button>
+        <button id="tank-0-btn" class="ctl spec-btn active">Specimen 01 · Anglerfish</button>
+        <button id="tank-1-btn" class="ctl spec-btn">Specimen 02 · Viperfish</button>
+        <button id="tank-2-btn" class="ctl spec-btn">Specimen 03 · Dumbo Octopus</button>
+        <button id="next-btn" class="ctl" aria-label="Next specimen">›</button>
+        <button id="both-btn" class="ctl">View all tanks</button>
+      </div>
+      <div class="lab-controls">
+        <button id="sonar-btn" class="ctl accent">⌖ Sonar pulse</button>
+        <label class="slider-wrap" for="glow-slider">
+          <span>Bioluminescence</span>
+          <input type="range" id="glow-slider" min="0" max="200" value="100">
+        </label>
+      </div>
+    </nav>
+  </aside>
+
+</div>
 
 <script type="module" src="js/main.js"></script>
 </body>

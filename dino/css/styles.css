@@ -1,19 +1,22 @@
 /* DinoVerse — layout first, theme second.
  *
- * This gallery follows the museum-wide layout system used across
- * The Unusual Museum:
- *   · CSS variables carry the page margins (--margin: 20px desktop,
- *     12px mobile) so every panel shares the same edges.
- *   · Desktop: header card top-left; explorer panel top-right, fixed
- *     320–360px wide, its top aligned with the header's top, tall as
- *     needed up to a max-height with internal scroll; info panel
- *     bottom-left with its left edge aligned to the header's, width
- *     capped so it can never slide under the explorer; the 3D subject
- *     is framed in the free space between them.
- *   · <=1023px: the same layout with narrower panels.
- *   · <=640px: single-column flow — compact header, then a 52–60vh
- *     canvas block, then full-width panels stacked under it; buttons
- *     in equal 2-column grids; no horizontal overflow, ever.
+ * Three-section layout:
+ *   · Desktop (>=1024px): .layout grid 340px / 1fr / 340px, full height.
+ *     LEFT  (.col-left)  = DATA — header card on top, info panel below
+ *                          filling the remaining height (internal scroll).
+ *     CENTER (#stage)    = THE ASSET — the 3D canvas fills the column;
+ *                          tooltip overlays it, hint sits at its bottom.
+ *     RIGHT (.col-right) = SWITCHER/OPTIONS — Dinosaur Explorer (search,
+ *                          Era/Diet chips, scrolling dinosaur list) plus
+ *                          the Prev/Next + View-whole-hall controls.
+ *     Side columns have a dark panel background and a 1px divider
+ *     against the stage.
+ *   · 641–1023px: same grid with 272px side columns.
+ *   · <=640px: single-column stack — header -> stage (56vh) ->
+ *     switcher/explorer -> data/info -> controls — full width, 12px
+ *     margins. (The side columns use display:contents on mobile so
+ *     their children can be ordered individually in the stack.)
+ *   · #loading / #webgl-fail stay outside the grid as fixed overlays.
  *
  * Theme: warm sandstone, bronze and amber — a fossil hall at golden hour.
  */
@@ -22,6 +25,7 @@
   --margin: 20px;
   --bg: #0b0806;
   --panel: rgba(22, 16, 11, 0.82);
+  --panel-solid: #16100b;
   --panel-border: rgba(224, 158, 74, 0.30);
   --text: #f3e9d8;
   --muted: #b3a189;
@@ -29,9 +33,6 @@
   --accent2: #8fb573;      /* fossil-leaf green */
   --gold: #d9a441;
   --radius: 16px;
-  --panel-w: 344px;        /* right explorer width (within 320–360) */
-  --info-w: 368px;         /* bottom-left info width */
-  --header-w: 336px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,16 +46,46 @@ body {
   overflow: hidden;
 }
 
-.page { display: contents; }
+/* ---------- three-section layout ---------- */
 
-#stage { position: fixed; inset: 0; z-index: 0; }
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr 340px;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+}
+
+.col-left,
+.col-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--margin);
+  padding: var(--margin);
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--panel-solid);
+}
+.col-left { border-right: 1px solid var(--panel-border); }
+.col-right { border-left: 1px solid var(--panel-border); }
+
+#stage {
+  position: relative;
+  z-index: 0;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
 #stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 
 /* ---------- shared panel chrome ---------- */
 
 .panel {
-  position: fixed;
+  position: relative;
   z-index: 10;
+  width: 100%;
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius);
@@ -63,13 +94,10 @@ body {
   box-shadow: 0 14px 44px rgba(0, 0, 0, 0.5);
 }
 
-/* ---------- header card (top-left) ---------- */
+/* ---------- header card (left column, top) ---------- */
 
 #site-header {
-  top: var(--margin);
-  left: var(--margin);
-  width: var(--header-w);
-  max-width: calc(100vw - var(--panel-w) - var(--margin) * 3);
+  flex: none;
   padding: 14px 20px 16px;
 }
 .back-link {
@@ -92,18 +120,16 @@ body {
 #site-header h1 .accent { color: var(--accent); }
 #site-header .subtitle { color: var(--muted); font-size: 0.87rem; margin-top: 5px; line-height: 1.45; }
 
-/* ---------- explorer (top-right, aligned with header top) ---------- */
+/* ---------- explorer (right column, fills height) ---------- */
 
 #explorer {
-  top: var(--margin);
-  right: var(--margin);
-  width: var(--panel-w);
-  max-height: calc(100vh - var(--margin) * 2);
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
-.explorer-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--panel-border); }
+.explorer-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--panel-border); flex: none; }
 .explorer-head h2 { font-family: Georgia, "Times New Roman", serif; font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; }
 #search {
   width: 100%;
@@ -130,7 +156,7 @@ body {
 .chip:hover { color: var(--text); }
 .chip.active { background: rgba(224, 154, 74, 0.22); color: var(--text); border-color: rgba(224, 154, 74, 0.6); }
 
-#dino-list { overflow-y: auto; padding: 8px 10px 14px; scrollbar-width: thin; scrollbar-color: rgba(224,154,74,.4) transparent; }
+#dino-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 8px 10px 14px; scrollbar-width: thin; scrollbar-color: rgba(224,154,74,.4) transparent; }
 #dino-list::-webkit-scrollbar { width: 6px; }
 #dino-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 3px; }
 .dino-group { margin-top: 10px; }
@@ -151,15 +177,16 @@ body {
 .dino-item .meta { margin-left: auto; color: var(--muted); font-size: 0.72rem; flex: none; }
 .empty-note { color: var(--muted); font-size: 0.85rem; padding: 8px 6px; }
 
-/* ---------- info panel (bottom-left, aligned with header) ---------- */
+/* ---------- controls (right column, below the explorer) ---------- */
+
+.controls-panel { flex: none; padding: 14px 16px; }
+.controls-panel .info-nav { margin-top: 0; }
+
+/* ---------- info panel (left column, fills remaining height) ---------- */
 
 #info-panel {
-  left: var(--margin);
-  bottom: calc(var(--margin) + 34px); /* leaves a clear lane for the hint bar */
-  width: var(--info-w);
-  /* never reach across into the explorer's column */
-  max-width: calc(100vw - var(--panel-w) - var(--margin) * 3);
-  max-height: 52vh;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   padding: 18px 20px 16px;
   scrollbar-width: thin;
@@ -223,13 +250,17 @@ body {
 .btn:active { transform: scale(0.97); }
 .btn-wide { flex-basis: 100%; }
 
-/* ---------- footer hint ---------- */
+/* ---------- stage hint (bottom of the center stage) ---------- */
 
 #hint {
-  position: fixed;
+  position: absolute;
   z-index: 9;
-  bottom: var(--margin);
-  left: var(--margin);
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  text-align: center;
   color: var(--muted);
   font-size: 0.8rem;
   background: rgba(8, 5, 3, 0.55);
@@ -237,7 +268,7 @@ body {
   border-radius: 999px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  max-width: calc(100vw - var(--margin) * 2);
+  pointer-events: none;
 }
 
 /* ---------- tooltip / overlays ---------- */
@@ -276,20 +307,16 @@ body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ---------- tablet: same system, narrower panels ---------- */
+/* ---------- tablet: same three sections, narrower side columns ---------- */
 
 @media (max-width: 1023px) {
-  :root {
-    --panel-w: 288px;
-    --info-w: 324px;
-    --header-w: 288px;
-  }
+  .layout { grid-template-columns: 272px 1fr 272px; }
+  .col-left, .col-right { padding: 16px; gap: 16px; }
   #site-header h1 { font-size: 1.6rem; }
   #site-header .subtitle { font-size: 0.8rem; }
-  #info-panel { max-height: 48vh; }
 }
 
-/* ---------- mobile: single-column flow ---------- */
+/* ---------- mobile: single-column stack ---------- */
 
 @media (max-width: 640px) {
   :root { --margin: 12px; }
@@ -297,67 +324,64 @@ body {
   html, body { height: auto; overflow-x: hidden; }
   body { overflow-y: auto; }
 
-  .page {
+  .layout {
     display: flex;
     flex-direction: column;
-    gap: var(--margin);
-    padding: var(--margin);
+    gap: 12px;
+    padding: 12px;
+    height: auto;
     min-height: 100vh;
   }
 
-  /* compact header */
+  /* Flatten the side columns so each child stacks in the order below. */
+  .col-left, .col-right { display: contents; }
+
+  /* 1 — compact header */
   #site-header {
-    position: static;
-    width: 100%;
-    max-width: none;
-    padding: 10px 14px 12px;
     order: 1;
+    width: 100%;
+    padding: 10px 14px 12px;
   }
   #site-header h1 { font-size: 1.35rem; display: inline-block; margin-left: 10px; }
   #site-header .subtitle { display: none; }
   .back-link { font-size: 0.72rem; }
 
-  /* unobstructed canvas block */
+  /* 2 — unobstructed canvas block */
   #stage {
-    position: relative;
-    inset: auto;
     order: 2;
     width: 100%;
     height: 56vh;
     min-height: 320px;
     border-radius: var(--radius);
-    overflow: hidden;
     border: 1px solid var(--panel-border);
     flex: none;
   }
+  #hint { bottom: 10px; }
 
-  /* panels flow full-width beneath the canvas */
+  /* 3 — switcher / explorer */
   #explorer {
-    position: static;
     order: 3;
     width: 100%;
     max-height: 46vh;
+    flex: none;
   }
+
+  /* 4 — data / info */
   #info-panel {
-    position: static;
     order: 4;
     width: 100%;
-    max-width: none;
     max-height: none;
     overflow-y: visible;
+    flex: none;
   }
   #info-panel.closed { display: none; }
+
+  /* 5 — controls */
+  .controls-panel { order: 5; width: 100%; }
 
   /* equal 2-column button grid */
   .info-nav { display: grid; grid-template-columns: 1fr 1fr; }
   .btn-wide { grid-column: 1 / -1; }
-
-  #hint {
-    position: static;
-    order: 5;
-    text-align: center;
-    max-width: none;
-  }
 }
 
 /* The fail overlay must obey its hidden attribute (author display rules would otherwise override it) */

@@ -481,10 +481,8 @@ function select(i, fly) {
   updatePanel();
   if (fly) {
     const { craft, rig } = rigs[i];
-    const wide = window.innerWidth > 1023;
-    // aim a touch right of the craft so it sits left-of-centre, clear of the fleet panel
+    // three-section layout: the stage is its own column — target the craft dead-centre
     const tgt = rig.position.clone();
-    if (wide) tgt.x += craft.targetSize * 0.55;
     const dir = camera.position.clone().sub(controls.target).normalize();
     dir.y = Math.max(dir.y, 0.25);
     dir.normalize();
@@ -500,9 +498,7 @@ const pointer = new THREE.Vector2();
 let downX = 0, downY = 0;
 
 function castAt(x, y) {
-  pointer.x = (x / window.innerWidth) * 2 - 1;
-  pointer.y = -(y / window.innerHeight) * 2 + 1;
-  // stage may be an inset block on mobile; use its rect instead of the window
+  // pointer NDC from the canvas rect (the stage column), never the window
   const rect = renderer.domElement.getBoundingClientRect();
   pointer.x = ((x - rect.left) / rect.width) * 2 - 1;
   pointer.y = -((y - rect.top) / rect.height) * 2 + 1;

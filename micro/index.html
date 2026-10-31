@@ -19,26 +19,8 @@
 </script>
 </head>
 <body>
-  <canvas id="scene" aria-label="Interactive 3D chamber of microbes drifting in a drop of pond water"></canvas>
-
-  <div id="labels" aria-hidden="true"></div>
-  <div id="tooltip" aria-hidden="true"></div>
-
-  <div id="loading" role="status">
-    <div class="loader-ring"></div>
-    <p class="loader-title">MicroVerse</p>
-    <p class="loader-sub">Focusing the microscope…</p>
-  </div>
-
-  <div id="webgl-fail" hidden>
-    <div class="fail-card">
-      <h2>WebGL is not available</h2>
-      <p>MicroVerse needs WebGL to render the 3D chamber. Please try a modern browser
-         with hardware acceleration enabled.</p>
-      <p><a href="../index.html" style="color:inherit">← Back to The Unusual Museum</a></p>
-    </div>
-  </div>
-
+  <div class="layout">
+    <aside class="col-left">
   <header class="panel glass" id="site-header">
     <p class="byline"><a href="../index.html" style="color:inherit">← Unusual Museum</a></p>
     <h1><span class="logo-dot"></span>MicroVerse</h1>
@@ -46,6 +28,25 @@
     <p class="byline">Built by Rajesh Kodaganti</p>
   </header>
 
+  <section class="panel glass" id="info-panel" aria-live="polite">
+    <p class="info-eyebrow">Now viewing</p>
+    <h2 id="info-name">A drop of pond water</h2>
+    <p id="info-meta">Eight microbes · one drop</p>
+    <p id="info-tagline">A whole ecosystem, smaller than a pinhead.</p>
+    <p id="info-desc">Everything in this chamber is real: viruses that hunt bacteria, a bacterium that swims with a rotary motor, the toughest animal known, and the yeast that bakes bread. They drift together here at similar sizes so you can compare them — the true sizes are listed for each one. Click any microbe in the water, or pick one from the list, to take a closer look.</p>
+    <p id="info-fact-wrap"><span class="fact-label">Did you know?</span> <span id="info-fact">A single drop of pond water can hold thousands of micro-organisms — and most of them, like most of these eight, are completely harmless to us.</span></p>
+  </section>
+    </aside>
+
+    <main id="stage" aria-label="Interactive 3D chamber of microbes">
+<canvas id="scene" aria-label="Interactive 3D chamber of microbes drifting in a drop of pond water"></canvas>
+
+<div id="labels" aria-hidden="true"></div>
+
+  <footer id="hint-bar">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click a microbe</footer>
+    </main>
+
+    <aside class="col-right">
   <aside class="panel glass" id="sidebar" aria-label="Microbe explorer">
     <div class="sidebar-head">
       <h2>Meet the microbes</h2>
@@ -67,17 +68,25 @@
       </div>
     </div>
   </aside>
+    </aside>
+  </div>
 
-  <section class="panel glass" id="info-panel" aria-live="polite">
-    <p class="info-eyebrow">Now viewing</p>
-    <h2 id="info-name">A drop of pond water</h2>
-    <p id="info-meta">Eight microbes · one drop</p>
-    <p id="info-tagline">A whole ecosystem, smaller than a pinhead.</p>
-    <p id="info-desc">Everything in this chamber is real: viruses that hunt bacteria, a bacterium that swims with a rotary motor, the toughest animal known, and the yeast that bakes bread. They drift together here at similar sizes so you can compare them — the true sizes are listed for each one. Click any microbe in the water, or pick one from the list, to take a closer look.</p>
-    <p id="info-fact-wrap"><span class="fact-label">Did you know?</span> <span id="info-fact">A single drop of pond water can hold thousands of micro-organisms — and most of them, like most of these eight, are completely harmless to us.</span></p>
-  </section>
+<div id="tooltip" aria-hidden="true"></div>
 
-  <footer id="hint-bar">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click a microbe</footer>
+  <div id="loading" role="status">
+    <div class="loader-ring"></div>
+    <p class="loader-title">MicroVerse</p>
+    <p class="loader-sub">Focusing the microscope…</p>
+  </div>
+
+  <div id="webgl-fail" hidden>
+    <div class="fail-card">
+      <h2>WebGL is not available</h2>
+      <p>MicroVerse needs WebGL to render the 3D chamber. Please try a modern browser
+         with hardware acceleration enabled.</p>
+      <p><a href="../index.html" style="color:inherit">← Back to The Unusual Museum</a></p>
+    </div>
+  </div>
 
   <script type="module" src="js/main.js"></script>
 </body>

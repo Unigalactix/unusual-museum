@@ -533,7 +533,7 @@ function homeView() {
   const h = stageEl.clientHeight || window.innerHeight;
   const aspect = w / h;
   const dist = aspect >= 1.5 ? 15.5 : aspect >= 1.15 ? 18.5 : aspect >= 0.8 ? 23 : 27;
-  const tx = window.innerWidth > 1023 ? -1.5 : window.innerWidth > 640 ? -1.0 : 0;
+  const tx = 0; // three-section layout: vault row centred in the stage column
   return { pos: new THREE.Vector3(tx, 4.9, dist), tgt: new THREE.Vector3(tx, 1.7, 0) };
 }
 
@@ -614,7 +614,7 @@ function selectGem(i, fly = true) {
   showPanel(ex.data);
   refreshChrome();
   if (fly) {
-    const off = window.innerWidth > 1023 ? -0.7 : 0;
+    const off = 0; // three-section layout: selected gem centred in the stage
     flyTo(
       new THREE.Vector3(ex.x + off, 3.1, 6.9),
       new THREE.Vector3(ex.x + off * 0.5, 1.95, 0)

@@ -10,6 +10,15 @@ import { PRODUCE, ZONES } from './produce.js';
 
 /* ---------------------------------- setup --------------------------------- */
 const canvas = document.getElementById('scene');
+const stage = document.getElementById('stage');
+// Stage-relative size: the canvas is confined to the centre .stage column,
+// so all sizing / picking / projection math uses the stage element's box,
+// never the window.
+function stageSize() {
+  const r = (stage || canvas).getBoundingClientRect();
+  return { width: Math.max(1, r.width), height: Math.max(1, r.height) };
+}
+const initialSize = stageSize();
 let renderer;
 try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -19,7 +28,7 @@ try {
   throw e;
 }
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(innerWidth, innerHeight);
+renderer.setSize(initialSize.width, initialSize.height);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -33,7 +42,7 @@ scene.fog = new THREE.Fog(0xcfead2, 55, 130);
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 
-const camera = new THREE.PerspectiveCamera(46, innerWidth / innerHeight, 0.1, 400);
+const camera = new THREE.PerspectiveCamera(46, initialSize.width / initialSize.height, 0.1, 400);
 camera.position.set(0, 17, 34);
 
 const controls = new OrbitControls(camera, canvas);
@@ -662,8 +671,9 @@ function select(id, fly = true) {
 document.getElementById('info-close').addEventListener('click', () => select(null));
 
 function pickAt(cx, cy) {
-  pointer.x = (cx / innerWidth) * 2 - 1;
-  pointer.y = -(cy / innerHeight) * 2 + 1;
+  const r = canvas.getBoundingClientRect();
+  pointer.x = ((cx - r.left) / Math.max(1, r.width)) * 2 - 1;
+  pointer.y = -((cy - r.top) / Math.max(1, r.height)) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects(pickables, false);
   return hits.length ? hits[0].object.userData.produceId : null;
@@ -677,7 +687,8 @@ canvas.addEventListener('pointermove', ev => {
     const d = registry.get(id).data;
     tooltip.hidden = false;
     tooltip.textContent = d.name + (d.altName ? ` · ${d.altName}` : '');
-    tooltip.style.left = ev.clientX + 'px'; tooltip.style.top = ev.clientY + 'px';
+    const stageRect = canvas.getBoundingClientRect();
+    tooltip.style.left = (ev.clientX - stageRect.left) + 'px'; tooltip.style.top = (ev.clientY - stageRect.top) + 'px';
   } else tooltip.hidden = true;
 });
 canvas.addEventListener('pointerdown', ev => { downAt = [ev.clientX, ev.clientY]; });
@@ -736,14 +747,15 @@ const clock = new THREE.Clock();
 const projV = new THREE.Vector3();
 function updateLabels() {
   const show = labelsToggle.checked;
+  const { width: stageW, height: stageH } = stageSize();
   for (const rec of registry.values()) {
     if (!show) { rec.labelEl.style.display = 'none'; continue; }
     rec.group.getWorldPosition(projV); projV.y += rec.labelY;
     projV.project(camera);
     if (projV.z > 1 || projV.z < -1) { rec.labelEl.style.display = 'none'; continue; }
     rec.labelEl.style.display = 'block';
-    rec.labelEl.style.left = ((projV.x * 0.5 + 0.5) * innerWidth) + 'px';
-    rec.labelEl.style.top = ((-projV.y * 0.5 + 0.5) * innerHeight) + 'px';
+    rec.labelEl.style.left = ((projV.x * 0.5 + 0.5) * stageW) + 'px';
+    rec.labelEl.style.top = ((-projV.y * 0.5 + 0.5) * stageH) + 'px';
     rec.labelEl.style.opacity = selected && selected !== rec.data.id ? 0.45 : 1;
   }
 }
@@ -780,8 +792,11 @@ requestAnimationFrame(() => {
   setTimeout(() => l.style.display = 'none', 650);
 });
 
-addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
+function onStageResize() {
+  const { width, height } = stageSize();
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
+  renderer.setSize(width, height);
+}
+addEventListener('resize', onStageResize);
+if (typeof ResizeObserver !== 'undefined' && stage) new ResizeObserver(onStageResize).observe(stage);

@@ -32,66 +32,77 @@
   </div>
 </div>
 
-<header class="hud top">
-  <a class="back" href="../index.html">← Unusual Museum</a>
-  <div class="title-block">
-    <h1>Cosmos</h1>
-    <p class="subtitle">Interactive 3D Solar System &amp; Known Stars</p>
-  </div>
-  <div class="scale-note" aria-hidden="true">
-    <span class="sn-label">SCALE</span>
-    <span class="sn-value">Stylised — sizes &amp; distances compressed so everything fits on one screen</span>
-  </div>
-</header>
-
-<canvas id="scene"></canvas>
 <div id="labels"></div>
 <div id="tooltip" hidden></div>
 
-<!-- Explorer panel: bodies & stars lists -->
-<aside id="explorer" class="explorer">
-  <div class="tabs" role="tablist" aria-label="Catalogue">
-    <button id="tab-bodies" class="tab active" role="tab">Solar System</button>
-    <button id="tab-stars" class="tab" role="tab">Known Stars</button>
-  </div>
-  <input id="search" type="search" placeholder="Search…" aria-label="Search the catalogue">
-  <div id="body-list" class="list"></div>
-  <div id="star-list" class="list" hidden></div>
-  <button id="back-to-system" class="wide-btn" hidden>← Back to Solar System</button>
-</aside>
+<div class="layout">
+  <!-- LEFT: data — header card + selected-body detail -->
+  <aside class="col-left">
+    <header class="hud top">
+      <a class="back" href="../index.html">← Unusual Museum</a>
+      <div class="title-block">
+        <h1>Cosmos</h1>
+        <p class="subtitle">Interactive 3D Solar System &amp; Known Stars</p>
+      </div>
+      <div class="scale-note" aria-hidden="true">
+        <span class="sn-label">SCALE</span>
+        <span class="sn-value">Stylised — sizes &amp; distances compressed so everything fits on one screen</span>
+      </div>
+    </header>
 
-<!-- Info panel -->
-<aside id="info-panel" class="panel" hidden>
-  <button id="panel-close" class="panel-close" aria-label="Close details">×</button>
-  <p class="panel-kicker" id="p-kicker">Planet</p>
-  <h2 id="p-name">—</h2>
-  <p class="p-tag" id="p-tag">—</p>
-  <dl class="p-stats" id="p-stats"></dl>
-  <p class="p-desc" id="p-desc">—</p>
-  <p class="p-fact" id="p-fact">—</p>
-  <button id="release-btn" class="wide-btn">Release camera / Reset view</button>
-</aside>
+    <!-- Info panel -->
+    <aside id="info-panel" class="panel" hidden>
+      <button id="panel-close" class="panel-close" aria-label="Close details">×</button>
+      <p class="panel-kicker" id="p-kicker">Planet</p>
+      <h2 id="p-name">—</h2>
+      <p class="p-tag" id="p-tag">—</p>
+      <dl class="p-stats" id="p-stats"></dl>
+      <p class="p-desc" id="p-desc">—</p>
+      <p class="p-fact" id="p-fact">—</p>
+      <button id="release-btn" class="wide-btn">Release camera / Reset view</button>
+    </aside>
+  </aside>
 
-<!-- Bottom controls -->
-<nav class="hud bottom">
-  <div class="controls-left">
-    <label class="slider-wrap" for="speed-slider">
-      <span>Orbit speed</span>
-      <input type="range" id="speed-slider" min="0" max="300" value="100">
-    </label>
-    <button id="pause-btn" class="ctl">⏸ Pause orbits</button>
-  </div>
-  <div class="controls-right">
-    <button id="labels-btn" class="ctl active">Labels</button>
-    <button id="orbits-btn" class="ctl active">Orbit lines</button>
-    <div class="segmented" role="group" aria-label="Size mode">
-      <button id="size-visible" class="seg active">Visible sizes</button>
-      <button id="size-real" class="seg">More realistic</button>
-    </div>
-  </div>
-</nav>
+  <!-- CENTER: the 3D stage -->
+  <section class="col-center" id="stage">
+    <canvas id="scene"></canvas>
+    <footer class="hint">Drag to orbit · Scroll to zoom · Click a planet to follow it · Pick a star to inspect it up close</footer>
+  </section>
 
-<footer class="hint">Drag to orbit · Scroll to zoom · Click a planet to follow it · Pick a star to inspect it up close</footer>
+  <!-- RIGHT: switcher + options -->
+  <aside class="col-right">
+    <!-- Explorer panel: bodies & stars lists -->
+    <aside id="explorer" class="explorer">
+      <div class="tabs" role="tablist" aria-label="Catalogue">
+        <button id="tab-bodies" class="tab active" role="tab">Solar System</button>
+        <button id="tab-stars" class="tab" role="tab">Known Stars</button>
+      </div>
+      <input id="search" type="search" placeholder="Search…" aria-label="Search the catalogue">
+      <div id="body-list" class="list"></div>
+      <div id="star-list" class="list" hidden></div>
+      <button id="back-to-system" class="wide-btn" hidden>← Back to Solar System</button>
+    </aside>
+
+    <!-- Controls -->
+    <nav class="hud bottom">
+      <div class="controls-left">
+        <label class="slider-wrap" for="speed-slider">
+          <span>Orbit speed</span>
+          <input type="range" id="speed-slider" min="0" max="300" value="100">
+        </label>
+        <button id="pause-btn" class="ctl">⏸ Pause orbits</button>
+      </div>
+      <div class="controls-right">
+        <button id="labels-btn" class="ctl active">Labels</button>
+        <button id="orbits-btn" class="ctl active">Orbit lines</button>
+        <div class="segmented" role="group" aria-label="Size mode">
+          <button id="size-visible" class="seg active">Visible sizes</button>
+          <button id="size-real" class="seg">More realistic</button>
+        </div>
+      </div>
+    </nav>
+  </aside>
+</div>
 
 <script type="module" src="js/main.js"></script>
 </body>

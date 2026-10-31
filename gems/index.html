@@ -17,6 +17,8 @@
 </head>
 <body>
 
+<div class="layout">
+  <aside class="col-left">
 <header class="topbar">
   <div class="brand-block">
     <a class="back-link" href="../index.html">&larr; Unusual Museum</a>
@@ -24,23 +26,6 @@
     <p class="subtitle">The Jeweller's Vault</p>
   </div>
 </header>
-
-<main id="stage" aria-label="Interactive 3D gem vault"></main>
-
-<div id="tooltip" role="status"></div>
-
-<aside id="list-panel" class="list-panel" aria-label="Gemstones in the vault">
-  <h2 class="list-title">The Vault</h2>
-  <p class="list-sub">Eight stones on velvet — pick one to bring it under the lamp.</p>
-  <div id="gem-list" class="gem-list"></div>
-  <div class="vault-controls">
-    <label class="slider-row" for="sparkle-slider">
-      <span>Sparkle</span>
-      <input id="sparkle-slider" type="range" min="0" max="100" value="70">
-    </label>
-    <button id="rotate-toggle" class="btn" type="button" aria-pressed="true" title="Turn the stones on their cushions">Rotation: On</button>
-  </div>
-</aside>
 
 <aside id="panel" class="panel" aria-live="polite">
   <button id="panel-close" class="panel-close" type="button" aria-label="Close gem panel">&times;</button>
@@ -59,6 +44,26 @@
     <p class="fact-text" id="panel-fact">Hardness is not toughness: a diamond is the hardest natural material, yet a sharp blow along its cleavage plane can split it. Jewellers have ruined fortunes with one careless tap.</p>
   </div>
 </aside>
+  </aside>
+
+  <div class="stage-wrap">
+<main id="stage" aria-label="Interactive 3D gem vault"></main>
+<footer class="hint">Drag to orbit &middot; Scroll to zoom &middot; Click a gem to inspect it &middot; &larr; &rarr; keys change gem &middot; Built by Rajesh Kodaganti</footer>
+  </div>
+
+  <aside class="col-right">
+<aside id="list-panel" class="list-panel" aria-label="Gemstones in the vault">
+  <h2 class="list-title">The Vault</h2>
+  <p class="list-sub">Eight stones on velvet — pick one to bring it under the lamp.</p>
+  <div id="gem-list" class="gem-list"></div>
+  <div class="vault-controls">
+    <label class="slider-row" for="sparkle-slider">
+      <span>Sparkle</span>
+      <input id="sparkle-slider" type="range" min="0" max="100" value="70">
+    </label>
+    <button id="rotate-toggle" class="btn" type="button" aria-pressed="true" title="Turn the stones on their cushions">Rotation: On</button>
+  </div>
+</aside>
 
 <nav class="exhibit-nav" aria-label="Gem navigation">
   <p id="now-viewing">The Whole Vault</p>
@@ -69,13 +74,13 @@
   </div>
   <button id="hall-btn" class="btn btn-small" type="button">View whole vault</button>
 </nav>
+  </aside>
+</div>
 
-<footer class="hint">Drag to orbit &middot; Scroll to zoom &middot; Click a gem to inspect it &middot; &larr; &rarr; keys change gem &middot; Built by Rajesh Kodaganti</footer>
+<div id="tooltip" role="status"></div>
 
 <div id="loading" class="overlay">
   <div class="spinner" aria-hidden="true"></div>
-  <p>Unlocking the vault&hellip;</p>
-</div>
 
 <div id="webgl-fail" class="overlay overlay-error" hidden>
   <p><strong>The vault could not open.</strong><br>Your browser does not seem to support WebGL, which the 3D vault needs. Try a recent version of Chrome, Edge, Firefox or Safari.</p>

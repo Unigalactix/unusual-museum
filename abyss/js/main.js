@@ -9,6 +9,16 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { SPECIMENS } from "./specimens.js";
 
 const canvas = document.getElementById("scene");
+const stage = document.getElementById("stage");
+// The canvas is confined to the centre stage column: all sizing and
+// picking math is relative to the stage element, never the window.
+function stageSize() {
+  const rect = stage.getBoundingClientRect();
+  return {
+    width: Math.max(1, rect.width || stage.clientWidth || window.innerWidth),
+    height: Math.max(1, rect.height || stage.clientHeight || window.innerHeight),
+  };
+}
 let renderer;
 try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -18,7 +28,10 @@ try {
   throw e;
 }
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
+{
+  const { width, height } = stageSize();
+  renderer.setSize(width, height, false);
+}
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 // Intentionally dark scene: keep exposure near the original value, do not brighten.
 renderer.toneMappingExposure = 1.05;
@@ -42,7 +55,7 @@ function withEnv(mat, intensity = 0.35) {
   return mat;
 }
 
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+const camera = new THREE.PerspectiveCamera(50, stageSize().width / stageSize().height, 0.1, 200);
 camera.position.set(0, 1.6, 11.5);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -574,8 +587,9 @@ const pickTargets = [];
 tanks.forEach((t, i) => { pickTargets.push(t.glass); t.specimen.traverse((o) => { if (o.isMesh) pickTargets.push(o); }); });
 
 function tankFromEvent(e) {
-  pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  const rect = stage.getBoundingClientRect();
+  pointer.x = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+  pointer.y = -((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects(pickTargets, false);
   return hits.length ? hits[0].object.userData.tankIndex : -1;
@@ -585,8 +599,9 @@ canvas.addEventListener("pointermove", (e) => {
   if (hoveredTank >= 0) {
     tooltip.hidden = false;
     tooltip.textContent = `Specimen ${SPECIMENS[hoveredTank].index} — ${SPECIMENS[hoveredTank].name}`;
-    tooltip.style.left = (e.clientX + 14) + "px";
-    tooltip.style.top = (e.clientY + 12) + "px";
+    const stageRect = stage.getBoundingClientRect();
+    tooltip.style.left = (e.clientX - stageRect.left + 14) + "px";
+    tooltip.style.top = (e.clientY - stageRect.top + 12) + "px";
     canvas.style.cursor = "pointer";
   } else {
     tooltip.hidden = true;
@@ -662,8 +677,8 @@ function updateLabels() {
     const elx = labelEls[i];
     if (projV.z > 1 || projV.z < -1) { elx.style.display = "none"; return; }
     elx.style.display = "block";
-    elx.style.left = ((projV.x * 0.5 + 0.5) * window.innerWidth) + "px";
-    elx.style.top = ((-projV.y * 0.5 + 0.5) * window.innerHeight) + "px";
+    elx.style.left = ((projV.x * 0.5 + 0.5) * stage.clientWidth) + "px";
+    elx.style.top = ((-projV.y * 0.5 + 0.5) * stage.clientHeight) + "px";
     elx.style.opacity = selected === -1 || selected === i ? "0.95" : "0.35";
   });
 }
@@ -762,11 +777,16 @@ function animate() {
   updateLabels();
 }
 
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+function resizeRenderer() {
+  const { width, height } = stageSize();
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+  renderer.setSize(width, height, false);
+}
+if (typeof ResizeObserver !== "undefined") {
+  new ResizeObserver(() => resizeRenderer()).observe(stage);
+}
+window.addEventListener("resize", resizeRenderer);
 
 animate();
 requestAnimationFrame(() => document.getElementById("loading").classList.add("done"));

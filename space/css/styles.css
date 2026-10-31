@@ -7,6 +7,7 @@
   --accent2: #7db4ff;
   --glass: rgba(7, 11, 26, 0.8);
   --line: rgba(140, 165, 255, 0.22);
+  --col-bg: #04061a;
 }
 
 * { box-sizing: border-box; }
@@ -17,7 +18,26 @@ html, body {
   font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
-#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+/* ---------- three-column layout ----------
+   LEFT data · CENTER stage · RIGHT switcher/options.
+   The side columns are real layout (not overlays), so the canvas
+   fills the centre column only and the system sits dead-centre. */
+.layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr) 340px;
+  height: 100vh;
+  height: 100dvh;
+}
+.col-left, .col-right {
+  display: flex; flex-direction: column; gap: 16px;
+  padding: 20px; min-height: 0; overflow: hidden;
+  background: var(--col-bg);
+}
+.col-left { border-right: 1px solid var(--line); }
+.col-right { border-left: 1px solid var(--line); }
+.col-center { position: relative; min-width: 0; overflow: hidden; }
+
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 /* ---------- loading & failure ---------- */
 #loading {
@@ -36,10 +56,13 @@ html, body {
 .fail-card { max-width: 420px; padding: 2rem; border: 1px solid var(--line); border-radius: 14px; background: var(--glass); text-align: center; }
 .fail-card a { color: var(--accent); }
 
-/* ---------- HUD frame ---------- */
-.hud { position: fixed; left: 0; right: 0; z-index: 20; pointer-events: none; }
-.hud.top { top: 0; display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px; }
-.hud > * { pointer-events: auto; }
+/* ---------- header card (left column) ---------- */
+.hud.top {
+  flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
+  padding: 16px 18px; backdrop-filter: blur(12px);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.6);
+}
 
 .back {
   color: var(--dim); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.08em;
@@ -48,18 +71,18 @@ html, body {
 }
 .back:hover { color: var(--accent); border-color: var(--accent); }
 
-.title-block { text-align: center; padding: 0 10px; }
+.title-block { text-align: left; }
 .title-block h1 {
-  margin: 0; font-size: clamp(1.8rem, 4.5vw, 3rem); font-weight: 200; letter-spacing: 0.42em;
-  text-transform: uppercase; text-indent: 0.42em;
+  margin: 0; font-size: clamp(1.8rem, 2.6vw, 2.4rem); font-weight: 200; letter-spacing: 0.42em;
+  text-transform: uppercase; text-indent: 0.05em;
   background: linear-gradient(180deg, #fff8e6, #ffd166 60%, #c77f2a);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .subtitle { margin: 4px 0 0; color: var(--dim); font-size: 0.78rem; letter-spacing: 0.3em; text-transform: uppercase; }
 
 .scale-note {
-  text-align: right; border: 1px solid var(--line); border-radius: 10px; padding: 7px 12px;
-  background: var(--glass); backdrop-filter: blur(6px); max-width: 240px;
+  text-align: left; border: 1px solid var(--line); border-radius: 10px; padding: 7px 12px;
+  background: rgba(0,0,10,0.35); backdrop-filter: blur(6px);
 }
 .sn-label { display: block; font-size: 0.6rem; letter-spacing: 0.3em; color: var(--dim); }
 .sn-value { font-size: 0.72rem; color: var(--accent); line-height: 1.35; display: block; margin-top: 2px; }
@@ -76,27 +99,27 @@ html, body {
   background: var(--glass); border: 1px solid var(--line); font-size: 0.8rem; color: var(--ink);
   backdrop-filter: blur(6px);
 }
+#tooltip[hidden] { display: none; }
 
-/* ---------- explorer (left list panel) ---------- */
+/* ---------- explorer (right column switcher) ---------- */
 .explorer {
-  position: fixed; z-index: 24; top: 104px; left: 20px; width: 260px;
-  max-height: calc(100vh - 230px); display: flex; flex-direction: column;
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
   background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
   padding: 14px; backdrop-filter: blur(12px);
   box-shadow: 0 24px 70px rgba(0,0,0,0.6);
 }
-.tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 10px; flex: none; }
 .tab {
   flex: 1; cursor: pointer; color: var(--dim); background: rgba(125,180,255,0.06);
   border: 1px solid var(--line); border-radius: 10px; padding: 8px 4px; font-size: 0.78rem; letter-spacing: 0.03em;
 }
 .tab.active { color: #0a0f22; background: var(--accent); border-color: var(--accent); font-weight: 600; }
 #search {
-  width: 100%; padding: 8px 11px; margin-bottom: 10px; border-radius: 10px;
+  flex: none; width: 100%; padding: 8px 11px; margin-bottom: 10px; border-radius: 10px;
   border: 1px solid var(--line); background: rgba(0,0,10,0.5); color: var(--ink); font-size: 0.85rem;
 }
 #search::placeholder { color: var(--dim); }
-.list { overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 2px; }
+.list { overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 2px; flex: 1; min-height: 0; }
 .list[hidden] { display: none; }
 .list::-webkit-scrollbar { width: 6px; }
 .list::-webkit-scrollbar-thumb { background: rgba(140,165,255,0.3); border-radius: 3px; }
@@ -113,14 +136,14 @@ html, body {
 .wide-btn {
   margin-top: 10px; width: 100%; cursor: pointer; color: var(--accent);
   background: rgba(255,209,102,0.08); border: 1px solid rgba(255,209,102,0.45);
-  border-radius: 10px; padding: 9px 12px; font-size: 0.82rem;
+  border-radius: 10px; padding: 9px 12px; font-size: 0.82rem; flex: none;
 }
+.wide-btn[hidden] { display: none; }
 .wide-btn:hover { background: rgba(255,209,102,0.16); }
 
-/* ---------- info panel ---------- */
+/* ---------- info panel (left column, under header) ---------- */
 .panel {
-  position: fixed; z-index: 25; top: 104px; right: 20px; width: min(360px, calc(100vw - 40px));
-  max-height: calc(100vh - 230px); overflow-y: auto;
+  position: relative; flex: 1; min-height: 0; overflow-y: auto;
   background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
   padding: 22px 24px 20px; backdrop-filter: blur(12px);
   box-shadow: 0 24px 70px rgba(0,0,0,0.65);
@@ -128,6 +151,8 @@ html, body {
 }
 @keyframes rise { from { opacity: 0; transform: translateY(14px);} to { opacity: 1; transform: none;} }
 .panel[hidden] { display: none; }
+.panel::-webkit-scrollbar { width: 6px; }
+.panel::-webkit-scrollbar-thumb { background: rgba(140,165,255,0.3); border-radius: 3px; }
 .panel-close { position: absolute; top: 10px; right: 14px; background: none; border: none; color: var(--dim); font-size: 1.5rem; cursor: pointer; line-height: 1; }
 .panel-close:hover { color: var(--accent); }
 .panel-kicker { margin: 0 0 6px; font-size: 0.66rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); }
@@ -141,14 +166,16 @@ html, body {
 .p-fact { font-size: 0.88rem; line-height: 1.6; color: #a8d8b8; margin: 0; border-top: 1px dashed var(--line); padding-top: 12px; }
 .panel .wide-btn { margin-top: 14px; }
 
-/* ---------- bottom controls ---------- */
+/* ---------- controls (right column, under the list) ---------- */
 .hud.bottom {
-  bottom: 34px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;
-  align-items: center; padding: 0 20px;
+  flex: none; display: flex; flex-direction: column; gap: 10px;
+  background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
+  padding: 14px; backdrop-filter: blur(12px);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.6);
 }
 .controls-left, .controls-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .ctl {
-  pointer-events: auto; cursor: pointer; color: var(--ink); background: var(--glass);
+  cursor: pointer; color: var(--ink); background: rgba(0,0,10,0.35);
   border: 1px solid var(--line); border-radius: 999px; padding: 9px 15px; font-size: 0.82rem;
   backdrop-filter: blur(8px); transition: border-color .2s, color .2s;
 }
@@ -156,53 +183,53 @@ html, body {
 .ctl.active { background: rgba(255,209,102,0.14); border-color: var(--accent); }
 .slider-wrap {
   display: flex; align-items: center; gap: 9px; color: var(--dim); font-size: 0.78rem; letter-spacing: 0.08em;
-  border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; background: var(--glass); backdrop-filter: blur(8px);
+  border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; background: rgba(0,0,10,0.35); backdrop-filter: blur(8px);
+  flex: 1;
 }
-input[type="range"] { accent-color: var(--accent); width: 110px; }
-.segmented { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--glass); backdrop-filter: blur(8px); }
-.seg { cursor: pointer; border: none; background: transparent; color: var(--dim); padding: 9px 13px; font-size: 0.8rem; }
+input[type="range"] { accent-color: var(--accent); width: 110px; flex: 1; }
+.segmented { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: rgba(0,0,10,0.35); backdrop-filter: blur(8px); flex: 1; }
+.seg { cursor: pointer; border: none; background: transparent; color: var(--dim); padding: 9px 13px; font-size: 0.8rem; flex: 1; white-space: nowrap; }
 .seg.active { background: rgba(255,209,102,0.16); color: #ffe9ad; }
 
 .hint {
-  position: fixed; bottom: 10px; left: 0; right: 0; z-index: 15; text-align: center;
+  position: absolute; bottom: 10px; left: 0; right: 0; z-index: 15; text-align: center;
   color: rgba(141,153,196,0.85); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
-  pointer-events: none;
+  pointer-events: none; padding: 0 12px;
 }
 
 /* ---------- tablet ---------- */
 @media (max-width: 1023px) {
+  .layout { grid-template-columns: 272px minmax(0, 1fr) 272px; }
+  .col-left, .col-right { padding: 14px; gap: 12px; }
   .scale-note { display: none; }
-  .explorer { width: 232px; top: 100px; }
-  .panel { width: min(330px, calc(100vw - 40px)); top: 100px; }
-  .title-block h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
+  .title-block h1 { font-size: clamp(1.5rem, 2.2vw, 2rem); }
+  .panel { padding: 16px 18px; }
 }
 
 /* ---------- mobile: single scrolling column ----------
-   header → canvas block (56vh, unobstructed) → explorer → info → controls. */
+   header → stage block (56vh, unobstructed) → explorer → info → controls.
+   The side columns dissolve (display:contents) so their cards join
+   this single flow in the established order. */
 @media (max-width: 640px) {
   html, body { height: auto; overflow-y: auto; overflow-x: hidden; }
-  body { display: flex; flex-direction: column; min-height: 100vh; }
+  .layout { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
+  .col-left, .col-right { display: contents; }
   .hud.top {
-    position: relative; order: 1; padding: 12px; gap: 10px;
-    align-items: center; flex-wrap: wrap;
+    order: 1; margin: 12px 12px 0; padding: 12px 14px; gap: 8px;
   }
-  .title-block { text-align: left; padding: 0; }
   .title-block h1 { font-size: 1.35rem; letter-spacing: 0.24em; text-indent: 0.24em; }
   .subtitle { display: none; }
   .scale-note { display: none; }
-  #scene { position: relative; order: 2; inset: auto; width: 100%; height: 56vh; flex: none; }
+  .col-center { order: 2; flex: none; width: 100%; height: 56vh; margin-top: 12px; }
   .explorer {
-    position: relative; order: 3; top: auto; left: auto;
-    width: auto; max-height: none; margin: 12px 12px 0;
+    order: 3; flex: none; margin: 12px 12px 0;
   }
-  .explorer .list { max-height: 30vh; }
+  .explorer .list { flex: none; max-height: 30vh; }
   .panel {
-    position: relative; order: 4; top: auto; right: auto;
-    width: auto; max-height: none; margin: 12px 12px 0; padding: 16px 18px;
+    order: 4; flex: none; margin: 12px 12px 0; padding: 16px 18px;
   }
   .hud.bottom {
-    position: relative; order: 5; bottom: auto; padding: 12px;
-    flex-direction: column; align-items: stretch; gap: 10px;
+    order: 5; margin: 12px 12px 0; padding: 12px;
   }
   .controls-left, .controls-right {
     display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;

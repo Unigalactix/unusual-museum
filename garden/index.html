@@ -19,43 +19,49 @@
   <p>Your browser could not start WebGL, which Verdant needs to render its 3D garden. Try a recent version of Chrome, Edge, Firefox or Safari with hardware acceleration enabled.</p>
 </div>
 
-<header>
-  <a class="back" href="../index.html">← Unusual Museum</a>
-  <div class="title-block">
-    <h1>Verdant</h1>
-    <p>The 3D Garden — Lentils, Vegetables &amp; Leafy Greens</p>
-  </div>
-  <nav id="zone-nav">
-    <button data-zone="lentils">🫘 Lentils &amp; Legumes</button>
-    <button data-zone="vegetables">🥕 Vegetable Garden</button>
-    <button data-zone="leafy">🥬 Leafy Greens</button>
-    <button data-zone="all" class="active">🌻 Whole Garden</button>
-  </nav>
-</header>
+<div class="layout">
+  <aside class="col-left">
+    <header>
+      <a class="back" href="../index.html">← Unusual Museum</a>
+      <div class="title-block">
+        <h1>Verdant</h1>
+        <p>The 3D Garden — Lentils, Vegetables &amp; Leafy Greens</p>
+      </div>
+    </header>
 
-<aside id="panel">
-  <div class="panel-tools">
-    <input id="search" type="search" placeholder="Search the garden… (try ‘dal’ or ‘paneer’)">
-    <label class="toggle"><input type="checkbox" id="labels-toggle" checked> Labels</label>
-  </div>
-  <div id="item-list"></div>
-  <article id="info" hidden>
-    <button id="info-close" aria-label="Close">×</button>
-    <div id="info-zone" class="chip"></div>
-    <h2 id="info-name"></h2>
-    <div id="info-alt"></div>
-    <p id="info-tagline" class="tagline"></p>
-    <h3>🥗 Nutrition</h3><p id="info-nutrition"></p>
-    <h3>🍳 In the kitchen</h3><p id="info-uses"></p>
-    <h3>🌿 Garden note</h3><p id="info-fact"></p>
-  </article>
-</aside>
+    <article id="info" hidden>
+      <button id="info-close" aria-label="Close">×</button>
+      <div id="info-zone" class="chip"></div>
+      <h2 id="info-name"></h2>
+      <div id="info-alt"></div>
+      <p id="info-tagline" class="tagline"></p>
+      <h3>🥗 Nutrition</h3><p id="info-nutrition"></p>
+      <h3>🍳 In the kitchen</h3><p id="info-uses"></p>
+      <h3>🌿 Garden note</h3><p id="info-fact"></p>
+    </article>
+  </aside>
 
-<div id="tooltip" hidden></div>
-<div id="labels"></div>
-<canvas id="scene"></canvas>
+  <main class="stage" id="stage">
+    <canvas id="scene"></canvas>
+    <div id="labels"></div>
+    <div id="tooltip" hidden></div>
+    <footer>Drag to wander · Scroll to zoom · Click a bowl, vegetable or leafy bunch to meet it</footer>
+  </main>
 
-<footer>Drag to wander · Scroll to zoom · Click a bowl, vegetable or leafy bunch to meet it</footer>
+  <aside class="col-right" id="panel">
+    <nav id="zone-nav">
+      <button data-zone="lentils">🫘 Lentils &amp; Legumes</button>
+      <button data-zone="vegetables">🥕 Vegetable Garden</button>
+      <button data-zone="leafy">🥬 Leafy Greens</button>
+      <button data-zone="all" class="active">🌻 Whole Garden</button>
+    </nav>
+    <div class="panel-tools">
+      <input id="search" type="search" placeholder="Search the garden… (try ‘dal’ or ‘paneer’)">
+      <label class="toggle"><input type="checkbox" id="labels-toggle" checked> Labels</label>
+    </div>
+    <div id="item-list"></div>
+  </aside>
+</div>
 
 <script type="module" src="js/main.js"></script>
 </body>

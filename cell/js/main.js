@@ -103,35 +103,23 @@ controls.autoRotateSpeed = 0.7;
 
 /* ------------------------------------------------------------------ */
 /* Responsive framing                                                  */
-/* The canvas fills the viewport on desktop/tablet and becomes a 56vh  */
-/* block in the mobile column layout, so all sizing / projection math  */
-/* goes through the canvas rect, never the window. On desktop/tablet a */
-/* view offset shifts the projected centre into the free space beside  */
-/* the docked panels (right sidebar), so the cell is never behind UI.  */
+/* Three-column layout: the canvas fills only the centre column (and  */
+/* becomes a 56vh block in the mobile single-column layout), so all    */
+/* sizing / projection math goes through the canvas rect, never the    */
+/* window. The side columns are real layout, not overlays, so the      */
+/* subject is projected dead-centre in the stage — no view offset.     */
 /* ------------------------------------------------------------------ */
-const VIEW_SHIFT_DESKTOP = 150; // px the subject is pushed left, away from the sidebar
-const VIEW_SHIFT_TABLET = 110;
 function viewRect() { return canvas.getBoundingClientRect(); }
-function viewShiftX() {
-  const w = window.innerWidth;
-  if (w < 641) return 0;
-  return w < 1024 ? VIEW_SHIFT_TABLET : VIEW_SHIFT_DESKTOP;
-}
-function applyViewOffset() {
-  const s = viewShiftX();
-  if (s) camera.setViewOffset(window.innerWidth, window.innerHeight, s, 0, window.innerWidth, window.innerHeight);
-  else camera.clearViewOffset();
-}
 function resizeView() {
   const r = viewRect();
   const w = Math.max(1, Math.round(r.width));
   const h = Math.max(1, Math.round(r.height));
   camera.aspect = w / h;
-  applyViewOffset();
+  camera.clearViewOffset();
   camera.updateProjectionMatrix();
   renderer.setSize(w, h, false);
-  // CSS owns the canvas box (100% desktop, 56vh block on mobile) —
-  // drop any inline size left by the bootstrap setSize call.
+  // CSS owns the canvas box (centre column on desktop, 56vh block on
+  // mobile) — drop any inline size left by the bootstrap setSize call.
   renderer.domElement.style.width = "";
   renderer.domElement.style.height = "";
 }

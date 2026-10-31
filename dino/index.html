@@ -17,61 +17,67 @@
 </head>
 <body>
 
-<div class="page">
+<div class="layout">
 
-  <header class="panel" id="site-header">
-    <a class="back-link" href="../index.html">&larr; Unusual Museum</a>
-    <h1>Dino<span class="accent">Verse</span></h1>
-    <p class="subtitle">The prehistoric hall — eight giants of the Mesozoic, rebuilt in 3D</p>
-  </header>
+  <aside class="col-left">
+    <header class="panel" id="site-header">
+      <a class="back-link" href="../index.html">&larr; Unusual Museum</a>
+      <h1>Dino<span class="accent">Verse</span></h1>
+      <p class="subtitle">The prehistoric hall — eight giants of the Mesozoic, rebuilt in 3D</p>
+    </header>
 
-  <main id="stage" aria-label="Interactive 3D dinosaur hall"></main>
-
-  <aside class="panel" id="explorer" aria-label="Dinosaur explorer">
-    <div class="explorer-head">
-      <h2>Dinosaur Explorer</h2>
-      <input id="search" type="search" placeholder="Search dinosaurs…" aria-label="Search dinosaurs">
-      <div class="chip-group" id="era-chips" role="group" aria-label="Filter by era">
-        <button class="chip active" type="button" data-era="all">All eras</button>
-        <button class="chip" type="button" data-era="Jurassic">Jurassic</button>
-        <button class="chip" type="button" data-era="Cretaceous">Cretaceous</button>
+    <section class="panel" id="info-panel" aria-live="polite">
+      <button id="info-close" type="button" aria-label="Close info panel">&times;</button>
+      <p class="info-eyebrow" id="info-eyebrow">Welcome to the hall</p>
+      <h2 id="info-name">Eight giants, one roof</h2>
+      <p class="info-hook" id="info-hook">Real animals this time — and every one of them stranger than fiction.</p>
+      <div class="stat-row" id="info-stats" hidden>
+        <div class="stat"><span class="stat-label">Length</span><span class="stat-value" id="stat-length">—</span></div>
+        <div class="stat"><span class="stat-label">Diet</span><span class="stat-value" id="stat-diet">—</span></div>
+        <div class="stat"><span class="stat-label">Period</span><span class="stat-value" id="stat-period">—</span></div>
       </div>
-      <div class="chip-group" id="diet-chips" role="group" aria-label="Filter by diet">
-        <button class="chip active" type="button" data-diet="all">All diets</button>
-        <button class="chip" type="button" data-diet="Carnivore">Carnivores</button>
-        <button class="chip" type="button" data-diet="Herbivore">Herbivores</button>
+      <p class="info-desc" id="info-desc">Drag to walk the hall with your eyes, scroll to zoom, and click any dinosaur — or pick one from the explorer — to step up to its plinth. One resident hangs from the ceiling; look up at the back of the hall.</p>
+      <div class="fact" id="info-fact-wrap" hidden>
+        <p class="fact-label">Did you know?</p>
+        <p class="fact-text" id="info-fact"></p>
       </div>
-    </div>
-    <div id="dino-list"></div>
+    </section>
   </aside>
 
-  <section class="panel" id="info-panel" aria-live="polite">
-    <button id="info-close" type="button" aria-label="Close info panel">&times;</button>
-    <p class="info-eyebrow" id="info-eyebrow">Welcome to the hall</p>
-    <h2 id="info-name">Eight giants, one roof</h2>
-    <p class="info-hook" id="info-hook">Real animals this time — and every one of them stranger than fiction.</p>
-    <div class="stat-row" id="info-stats" hidden>
-      <div class="stat"><span class="stat-label">Length</span><span class="stat-value" id="stat-length">—</span></div>
-      <div class="stat"><span class="stat-label">Diet</span><span class="stat-value" id="stat-diet">—</span></div>
-      <div class="stat"><span class="stat-label">Period</span><span class="stat-value" id="stat-period">—</span></div>
-    </div>
-    <p class="info-desc" id="info-desc">Drag to walk the hall with your eyes, scroll to zoom, and click any dinosaur — or pick one from the explorer — to step up to its plinth. One resident hangs from the ceiling; look up at the back of the hall.</p>
-    <div class="fact" id="info-fact-wrap" hidden>
-      <p class="fact-label">Did you know?</p>
-      <p class="fact-text" id="info-fact"></p>
-    </div>
-    <div class="info-nav">
-      <button id="prev-btn" class="btn" type="button">&#8249; Prev</button>
-      <button id="next-btn" class="btn" type="button">Next &#8250;</button>
-      <button id="hall-btn" class="btn btn-wide" type="button">View whole hall</button>
-    </div>
-  </section>
+  <main id="stage" aria-label="Interactive 3D dinosaur hall">
+    <div id="tooltip" role="status"></div>
+    <footer id="hint">Drag to orbit &middot; Scroll to zoom &middot; Click a dinosaur to meet it &middot; Part of <strong>The Unusual Museum</strong> &middot; Built by Rajesh Kodaganti</footer>
+  </main>
 
-  <footer id="hint">Drag to orbit &middot; Scroll to zoom &middot; Click a dinosaur to meet it &middot; Part of <strong>The Unusual Museum</strong> &middot; Built by Rajesh Kodaganti</footer>
+  <aside class="col-right">
+    <aside class="panel" id="explorer" aria-label="Dinosaur explorer">
+      <div class="explorer-head">
+        <h2>Dinosaur Explorer</h2>
+        <input id="search" type="search" placeholder="Search dinosaurs…" aria-label="Search dinosaurs">
+        <div class="chip-group" id="era-chips" role="group" aria-label="Filter by era">
+          <button class="chip active" type="button" data-era="all">All eras</button>
+          <button class="chip" type="button" data-era="Jurassic">Jurassic</button>
+          <button class="chip" type="button" data-era="Cretaceous">Cretaceous</button>
+        </div>
+        <div class="chip-group" id="diet-chips" role="group" aria-label="Filter by diet">
+          <button class="chip active" type="button" data-diet="all">All diets</button>
+          <button class="chip" type="button" data-diet="Carnivore">Carnivores</button>
+          <button class="chip" type="button" data-diet="Herbivore">Herbivores</button>
+        </div>
+      </div>
+      <div id="dino-list"></div>
+    </aside>
+
+    <section class="panel controls-panel" aria-label="Hall controls">
+      <div class="info-nav controls-nav">
+        <button id="prev-btn" class="btn" type="button">&#8249; Prev</button>
+        <button id="next-btn" class="btn" type="button">Next &#8250;</button>
+        <button id="hall-btn" class="btn btn-wide" type="button">View whole hall</button>
+      </div>
+    </section>
+  </aside>
 
 </div>
-
-<div id="tooltip" role="status"></div>
 
 <div id="loading" class="overlay">
   <div class="spinner" aria-hidden="true"></div>

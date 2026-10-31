@@ -45,8 +45,12 @@ try {
   failEl.hidden = false;
   throw e;
 }
+function getStageSize() {
+  const rect = stageEl.getBoundingClientRect();
+  return { width: Math.max(1, rect.width), height: Math.max(1, rect.height) };
+}
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(getStageSize().width, getStageSize().height);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.1;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -63,7 +67,7 @@ const scene = new THREE.Scene();
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
 pmrem.dispose();
-const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, 0.1, 120);
+const camera = new THREE.PerspectiveCamera(46, getStageSize().width / getStageSize().height, 0.1, 120);
 camera.position.set(0, 6.8, 18.5);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -1022,8 +1026,9 @@ let hoverIndex = -1;
 let downX = 0, downY = 0, downT = 0;
 
 function pickAt(cx, cy) {
-  pointer.x = (cx / window.innerWidth) * 2 - 1;
-  pointer.y = -(cy / window.innerHeight) * 2 + 1;
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((cx - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+  pointer.y = -(((cy - rect.top) / Math.max(1, rect.height)) * 2 - 1);
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects(scene.children, true);
   for (const hit of hits) {
@@ -1040,8 +1045,9 @@ renderer.domElement.addEventListener('pointermove', (e) => {
   hoverIndex = pickAt(e.clientX, e.clientY);
   if (hoverIndex >= 0) {
     tooltipEl.textContent = CREATURES[hoverIndex].name;
-    tooltipEl.style.left = e.clientX + 'px';
-    tooltipEl.style.top = e.clientY + 'px';
+    const stageRect = stageEl.getBoundingClientRect();
+    tooltipEl.style.left = (e.clientX - stageRect.left) + 'px';
+    tooltipEl.style.top = (e.clientY - stageRect.top) + 'px';
     tooltipEl.classList.add('show');
     renderer.domElement.style.cursor = 'pointer';
   } else {
@@ -1064,11 +1070,16 @@ renderer.domElement.addEventListener('pointerup', (e) => {
 /* Resize + main loop                                                  */
 /* ------------------------------------------------------------------ */
 
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+function resizeRenderer() {
+  const { width, height } = getStageSize();
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+  renderer.setSize(width, height);
+}
+if (typeof ResizeObserver !== 'undefined') {
+  new ResizeObserver(resizeRenderer).observe(stageEl);
+}
+window.addEventListener('resize', resizeRenderer);
 
 const clock = new THREE.Clock();
 let firstFrame = true;

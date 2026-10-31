@@ -452,3 +452,61 @@ body { display: flex; flex-direction: column; }
 
 /* The fail overlay must obey its hidden attribute (author display rules would otherwise override it) */
 #webgl-fail[hidden]{display:none !important}
+
+/* ================= THREE-SECTION LAYOUT =================
+   Desktop: LEFT data column (header + gem panel) · CENTER stage ·
+   RIGHT switcher column (vault list + controls + prev/next). */
+.layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr) 340px;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+}
+.col-left, .col-right {
+  background: #0c0714;
+  display: flex; flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  min-height: 0;
+  min-width: 0;
+}
+.col-left { border-right: 1px solid rgba(201, 162, 39, 0.35); }
+.col-right { border-left: 1px solid rgba(201, 162, 39, 0.35); }
+.col-left .topbar { position: static; flex: none; padding: 0; }
+.col-left .panel {
+  position: static;
+  width: auto; max-width: none; max-height: none;
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+}
+.stage-wrap { position: relative; min-width: 0; min-height: 0; }
+.stage-wrap #stage { position: absolute; inset: 0; }
+.stage-wrap .hint { position: absolute; }
+.col-right .list-panel {
+  position: static;
+  width: auto; max-height: none;
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+}
+.col-right .exhibit-nav { position: static; transform: none; flex: none; padding-top: 4px; }
+
+/* ---------- tablet: 272px side columns ---------- */
+@media (max-width: 1023px) {
+  .layout { grid-template-columns: 272px minmax(0, 1fr) 272px; }
+  .col-left, .col-right { padding: 14px; gap: 12px; }
+  .col-left .panel { width: auto; }
+}
+
+/* ---------- mobile: single-column stack ----------
+   header -> stage (56vh) -> switcher -> data -> controls */
+@media (max-width: 640px) {
+  .layout { display: flex; flex-direction: column; height: auto; }
+  .col-left, .col-right { display: contents; }
+  .col-left .topbar { order: 1; margin: 12px 12px 0; }
+  .stage-wrap { order: 2; height: 56vh; flex: none; margin: 12px 12px 0; }
+  .stage-wrap #stage { position: absolute; inset: 0; height: auto; }
+  .col-right .list-panel { order: 3; margin: 12px 12px 0; flex: none; overflow: visible; }
+  .col-left .panel { order: 4; margin: 12px 12px 0; flex: none; overflow: visible; }
+  .col-right .exhibit-nav { order: 5; margin: 12px 12px 0; }
+}

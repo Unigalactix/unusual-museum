@@ -52,34 +52,22 @@ controls.minDistance = 4;
 controls.maxDistance = 900;
 
 /* ---------------- responsive framing ----------------
-   The canvas fills the viewport on desktop/tablet and becomes a 56vh
-   block in the mobile column layout, so sizing / projection math goes
-   through the canvas rect. On desktop/tablet a negative view offset
-   pushes the projected centre RIGHT, into the free space beside the
-   left explorer panel (partly balanced when the info panel opens). */
-const VIEW_SHIFT_DESKTOP = -80; // px the subject is pushed right, away from the explorer panel
-const VIEW_SHIFT_TABLET = -55;
+   Three-column layout: the canvas fills only the centre column (and
+   becomes a 56vh block in the mobile single-column layout), so sizing
+   / projection math goes through the canvas rect, never the window.
+   The side columns are real layout, not overlays, so the system is
+   projected dead-centre in the stage — no view offset. */
 function viewRect() { return canvas.getBoundingClientRect(); }
-function viewShiftX() {
-  const w = window.innerWidth;
-  if (w < 641) return 0;
-  return w < 1024 ? VIEW_SHIFT_TABLET : VIEW_SHIFT_DESKTOP;
-}
-function applyViewOffset() {
-  const s = viewShiftX();
-  if (s) camera.setViewOffset(window.innerWidth, window.innerHeight, s, 0, window.innerWidth, window.innerHeight);
-  else camera.clearViewOffset();
-}
 function resizeView() {
   const r = viewRect();
   const w = Math.max(1, Math.round(r.width));
   const h = Math.max(1, Math.round(r.height));
   camera.aspect = w / h;
-  applyViewOffset();
+  camera.clearViewOffset();
   camera.updateProjectionMatrix();
   renderer.setSize(w, h, false);
-  // CSS owns the canvas box (100% desktop, 56vh block on mobile) —
-  // drop any inline size left by the bootstrap setSize call.
+  // CSS owns the canvas box (centre column on desktop, 56vh block on
+  // mobile) — drop any inline size left by the bootstrap setSize call.
   renderer.domElement.style.width = "";
   renderer.domElement.style.height = "";
 }

@@ -20,55 +20,65 @@
   <p>Elementum needs WebGL to render the 3D table. Please try a modern browser with hardware acceleration enabled.</p>
 </div>
 
-<header>
-  <a class="back" href="../index.html">← Unusual Museum</a>
-  <div class="titles">
-    <h1>Elementum</h1>
-    <p>The periodic table, rebuilt in 3D — every one of the 118 elements, and the atom inside each tile.</p>
-  </div>
-  <label class="autorotate"><input type="checkbox" id="autorotate-toggle"> Auto-rotate</label>
-</header>
-
-<main id="stage"></main>
-<div id="tooltip" hidden></div>
-
-<section id="controls" aria-label="Table controls">
-  <input id="search" type="search" placeholder="Search name, symbol or number…" autocomplete="off">
-  <div id="chips" role="group" aria-label="Filter by category"></div>
-</section>
-
-<aside id="info-panel" aria-live="polite">
-  <div id="info-empty">
-    <h2>Pick an element</h2>
-    <p>Drag to orbit the table, scroll to zoom. Hover a tile to preview it, click it to fly in — then open the <strong>Atom view</strong> to watch its electrons circle the nucleus.</p>
-    <p class="hint-small">Tiles are coloured by family. Use the chips below the table to isolate a family, or search for any element by name, symbol or atomic number.</p>
-  </div>
-  <div id="info-content" hidden>
-    <div class="info-head">
-      <div id="info-symbol">Fe</div>
-      <div>
-        <h2 id="info-name">Iron</h2>
-        <p id="info-meta">26 · Transition metal</p>
+<div class="layout">
+  <!-- LEFT: data — header card + selected-element detail -->
+  <aside class="col-left">
+    <header>
+      <a class="back" href="../index.html">← Unusual Museum</a>
+      <div class="titles">
+        <h1>Elementum</h1>
+        <p>The periodic table, rebuilt in 3D — every one of the 118 elements, and the atom inside each tile.</p>
       </div>
-    </div>
-    <dl class="facts">
-      <div><dt>Atomic mass</dt><dd id="info-mass">—</dd></div>
-      <div><dt>Group / Period</dt><dd id="info-group">—</dd></div>
-      <div><dt>State at 25 °C</dt><dd id="info-state">—</dd></div>
-      <div><dt>Electron shells</dt><dd id="info-shells">—</dd></div>
-    </dl>
-    <p id="info-blurb"></p>
-    <div class="info-actions">
-      <button id="atom-btn" type="button">⚛ View atom</button>
-      <button id="back-btn" type="button" hidden>← Back to table</button>
-    </div>
-    <div id="atom-caption" hidden>
-      <span id="atom-caption-text"></span>
-    </div>
-  </div>
-</aside>
+    </header>
 
-<footer>Drag to rotate · Scroll to zoom · Click a tile to inspect it · Built by Rajesh Kodaganti</footer>
+    <aside id="info-panel" aria-live="polite">
+      <div id="info-empty">
+        <h2>Pick an element</h2>
+        <p>Drag to orbit the table, scroll to zoom. Hover a tile to preview it, click it to fly in — then open the <strong>Atom view</strong> to watch its electrons circle the nucleus.</p>
+        <p class="hint-small">Tiles are coloured by family. Use the chips in the switcher to isolate a family, or search for any element by name, symbol or atomic number.</p>
+      </div>
+      <div id="info-content" hidden>
+        <div class="info-head">
+          <div id="info-symbol">Fe</div>
+          <div>
+            <h2 id="info-name">Iron</h2>
+            <p id="info-meta">26 · Transition metal</p>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>Atomic mass</dt><dd id="info-mass">—</dd></div>
+          <div><dt>Group / Period</dt><dd id="info-group">—</dd></div>
+          <div><dt>State at 25 °C</dt><dd id="info-state">—</dd></div>
+          <div><dt>Electron shells</dt><dd id="info-shells">—</dd></div>
+        </dl>
+        <p id="info-blurb"></p>
+        <div class="info-actions">
+          <button id="atom-btn" type="button">⚛ View atom</button>
+          <button id="back-btn" type="button" hidden>← Back to table</button>
+        </div>
+        <div id="atom-caption" hidden>
+          <span id="atom-caption-text"></span>
+        </div>
+      </div>
+    </aside>
+  </aside>
+
+  <!-- CENTER: the 3D stage (table + atom view) -->
+  <main id="stage" class="col-center">
+    <footer>Drag to rotate · Scroll to zoom · Click a tile to inspect it · Built by Rajesh Kodaganti</footer>
+  </main>
+
+  <!-- RIGHT: switcher + options -->
+  <aside class="col-right">
+    <section id="controls" aria-label="Table controls">
+      <input id="search" type="search" placeholder="Search name, symbol or number…" autocomplete="off">
+      <div id="chips" role="group" aria-label="Filter by category"></div>
+      <label class="autorotate"><input type="checkbox" id="autorotate-toggle"> Auto-rotate</label>
+    </section>
+  </aside>
+</div>
+
+<div id="tooltip" hidden></div>
 
 <script>
   window.__elementumTimer = setTimeout(function () {

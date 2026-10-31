@@ -54,34 +54,22 @@ controls.maxDistance = 220;
 controls.autoRotateSpeed = 0.7;
 
 /* ---------------- responsive framing ----------------
-   The stage fills the viewport on desktop/tablet and becomes a 56vh
-   block in the mobile column layout, so sizing uses the stage rect.
-   On desktop/tablet a view offset shifts the projected centre into
-   the free space LEFT of the detail card — in atom view the atom is
-   centred in that free area, never behind the card. */
-const VIEW_SHIFT_DESKTOP = 175; // px the subject is pushed left, away from the detail card
-const VIEW_SHIFT_TABLET = 140;
+   Three-column layout: the stage fills only the centre column (and
+   becomes a 56vh block in the mobile single-column layout), so sizing
+   uses the stage rect, never the window. The side columns are real
+   layout, not overlays, so the table — and the atom in atom view — is
+   projected dead-centre in the stage, never behind a card. */
 function viewRect() { return stage.getBoundingClientRect(); }
-function viewShiftX() {
-  const w = window.innerWidth;
-  if (w < 641) return 0;
-  return w < 1024 ? VIEW_SHIFT_TABLET : VIEW_SHIFT_DESKTOP;
-}
-function applyViewOffset() {
-  const s = viewShiftX();
-  if (s) camera.setViewOffset(window.innerWidth, window.innerHeight, s, 0, window.innerWidth, window.innerHeight);
-  else camera.clearViewOffset();
-}
 function resizeView() {
   const r = viewRect();
   const w = Math.max(1, Math.round(r.width));
   const h = Math.max(1, Math.round(r.height));
   camera.aspect = w / h;
-  applyViewOffset();
+  camera.clearViewOffset();
   camera.updateProjectionMatrix();
   renderer.setSize(w, h, false);
-  // CSS owns the canvas box (100% desktop, 56vh block on mobile) —
-  // drop any inline size left by the bootstrap setSize call.
+  // CSS owns the canvas box (centre column on desktop, 56vh block on
+  // mobile) — drop any inline size left by the bootstrap setSize call.
   renderer.domElement.style.width = "";
   renderer.domElement.style.height = "";
 }
