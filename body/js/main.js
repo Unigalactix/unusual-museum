@@ -5,7 +5,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { ORGANS, SYSTEMS } from "./organs.js";
+import { ORGANS, SYSTEMS, ORGAN_BUILDERS, ORGAN_PLACEMENTS, ORGAN_FOCUS_DISTS } from "./organs.js";
 
 const organById = new Map(ORGANS.map((o) => [o.id, o]));
 const BODY_CENTER = new THREE.Vector3(0, 11, 0);
@@ -60,6 +60,40 @@ controls.maxDistance = 60;
 controls.maxPolarAngle = Math.PI * 0.92;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.7;
+
+/* ---------------- responsive framing ----------------
+   The canvas fills the viewport on desktop/tablet and becomes a 56vh
+   block in the mobile column layout, so all sizing / projection math
+   goes through the canvas rect, never the window. On desktop/tablet a
+   view offset shifts the projected centre into the free space beside
+   the docked right-hand panels, so the figure is never behind UI. */
+const VIEW_SHIFT_DESKTOP = 160; // px the subject is pushed left, away from the right panels
+const VIEW_SHIFT_TABLET = 120;
+function viewRect() { return renderer.domElement.getBoundingClientRect(); }
+function viewShiftX() {
+  const w = window.innerWidth;
+  if (w < 641) return 0;
+  return w < 1024 ? VIEW_SHIFT_TABLET : VIEW_SHIFT_DESKTOP;
+}
+function applyViewOffset() {
+  const s = viewShiftX();
+  if (s) camera.setViewOffset(window.innerWidth, window.innerHeight, s, 0, window.innerWidth, window.innerHeight);
+  else camera.clearViewOffset();
+}
+function resizeView() {
+  const r = viewRect();
+  const w = Math.max(1, Math.round(r.width));
+  const h = Math.max(1, Math.round(r.height));
+  camera.aspect = w / h;
+  applyViewOffset();
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false);
+  // CSS owns the canvas box (100% desktop, 56vh block on mobile) —
+  // drop any inline size left by the bootstrap setSize call.
+  renderer.domElement.style.width = "";
+  renderer.domElement.style.height = "";
+}
+resizeView();
 
 /* ---------------- lights ---------------- */
 scene.add(new THREE.AmbientLight(0xbcd2ff, 0.55));
@@ -312,266 +346,12 @@ function registerOrgan(id, group, focusDist = 11) {
   return group;
 }
 
-/* ---------------- organ builders ---------------- */
-// BRAIN — two wrinkled hemispheres + cerebellum
-{
-  const g = new THREE.Group();
-  // soft matte finish, slightly pink-grey realistic tone (wrinkles unchanged)
-  const m = organMat("brain", {
-    color: 0xd3a1a9, roughness: 0.85, clearcoat: 0.06, clearcoatRoughness: 0.9, envMapIntensity: 0.25,
-  });
-  for (const s of [-1, 1]) {
-    const hemi = mesh(wrinkle(new THREE.SphereGeometry(1.02, 28, 20), 0.045, 8), m, s * 0.6, 0.12, 0);
-    hemi.scale.set(0.88, 0.8, 1.18);
-    g.add(hemi);
-  }
-  const cereb = mesh(wrinkle(new THREE.SphereGeometry(0.72, 20, 14), 0.03, 10), m, 0, -0.62, -0.72);
-  cereb.scale.set(1.15, 0.6, 0.7);
-  g.add(cereb);
-  g.position.set(0, 19.75, 0.05);
-  registerOrgan("brain", g, 8);
-}
-// SPINAL CORD — curved tube + vertebra hints
-{
-  const anchor = new THREE.Vector3(0, 12.2, -0.95);
-  const pts = [[0, 6.4, 0.1], [0, 2.8, -0.05], [0, -1.2, -0.1], [0, -4.7, 0], [0, -6.4, 0.15]]
-    .map((p) => [p[0], p[1], p[2]]);
-  const g = new THREE.Group();
-  g.add(tube(pts, 0.26, organMat("spinal-cord", { roughness: 0.5 })));
-  const bone = std(0xe9e1cd, { transparent: true, opacity: 0.55, roughness: 0.65 });
-  for (let i = 0; i < 8; i++) {
-    g.add(mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.2, 14), bone, 0, 5.4 - i * 1.55, -0.32));
-  }
-  g.position.copy(anchor);
-  registerOrgan("spinal-cord", g, 12);
-}
-// THYROID — two lobes + bridge
-{
-  const g = new THREE.Group();
-  const m = organMat("thyroid");
-  for (const s of [-1, 1]) {
-    const lobe = mesh(new THREE.SphereGeometry(0.4, 18, 14), m, s * 0.38, 0, 0);
-    lobe.scale.set(0.8, 1.15, 0.62);
-    g.add(lobe);
-  }
-  const bridge = mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.62, 10), m, 0, -0.05, 0.05);
-  bridge.rotation.z = Math.PI / 2;
-  g.add(bridge);
-  g.position.set(0, 16.2, 1.0);
-  registerOrgan("thyroid", g, 6);
-}
-// TRACHEA — ribbed tube splitting into bronchi
-{
-  const g = new THREE.Group();
-  const m = organMat("trachea", { roughness: 0.5 });
-  g.add(mesh(new THREE.CylinderGeometry(0.33, 0.33, 3.1, 16), m, 0, 0, 0));
-  const ringM = std(0xd8eef7, { roughness: 0.5 });
-  for (let i = 0; i < 7; i++) {
-    const r = mesh(new THREE.TorusGeometry(0.35, 0.05, 8, 20), ringM, 0, 1.3 - i * 0.43, 0);
-    r.rotation.x = Math.PI / 2;
-    g.add(r);
-  }
-  for (const s of [-1, 1]) {
-    const b = mesh(new THREE.CylinderGeometry(0.2, 0.24, 1.7, 12), m, s * 0.62, -2.05, 0);
-    b.rotation.z = s * -0.6;
-    g.add(b);
-  }
-  g.position.set(0, 14.3, 0.55);
-  registerOrgan("trachea", g, 9);
-}
-// LUNGS — lathe-profiled pair, right larger than left
-{
-  const pts = [];
-  [[0.01, 0], [0.82, 0.15], [1.12, 1.1], [1.08, 2.7], [0.78, 4.1], [0.34, 4.9], [0.01, 5.05]]
-    .forEach((p) => pts.push(new THREE.Vector2(p[0], p[1])));
-  const geo = new THREE.LatheGeometry(pts, 28);
-  const g = new THREE.Group();
-  const m = organMat("lungs", {
-    transparent: true, opacity: 0.92, roughness: 0.55,
-    bumpMap: spongeBump, bumpScale: 0.03, // spongy fine-noise surface
-    clearcoat: 0.55, clearcoatRoughness: 0.35,
-  });
-  const right = mesh(geo, m, -2.0, 0, 0); right.scale.set(1.12, 1.02, 1.0);
-  const left = mesh(geo, m, 2.0, 0, 0); left.scale.set(0.94, 0.96, 0.94);
-  g.add(right, left);
-  g.position.set(0, 10.15, -0.1);
-  registerOrgan("lungs", g, 13);
-}
-// HEART — sphere + tilted cone apex, aorta stub on top
-{
-  const g = new THREE.Group();
-  const m = organMat("heart", {
-    roughness: 0.34, map: veinMap, bumpMap: veinBump, bumpScale: 0.02,
-    clearcoat: 0.9, clearcoatRoughness: 0.28, // wet sheen
-  });
-  const bodyM = mesh(new THREE.SphereGeometry(1.08, 26, 20), m, 0, 0.35, 0);
-  bodyM.scale.set(1.05, 1.05, 1.0);
-  g.add(bodyM);
-  const apex = mesh(new THREE.ConeGeometry(0.8, 1.7, 22), m, 0.38, -0.78, 0.05);
-  apex.rotation.z = 2.72; // point the cone down-left
-  apex.rotation.x = 0.15;
-  g.add(apex);
-  const stub = mesh(new THREE.CylinderGeometry(0.3, 0.36, 0.85, 14), m, -0.18, 1.42, -0.1);
-  stub.rotation.z = 0.25;
-  g.add(stub);
-  const venaStub = mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.7, 12), std(0x3f6fd9), 0.62, 1.3, -0.15);
-  g.add(venaStub);
-  g.position.set(0.55, 11.95, 0.72);
-  registerOrgan("heart", g, 8.5);
-}
-// AORTA & VENA CAVA — arching red tube + parallel blue return
-{
-  const anchor = new THREE.Vector3(0.1, 10.2, 0);
-  const g = new THREE.Group();
-  g.add(tube(
-    [[0.45, 3.1, 0.6], [0.35, 4.4, 0.25], [-0.15, 4.85, -0.35], [-0.42, 4.2, -0.55],
-     [-0.4, 1.8, -0.55], [-0.35, -1.8, -0.55], [-0.3, -5.0, -0.45]],
-    0.29, organMat("aorta", { roughness: 0.35 })
-  ));
-  g.add(tube(
-    [[0.85, -5.2, 0.25], [0.88, -1.8, 0.12], [0.85, 1.8, 0.3], [0.8, 2.9, 0.55]],
-    0.31, std(0x3f6fd9, { roughness: 0.35 })
-  ));
-  g.position.copy(anchor);
-  registerOrgan("aorta", g, 12);
-}
-// DIAPHRAGM — flattened dome under the lungs
-{
-  const g = new THREE.Group();
-  const dome = mesh(
-    new THREE.SphereGeometry(1, 36, 14, 0, Math.PI * 2, 0, Math.PI / 2),
-    organMat("diaphragm", { side: THREE.DoubleSide, roughness: 0.55 }),
-    0, 0, 0
-  );
-  dome.scale.set(3.55, 1.15, 2.6);
-  g.add(dome);
-  g.position.set(0, 10.55, -0.05);
-  registerOrgan("diaphragm", g, 12);
-}
-
-// LIVER — big flattened lobe + smaller left lobe
-{
-  const g = new THREE.Group();
-  const m = organMat("liver", {
-    roughness: 0.36, map: veinMap, bumpMap: veinBump, bumpScale: 0.02,
-    clearcoat: 0.85, clearcoatRoughness: 0.3, // wet sheen + marbled veins
-  });
-  const main = mesh(new THREE.SphereGeometry(1.72, 28, 20), m, 0, 0, 0);
-  main.scale.set(1.45, 0.6, 1.02);
-  g.add(main);
-  const lobe = mesh(new THREE.SphereGeometry(0.95, 22, 16), m, 2.15, 0.08, 0.05);
-  lobe.scale.set(1.15, 0.5, 0.85);
-  g.add(lobe);
-  g.position.set(-1.7, 10.0, 0.25);
-  registerOrgan("liver", g, 11);
-}
-// GALLBLADDER — small green pear under the liver
-{
-  const g = new THREE.Group();
-  const pear = mesh(new THREE.SphereGeometry(0.42, 18, 14), organMat("gallbladder", { roughness: 0.32, clearcoat: 0.7, clearcoatRoughness: 0.3 }), 0, 0, 0);
-  pear.scale.set(0.85, 1.25, 0.85);
-  g.add(pear);
-  g.position.set(-1.85, 9.3, 1.05);
-  registerOrgan("gallbladder", g, 6);
-}
-// STOMACH — J-shaped tube
-{
-  const anchor = new THREE.Vector3(1.0, 9.85, 0.35);
-  const g = new THREE.Group();
-  g.add(tube(
-    [[-0.15, 1.5, 0], [0.3, 1.05, 0], [0.52, 0.25, 0], [0.4, -0.6, 0], [-0.15, -1.0, 0], [-0.85, -0.85, 0], [-1.1, -0.3, 0]],
-    0.5, organMat("stomach", { roughness: 0.45 }), 48
-  ));
-  g.position.copy(anchor);
-  registerOrgan("stomach", g, 9);
-}
-// PANCREAS — soft elongated gland behind the stomach
-{
-  const g = new THREE.Group();
-  const m = organMat("pancreas", { roughness: 0.55 });
-  const bodyP = mesh(new THREE.SphereGeometry(0.8, 20, 14), m, 0, 0, 0);
-  bodyP.scale.set(1.85, 0.42, 0.55);
-  bodyP.rotation.z = -0.22;
-  g.add(bodyP);
-  g.add(mesh(new THREE.SphereGeometry(0.44, 16, 12), m, -1.35, -0.28, 0));
-  g.position.set(0.4, 9.5, -0.5);
-  registerOrgan("pancreas", g, 9);
-}
-// SPLEEN — small oval, upper left
-{
-  const g = new THREE.Group();
-  const s = mesh(new THREE.SphereGeometry(0.72, 20, 14), organMat("spleen", { roughness: 0.45 }), 0, 0, 0);
-  s.scale.set(0.62, 1.0, 0.42);
-  s.rotation.z = 0.35;
-  g.add(s);
-  g.position.set(2.8, 10.1, -0.4);
-  registerOrgan("spleen", g, 7);
-}
-// KIDNEYS — pair of beans + ureter tubes to the bladder
-{
-  const g = new THREE.Group();
-  const m = organMat("kidneys", { roughness: 0.38, clearcoat: 0.8, clearcoatRoughness: 0.3 });
-  const dark = std(0x6e1f38, { roughness: 0.5 });
-  for (const s of [-1, 1]) {
-    const bean = mesh(new THREE.SphereGeometry(0.85, 22, 16), m, s * 2.15, 0, 0);
-    bean.scale.set(0.75, 1.05, 0.55);
-    bean.rotation.z = s * -0.12;
-    g.add(bean);
-    g.add(mesh(new THREE.SphereGeometry(0.34, 14, 10), dark, s * 1.68, -0.05, 0.3)); // hilum indent
-  }
-  const ureterM = std(0xd98aa6, { roughness: 0.5 });
-  g.add(tube([[-1.75, -0.75, 0.15], [-1.15, -2.0, 0.7], [-0.4, -3.35, 1.35]], 0.09, ureterM, 24));
-  g.add(tube([[1.75, -0.75, 0.15], [1.15, -2.0, 0.7], [0.4, -3.35, 1.35]], 0.09, ureterM, 24));
-  g.position.set(0, 8.85, -0.95);
-  registerOrgan("kidneys", g, 10);
-}
-// SMALL INTESTINE — serpentine coil in the lower abdomen
-{
-  const pts = [];
-  const turns = 64;
-  for (let i = 0; i <= turns; i++) {
-    const t = i / turns;
-    pts.push([
-      1.5 * Math.sin(t * Math.PI * 7),
-      -1.05 + 2.1 * t,
-      0.28 * Math.sin(t * Math.PI * 14),
-    ]);
-  }
-  const g = new THREE.Group();
-  g.add(tube(pts, 0.3, organMat("small-intestine", { roughness: 0.5 }), 220));
-  g.position.set(0, 6.95, 0.3);
-  registerOrgan("small-intestine", g, 10);
-}
-// LARGE INTESTINE — frame around the small intestine
-{
-  const g = new THREE.Group();
-  g.add(tube(
-    [[-2.1, -1.6, 0], [-2.15, 0.2, 0], [-2.05, 1.45, 0], [-0.6, 1.68, 0],
-     [1.2, 1.62, 0], [2.05, 1.35, 0], [2.1, -0.4, 0], [2.0, -1.35, 0], [0.9, -1.8, -0.1], [0.05, -1.95, -0.1]],
-    0.46, organMat("large-intestine", { roughness: 0.5 }), 120
-  ));
-  g.position.set(0, 7.05, 0.1);
-  registerOrgan("large-intestine", g, 12);
-}
-// APPENDIX — tiny tube off the start of the large intestine
-{
-  const g = new THREE.Group();
-  g.add(tube([[0, 0.35, 0], [0.12, -0.05, 0.05], [0.05, -0.45, 0.02]], 0.11, organMat("appendix"), 16));
-  g.add(mesh(new THREE.SphereGeometry(0.13, 10, 8), organMat("appendix"), 0.05, -0.5, 0.02));
-  g.position.set(-2.1, 5.15, 0.2);
-  registerOrgan("appendix", g, 5);
-}
-// BLADDER — stretchy sac in the pelvis
-{
-  const g = new THREE.Group();
-  const m = organMat("bladder", { roughness: 0.36, clearcoat: 0.7, clearcoatRoughness: 0.32 });
-  const sac = mesh(new THREE.SphereGeometry(0.82, 22, 16), m, 0, 0.15, 0);
-  sac.scale.set(0.95, 1.0, 0.85);
-  g.add(sac);
-  const neck = mesh(new THREE.CylinderGeometry(0.16, 0.22, 0.55, 12), m, 0, -0.72, 0);
-  g.add(neck);
-  g.position.set(0, 5.05, 0.55);
-  registerOrgan("bladder", g, 7);
+/* ---------------- organ builders (anatomy set lives in organs.js) ---------------- */
+const builderCtx = { organMat, std, tube, mesh, wrinkle, veinMap, veinBump, spongeBump };
+for (const o of ORGANS) {
+  const g = ORGAN_BUILDERS[o.id](THREE, builderCtx);
+  g.position.set(...ORGAN_PLACEMENTS[o.id]);
+  registerOrgan(o.id, g, ORGAN_FOCUS_DISTS[o.id]);
 }
 
 /* ---------------- UI: explorer list, chips, search ---------------- */
@@ -752,8 +532,24 @@ for (const o of ORGANS) {
 }
 const _v = new THREE.Vector3();
 const _c = new THREE.Vector3();
+/* Label declutter: labels are placed greedily in screen space, highest
+   priority first (selected organ, hovered organ, primary organs, then
+   the rest); any label whose pill would overlap an already-placed pill
+   is hidden, so the torso can never pile labels on top of each other.
+   Zoom rule: at the default far view (camera > 26 units from the body
+   centre) and with no system filter active, only the primary organs
+   compete — Brain, Heart, Lungs, Liver, Stomach, Kidneys and the two
+   Intestines. Zoom closer, pick a system chip, or select an organ and
+   every label competes (still collision-resolved). */
+const LABEL_PRIMARY = new Set([
+  "brain", "heart", "lungs", "liver", "stomach", "kidneys",
+  "small-intestine", "large-intestine",
+]);
 function updateLabels() {
   if (!labelsOn) return;
+  const rect = viewRect();
+  const farZoom = camera.position.distanceTo(BODY_CENTER) > 26 && filterSystem === "All";
+  const candidates = [];
   for (const [id, g] of organGroups) {
     const d = labelDivs.get(id);
     g.getWorldPosition(_v);
@@ -762,9 +558,33 @@ function updateLabels() {
     _v.y += 0.9;
     _v.project(camera);
     if (_v.z > 1 || _v.z < -1) { d.style.opacity = "0"; continue; }
-    d.style.left = ((_v.x * 0.5 + 0.5) * window.innerWidth) + "px";
-    d.style.top = ((-_v.y * 0.5 + 0.5) * window.innerHeight) + "px";
-    d.style.opacity = String(THREE.MathUtils.clamp((facing + 0.45) / 0.9, 0.08, 1));
+    const baseOpacity = THREE.MathUtils.clamp((facing + 0.45) / 0.9, 0.08, 1);
+    const x = rect.left + (_v.x * 0.5 + 0.5) * rect.width;
+    const y = rect.top + (-_v.y * 0.5 + 0.5) * rect.height;
+    d.style.left = x + "px";
+    d.style.top = y + "px";
+    let priority = 10;
+    if (LABEL_PRIMARY.has(id)) priority = 100;
+    if (id === hoveredId) priority = 500;
+    if (id === selectedId) priority = 1000;
+    candidates.push({
+      d, x, y, baseOpacity, priority,
+      w: d.offsetWidth || 60, h: d.offsetHeight || 18,
+      eligible: baseOpacity > 0.25 && (!farZoom || priority >= 100),
+    });
+  }
+  candidates.sort((a, b) => b.priority - a.priority);
+  const placed = [];
+  for (const c of candidates) {
+    if (!c.eligible) { c.d.style.opacity = "0"; continue; }
+    // The pill is drawn above its anchor (translate -50%, -140%).
+    const box = { l: c.x - c.w / 2 - 4, r: c.x + c.w / 2 + 4, t: c.y - c.h * 1.6 - 4, b: c.y + 4 };
+    if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) {
+      c.d.style.opacity = "0";
+      continue;
+    }
+    placed.push(box);
+    c.d.style.opacity = String(c.baseOpacity);
   }
 }
 
@@ -775,8 +595,9 @@ const tooltip = document.getElementById("tooltip");
 let downX = 0, downY = 0;
 
 function pickAt(clientX, clientY) {
-  pointer.x = (clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(clientY / window.innerHeight) * 2 + 1;
+  const r = viewRect();
+  pointer.x = ((clientX - r.left) / Math.max(1, r.width)) * 2 - 1;
+  pointer.y = -((clientY - r.top) / Math.max(1, r.height)) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects([...organGroups.values()], true);
   return hits.length ? hits[0].object.userData.organId : null;
@@ -852,11 +673,7 @@ function animate() {
   updateLabels();
 }
 
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+window.addEventListener("resize", resizeView);
 
 renderList();
 animate();

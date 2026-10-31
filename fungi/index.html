@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FungiVerse — The Forest-Floor Wing: Mushrooms &amp; Toadstools</title>
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="loading"><div class="shroom">🍄</div><p>Waking the forest floor…</p></div>
+<div id="webgl-fail" hidden>
+  <h2>🌧️ The forest could not wake here</h2>
+  <p>Your browser could not start WebGL, which FungiVerse needs to render its 3D woodland. Try a recent version of Chrome, Edge, Firefox or Safari with hardware acceleration enabled.</p>
+</div>
+
+<header>
+  <a class="back" href="../index.html">← Unusual Museum</a>
+  <div class="title-block">
+    <h1>FungiVerse</h1>
+    <p>The Forest-Floor Wing — Mushrooms &amp; Toadstools</p>
+  </div>
+  <div class="controls">
+    <button id="daynight" class="ctl-btn" aria-pressed="false">🌙 Night</button>
+    <button id="reset-view" class="ctl-btn">🧭 Reset view</button>
+    <label class="ctl-btn toggle"><input type="checkbox" id="labels-toggle" checked> Labels</label>
+  </div>
+</header>
+
+<div id="stage">
+  <canvas id="scene"></canvas>
+  <div id="labels"></div>
+  <div id="tooltip" hidden></div>
+</div>
+
+<aside id="panel">
+  <div class="panel-tools">
+    <input id="search" type="search" placeholder="Search the woods… (try ‘glow’ or ‘amanita’)">
+  </div>
+  <div id="fungus-list"></div>
+</aside>
+
+<article id="info" hidden>
+  <button id="info-close" aria-label="Close">×</button>
+  <div id="info-edibility" class="chip"></div>
+  <h2 id="info-name"></h2>
+  <div id="info-latin"></div>
+  <p id="info-tagline" class="tagline"></p>
+  <h3>🌲 Habitat</h3><p id="info-habitat"></p>
+  <h3>🍄 About</h3><p id="info-desc"></p>
+  <h3>✨ Did you know?</h3><p id="info-fact"></p>
+</article>
+
+<footer>
+  <div>Drag to wander · Scroll to zoom · Click a fungus to meet it · Built by Rajesh Kodaganti</div>
+  <div class="smallprint">Never eat a wild mushroom based on any app — expert ID only.</div>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

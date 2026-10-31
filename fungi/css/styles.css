@@ -1,0 +1,130 @@
+/* FungiVerse — mossy woodland theme, museum-wide layout system.
+   Desktop: 20px margins; header top-left; right list panel 320–360px,
+   top aligned with header; info bottom-left aligned to header's left
+   edge, never overlapping the right panel. Tablet narrows; phones go
+   single-column with a 52–60vh canvas block. */
+:root{
+  --mx:20px;
+  --panel-w:340px;
+  --ink:#24381f; --ink-soft:#55704c; --paper:rgba(252,253,246,.9);
+  --line:rgba(84,120,66,.3); --accent:#4d8f3a; --accent-2:#c96f2e;
+  --shadow:0 12px 32px rgba(39,66,32,.2);
+  --title:#356b27;
+}
+body.night{
+  --ink:#e2f2df; --ink-soft:#a5c49e; --paper:rgba(10,26,18,.86);
+  --line:rgba(140,220,160,.28); --accent:#7ed491; --accent-2:#e0a25e;
+  --shadow:0 12px 32px rgba(0,0,0,.5);
+  --title:#a9e29a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Avenir Next","Segoe UI",system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(#bfe0ae,#e6f2da)}
+body.night{background:linear-gradient(#07130d,#0d2015)}
+#stage{position:fixed;inset:0;z-index:1}
+#scene{width:100%;height:100%;display:block;touch-action:none}
+#loading{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;gap:.4rem;align-items:center;justify-content:center;
+  background:linear-gradient(#c9e8ba,#eef6e4);font-size:1.05rem;color:var(--ink-soft);transition:opacity .6s}
+#loading .shroom{font-size:3rem;animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px) rotate(-4deg)}}
+#webgl-fail{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:2rem;background:#f2f8ec}
+#webgl-fail[hidden]{display:none}
+
+/* ------------------------------- header -------------------------------- */
+header{position:fixed;top:var(--mx);left:var(--mx);z-index:20;display:flex;align-items:flex-start;gap:.7rem;max-width:calc(100vw - var(--panel-w) - var(--mx)*3)}
+.back{align-self:center;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);
+  padding:.42rem .8rem;border-radius:999px;font-size:.86rem;box-shadow:var(--shadow);backdrop-filter:blur(8px);white-space:nowrap}
+.back:hover{filter:brightness(1.05)}
+.title-block{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:.45rem 1rem .55rem;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+.title-block h1{margin:0;font-size:1.55rem;letter-spacing:.04em;color:var(--title)}
+.title-block p{margin:.05rem 0 0;font-size:.8rem;color:var(--ink-soft)}
+.controls{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center}
+.ctl-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;
+  padding:.5rem .85rem;font-size:.85rem;cursor:pointer;box-shadow:var(--shadow);backdrop-filter:blur(8px);
+  display:inline-flex;align-items:center;justify-content:center;gap:.35rem;font-family:inherit}
+.ctl-btn:hover{filter:brightness(1.05)}
+#daynight[aria-pressed="true"]{background:#173d24;color:#c9f5c0;border-color:#2c5c3a}
+.toggle{cursor:pointer}
+.toggle input{accent-color:var(--accent)}
+
+/* ----------------------------- right panel ------------------------------ */
+#panel{position:fixed;top:var(--mx);right:var(--mx);bottom:var(--mx);z-index:15;width:var(--panel-w);
+  display:flex;flex-direction:column;gap:.6rem}
+.panel-tools{display:flex;gap:.5rem;align-items:center;background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;padding:.5rem .6rem;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+#search{flex:1;min-width:0;border:1px solid var(--line);border-radius:9px;padding:.45rem .6rem;font-size:.85rem;background:transparent;color:var(--ink)}
+#fungus-list{flex:1;overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);backdrop-filter:blur(8px);padding:.55rem .6rem}
+#fungus-list button{display:flex;align-items:center;gap:.5rem;width:100%;text-align:left;border:0;background:transparent;
+  padding:.42rem .45rem;border-radius:9px;font-size:.88rem;color:var(--ink);cursor:pointer;font-family:inherit}
+#fungus-list button:hover{background:rgba(90,160,95,.14)}
+#fungus-list button.selected{background:rgba(77,143,58,.22);font-weight:600}
+#fungus-list .dot{width:.72rem;height:.72rem;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+#fungus-list .alt{color:var(--ink-soft);font-size:.75rem;font-style:italic}
+#fungus-list .ed-mini{margin-left:auto;flex:none;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  border-radius:999px;padding:.12rem .45rem}
+#fungus-list .empty{padding:.6rem .4rem;color:var(--ink-soft);font-size:.85rem}
+
+/* ------------------------------ info panel ------------------------------ */
+#info{position:fixed;left:var(--mx);bottom:calc(var(--mx) + 52px);z-index:16;
+  width:min(430px,calc(100vw - var(--panel-w) - var(--mx)*3));
+  background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);padding:.85rem 1rem .95rem;max-height:52vh;overflow-y:auto}
+#info[hidden]{display:none}
+#info-close{position:absolute;top:.35rem;right:.55rem;border:0;background:none;font-size:1.25rem;color:var(--ink-soft);cursor:pointer}
+.chip{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  border-radius:999px;padding:.22rem .65rem}
+.ed-green{background:rgba(46,140,60,.18);color:#1f6b2e;border:1px solid rgba(46,140,60,.55)}
+.ed-red{background:rgba(190,30,30,.16);color:#a31212;border:1px solid rgba(190,30,30,.6)}
+.ed-grey{background:rgba(110,110,110,.16);color:#5c6658;border:1px solid rgba(110,110,110,.45)}
+body.night .ed-green{color:#8fe3a0}
+body.night .ed-red{color:#ff9d94}
+body.night .ed-grey{color:#b9c4b4}
+#fungus-list .ed-green{background:rgba(46,140,60,.18);color:#1f6b2e}
+#fungus-list .ed-red{background:rgba(190,30,30,.16);color:#a31212}
+#fungus-list .ed-grey{background:rgba(110,110,110,.16);color:#5c6658}
+body.night #fungus-list .ed-green{color:#8fe3a0}
+body.night #fungus-list .ed-red{color:#ff9d94}
+body.night #fungus-list .ed-grey{color:#b9c4b4}
+#info h2{margin:.45rem 0 0;font-size:1.3rem;color:var(--title)}
+#info-latin{color:var(--ink-soft);font-size:.86rem;font-style:italic}
+.tagline{font-weight:600;color:var(--title)}
+#info h3{margin:.7rem 0 .15rem;font-size:.85rem}
+#info p{margin:.1rem 0;font-size:.88rem;line-height:1.45}
+
+/* ------------------------------ stage bits ------------------------------ */
+#tooltip{position:absolute;z-index:30;pointer-events:none;background:rgba(24,44,22,.92);color:#f0fae8;font-size:.8rem;
+  padding:.3rem .6rem;border-radius:8px;transform:translate(12px,14px);white-space:nowrap}
+#labels{position:absolute;inset:0;z-index:10;pointer-events:none;overflow:hidden}
+.label{position:absolute;transform:translate(-50%,-130%);font-size:.68rem;font-weight:600;color:#23401c;
+  background:rgba(255,255,255,.8);border:1px solid var(--line);padding:.1rem .42rem;border-radius:999px;white-space:nowrap}
+body.night .label{background:rgba(12,30,18,.82);color:#d6f2cf}
+
+/* -------------------------------- footer -------------------------------- */
+footer{position:fixed;left:50%;transform:translateX(-50%);bottom:var(--mx);z-index:20;background:var(--paper);
+  border:1px solid var(--line);border-radius:16px;padding:.42rem 1rem;font-size:.8rem;color:var(--ink-soft);
+  box-shadow:var(--shadow);backdrop-filter:blur(8px);text-align:center;max-width:min(680px,94vw)}
+footer .smallprint{font-size:.68rem;letter-spacing:.02em;margin-top:.1rem}
+
+/* -------------------------------- tablet -------------------------------- */
+@media (max-width:1023px){
+  :root{--mx:14px;--panel-w:300px}
+  .title-block h1{font-size:1.3rem}
+  #info{width:min(380px,calc(100vw - var(--panel-w) - var(--mx)*3))}
+}
+
+/* --------------------------------- phone -------------------------------- */
+@media (max-width:640px){
+  :root{--mx:12px}
+  html,body{height:auto;overflow-x:hidden;overflow-y:auto}
+  body{display:flex;flex-direction:column;min-height:100vh}
+  header{position:static;order:1;max-width:none;flex-wrap:wrap;margin:var(--mx) var(--mx) 0}
+  .controls{order:3;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+  .controls .toggle{grid-column:1/-1}
+  #stage{position:relative;order:2;inset:auto;height:56vh;flex:none;margin:var(--mx) var(--mx) 0;border-radius:16px;overflow:hidden}
+  #panel{position:static;order:3;width:auto;margin:var(--mx) var(--mx) 0;max-height:none}
+  #fungus-list{flex:none;max-height:34vh}
+  #info{position:static;order:4;width:auto;max-height:none;margin:var(--mx) var(--mx) 0}
+  footer{position:static;order:5;transform:none;max-width:none;margin:var(--mx)}
+}

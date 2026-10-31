@@ -51,6 +51,40 @@ controls.dampingFactor = 0.06;
 controls.minDistance = 4;
 controls.maxDistance = 900;
 
+/* ---------------- responsive framing ----------------
+   The canvas fills the viewport on desktop/tablet and becomes a 56vh
+   block in the mobile column layout, so sizing / projection math goes
+   through the canvas rect. On desktop/tablet a negative view offset
+   pushes the projected centre RIGHT, into the free space beside the
+   left explorer panel (partly balanced when the info panel opens). */
+const VIEW_SHIFT_DESKTOP = -80; // px the subject is pushed right, away from the explorer panel
+const VIEW_SHIFT_TABLET = -55;
+function viewRect() { return canvas.getBoundingClientRect(); }
+function viewShiftX() {
+  const w = window.innerWidth;
+  if (w < 641) return 0;
+  return w < 1024 ? VIEW_SHIFT_TABLET : VIEW_SHIFT_DESKTOP;
+}
+function applyViewOffset() {
+  const s = viewShiftX();
+  if (s) camera.setViewOffset(window.innerWidth, window.innerHeight, s, 0, window.innerWidth, window.innerHeight);
+  else camera.clearViewOffset();
+}
+function resizeView() {
+  const r = viewRect();
+  const w = Math.max(1, Math.round(r.width));
+  const h = Math.max(1, Math.round(r.height));
+  camera.aspect = w / h;
+  applyViewOffset();
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false);
+  // CSS owns the canvas box (100% desktop, 56vh block on mobile) —
+  // drop any inline size left by the bootstrap setSize call.
+  renderer.domElement.style.width = "";
+  renderer.domElement.style.height = "";
+}
+resizeView();
+
 scene.add(new THREE.AmbientLight(0x8899bb, 0.75));
 scene.add(new THREE.HemisphereLight(0xbdd0ff, 0x1a1408, 0.35));
 const sunLight = new THREE.PointLight(0xfff2d8, 3.4, 0, 0.35);
@@ -700,8 +734,9 @@ const pointer = new THREE.Vector2();
 let hovered = null;
 
 function castAt(cx, cy) {
-  pointer.x = (cx / window.innerWidth) * 2 - 1;
-  pointer.y = -(cy / window.innerHeight) * 2 + 1;
+  const r = viewRect();
+  pointer.x = ((cx - r.left) / Math.max(1, r.width)) * 2 - 1;
+  pointer.y = -((cy - r.top) / Math.max(1, r.height)) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects(pickMeshes, false);
   return hits.length ? hits[0].object : null;
@@ -848,8 +883,11 @@ function animate() {
 
   controls.update();
 
-  // --- labels ---
+  // --- labels (with screen-space declutter: greedy placement, the
+  // followed/selected body first; overlapping labels are hidden) ---
   if (labelsOn) {
+    const rect = viewRect();
+    const candidates = [];
     for (const L of labels) {
       const show = (mode === "system" && L.systemOnly) || (mode === "star" && L.starOnly);
       if (!show || (L.starOnly && !selectedStar)) { L.el.style.display = "none"; continue; }
@@ -858,9 +896,30 @@ function animate() {
       const proj = wp.clone().project(camera);
       if (proj.z > 1 || proj.z < -1) { L.el.style.display = "none"; continue; }
       L.el.style.display = "";
-      L.el.style.left = ((proj.x * 0.5 + 0.5) * window.innerWidth) + "px";
-      L.el.style.top = ((-proj.y * 0.5 + 0.5) * window.innerHeight) + "px";
-      L.el.style.opacity = THREE.MathUtils.clamp(1.6 - dist / 260, 0.25, 1);
+      const x = rect.left + (proj.x * 0.5 + 0.5) * rect.width;
+      const y = rect.top + (-proj.y * 0.5 + 0.5) * rect.height;
+      L.el.style.left = x + "px";
+      L.el.style.top = y + "px";
+      let priority = 100;
+      if (L.starOnly) priority = 900;
+      if (selectedBody && L.el.textContent === selectedBody.data.name) priority = 1000;
+      candidates.push({
+        el: L.el, x, y, priority,
+        w: L.el.offsetWidth || 70, h: L.el.offsetHeight || 16,
+        baseOpacity: THREE.MathUtils.clamp(1.6 - dist / 260, 0.25, 1),
+      });
+    }
+    candidates.sort((a, b) => b.priority - a.priority);
+    const placed = [];
+    for (const c of candidates) {
+      // The label is drawn above its anchor (translate -50%, -150%).
+      const box = { l: c.x - c.w / 2 - 4, r: c.x + c.w / 2 + 4, t: c.y - c.h * 1.7 - 4, b: c.y + 4 };
+      if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) {
+        c.el.style.opacity = "0";
+        continue;
+      }
+      placed.push(box);
+      c.el.style.opacity = String(c.baseOpacity);
     }
   }
 
@@ -868,11 +927,7 @@ function animate() {
 }
 animate();
 
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+window.addEventListener("resize", resizeView);
 
 // First frame rendered — lift the loading veil.
 requestAnimationFrame(() => requestAnimationFrame(() => {

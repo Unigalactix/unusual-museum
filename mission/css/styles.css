@@ -1,0 +1,369 @@
+/* MissionVerse — gallery styling. Deep space, mission-patch blue and signal orange.
+   Layout follows the museum-wide system: shared margin grid, header top-left,
+   fleet list docked right, info panel bottom-left, single column on mobile. */
+
+:root {
+  --margin: 20px;
+  --accent: #7fb2ff;
+  --accent-soft: rgba(127, 178, 255, 0.55);
+  --signal: #ffb35c;
+  --ink: #e8edf7;
+  --ink-dim: #9aa7c2;
+  --panel-bg: rgba(10, 14, 26, 0.8);
+  --panel-border: rgba(127, 178, 255, 0.32);
+  --night: #04060d;
+  --list-w: 340px;
+  --info-w: 400px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--night);
+  color: var(--ink);
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+#stage { position: fixed; inset: 0; }
+#stage canvas { display: block; }
+
+/* ---------- top bar ---------- */
+
+.topbar {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 20;
+  padding: var(--margin) var(--margin) 0;
+  pointer-events: none;
+  max-width: calc(100vw - var(--list-w) - (var(--margin) * 3));
+}
+
+.brand-block { pointer-events: auto; }
+
+.back-link {
+  display: inline-block;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+.back-link:hover { text-decoration: underline; }
+
+.topbar h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.05;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
+}
+
+.subtitle {
+  margin: 3px 0 0;
+  color: var(--ink-dim);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* ---------- fleet list panel (right) ---------- */
+
+.list-panel {
+  position: fixed;
+  z-index: 20;
+  top: var(--margin);
+  right: var(--margin);
+  width: var(--list-w);
+  max-height: calc(100vh - (var(--margin) * 2) - 44px);
+  overflow-y: auto;
+  padding: 18px 18px 14px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-soft) transparent;
+}
+
+.list-heading {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.craft-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.craft-item {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(127, 178, 255, 0.18);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.craft-item:hover { border-color: var(--accent); background: rgba(127, 178, 255, 0.1); }
+.craft-item:active { transform: scale(0.98); }
+.craft-item.active {
+  border-color: var(--signal);
+  background: rgba(255, 179, 92, 0.1);
+  box-shadow: 0 0 0 1px rgba(255, 179, 92, 0.35), 0 0 18px rgba(255, 179, 92, 0.12);
+}
+.craft-item .ci-name { display: block; font-size: 14.5px; font-weight: 600; line-height: 1.3; }
+.craft-item .ci-meta { display: block; margin-top: 2px; font-size: 12px; color: var(--ink-dim); letter-spacing: 0.03em; }
+
+.list-note {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-dim);
+}
+
+/* ---------- info panel (bottom-left) ---------- */
+
+.panel {
+  position: fixed;
+  z-index: 20;
+  left: var(--margin);
+  bottom: 52px;
+  width: min(var(--info-w), calc(100vw - var(--list-w) - (var(--margin) * 3)));
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  padding: 20px 22px 18px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-soft) transparent;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 11.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.panel h2 {
+  margin: 0 0 4px;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.origin {
+  margin: 0 0 10px;
+  color: var(--ink-dim);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.tagline {
+  margin: 0 0 12px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--signal);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 14px;
+}
+.stats > div {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(127, 178, 255, 0.16);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.stats dt {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 3px;
+}
+.stats dd { margin: 0; font-size: 13.5px; font-weight: 600; line-height: 1.35; }
+
+.description {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.fact {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--signal);
+  background: rgba(255, 179, 92, 0.08);
+  border-radius: 0 6px 6px 0;
+}
+.fact-label {
+  margin: 0 0 4px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+.fact-text { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--ink); }
+
+/* ---------- misc ---------- */
+
+.hint {
+  position: fixed;
+  z-index: 15;
+  left: 0; right: 0;
+  bottom: 12px;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--ink-dim);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  padding: 0 12px;
+}
+
+#tooltip {
+  position: fixed;
+  z-index: 30;
+  pointer-events: none;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border);
+  background: rgba(6, 9, 18, 0.9);
+  color: var(--signal);
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s;
+  transform: translate(-50%, -160%);
+}
+#tooltip.show { opacity: 1; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--night);
+  color: var(--ink-dim);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 24px;
+  transition: opacity 0.5s ease;
+}
+.overlay.gone { opacity: 0; pointer-events: none; }
+.overlay-error { background: rgba(4, 6, 13, 0.97); line-height: 1.6; }
+
+.spinner {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 3px solid rgba(127, 178, 255, 0.2);
+  border-top-color: var(--accent);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- tablet ---------- */
+
+@media (max-width: 1023px) {
+  :root { --list-w: 300px; --info-w: 350px; }
+  .topbar h1 { font-size: 27px; }
+  .subtitle { font-size: 12px; }
+  .panel { max-height: calc(100vh - 200px); }
+}
+
+/* ---------- mobile: single column flow
+   (header, canvas block 55vh, then panels full-width below) ---------- */
+
+@media (max-width: 640px) {
+  :root { --margin: 12px; }
+
+  html, body { height: auto; overflow-x: hidden; overflow-y: auto; }
+  body { display: flex; flex-direction: column; min-height: 100vh; }
+
+  .topbar {
+    position: static;
+    max-width: none;
+    padding: var(--margin) var(--margin) 10px;
+  }
+  .topbar h1 { font-size: 22px; }
+  .subtitle { font-size: 10.5px; }
+
+  #stage {
+    position: relative;
+    inset: auto;
+    flex: 0 0 auto;
+    width: 100%;
+    height: 55vh;
+    min-height: 320px;
+  }
+
+  .list-panel {
+    position: static;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    margin: var(--margin) var(--margin) 0;
+  }
+  .craft-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .craft-item { padding: 9px 10px; }
+  .craft-item .ci-name { font-size: 13.5px; }
+
+  .panel {
+    position: static;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    margin: var(--margin) var(--margin) 0;
+  }
+  .panel h2 { font-size: 21px; }
+  .stats { grid-template-columns: 1fr 1fr 1fr; }
+
+  .hint {
+    position: static;
+    margin-top: var(--margin);
+    padding: 0 var(--margin) 16px;
+    font-size: 11.5px;
+  }
+}

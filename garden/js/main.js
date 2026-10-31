@@ -4,6 +4,7 @@
 // and canvas-generated textures (wood grain, soil, leaf veins, potato speckle).
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { PRODUCE, ZONES } from './produce.js';
 
@@ -589,6 +590,42 @@ leafy.forEach((item, i) => {
   [-3.4, 3.4].forEach(z => bedGeo.add(soilBox(13.6, 2.6, ZONE_CENTERS.leafy.x, 0.32, z)));
   scene.add(bedGeo);
 }
+
+/* ------------- real licensed GLB models (see ../CREDITS.md) -------------
+   Carrot, broccoli and eggplant load real models from Poly Pizza (CC BY /
+   CC0). Each is normalised into the item's existing registered group, so
+   labels, picking, search and the selection pulse all keep working; the
+   new meshes join `pickables` under the same produce id. On any load
+   error the procedural vegetable stays in its crate. */
+const gltfLoader = new GLTFLoader();
+function swapProduceWithGLB(id, url, target) {
+  const rec = registry.get(id);
+  if (!rec) return;
+  gltfLoader.load(url, (gltf) => {
+    const inner = gltf.scene;
+    const box = new THREE.Box3().setFromObject(inner);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const s = target / maxDim;
+    inner.scale.setScalar(s);
+    inner.position.set(-center.x * s, -box.min.y * s, -center.z * s);
+    inner.traverse(o => {
+      if (o.isMesh) {
+        o.castShadow = true;
+        o.userData.produceId = id;
+        pickables.push(o);
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        mats.forEach(m => { if (m && 'envMapIntensity' in m) m.envMapIntensity = 0.5; });
+      }
+    });
+    rec.group.traverse(o => { if (o.isMesh) o.visible = false; }); // hide procedural first
+    rec.group.add(inner);
+  }, undefined, () => { /* GLB failed — procedural fallback stays */ });
+}
+swapProduceWithGLB('carrot', 'assets/models/carrot.glb', 1.25);
+swapProduceWithGLB('broccoli', 'assets/models/broccoli.glb', 1.05);
+swapProduceWithGLB('eggplant', 'assets/models/eggplant.glb', 1.15);
 
 /* -------------------------------- interaction ----------------------------- */
 const raycaster = new THREE.Raycaster();

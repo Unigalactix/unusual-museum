@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GemVerse — The Jeweller's Vault · The Unusual Museum</title>
+<meta name="description" content="A jeweller's vault of eight gemstones — amethyst, diamond, emerald, ruby, sapphire, opal, quartz and topaz — rendered in interactive 3D. Part of The Unusual Museum.">
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand-block">
+    <a class="back-link" href="../index.html">&larr; Unusual Museum</a>
+    <h1>GemVerse</h1>
+    <p class="subtitle">The Jeweller's Vault</p>
+  </div>
+</header>
+
+<main id="stage" aria-label="Interactive 3D gem vault"></main>
+
+<div id="tooltip" role="status"></div>
+
+<aside id="list-panel" class="list-panel" aria-label="Gemstones in the vault">
+  <h2 class="list-title">The Vault</h2>
+  <p class="list-sub">Eight stones on velvet — pick one to bring it under the lamp.</p>
+  <div id="gem-list" class="gem-list"></div>
+  <div class="vault-controls">
+    <label class="slider-row" for="sparkle-slider">
+      <span>Sparkle</span>
+      <input id="sparkle-slider" type="range" min="0" max="100" value="70">
+    </label>
+    <button id="rotate-toggle" class="btn" type="button" aria-pressed="true" title="Turn the stones on their cushions">Rotation: On</button>
+  </div>
+</aside>
+
+<aside id="panel" class="panel" aria-live="polite">
+  <button id="panel-close" class="panel-close" type="button" aria-label="Close gem panel">&times;</button>
+  <p class="eyebrow" id="panel-eyebrow">Welcome to the vault</p>
+  <h2 id="panel-name">Eight stones, one velvet row</h2>
+  <p class="tagline" id="panel-tagline">Every gem in this case grew in the dark — we just gave it light.</p>
+  <dl class="stats" id="panel-stats" hidden>
+    <div class="stat"><dt>Mohs hardness</dt><dd id="stat-mohs"></dd></div>
+    <div class="stat"><dt>Formula</dt><dd id="stat-formula"></dd></div>
+    <div class="stat"><dt>Mineral</dt><dd id="stat-class"></dd></div>
+    <div class="stat"><dt>Colour</dt><dd id="stat-color"></dd></div>
+  </dl>
+  <p class="description" id="panel-description">Drag to look along the row, scroll to zoom, and click any stone — or choose from the vault list — to step up to its cushion. The lamp above the selected stone warms, the way a jeweller swings a light over a tray. Use the Sparkle slider to turn the stones' fire up or down.</p>
+  <div class="fact" id="panel-fact-wrap">
+    <p class="fact-label">Did you know?</p>
+    <p class="fact-text" id="panel-fact">Hardness is not toughness: a diamond is the hardest natural material, yet a sharp blow along its cleavage plane can split it. Jewellers have ruined fortunes with one careless tap.</p>
+  </div>
+</aside>
+
+<nav class="exhibit-nav" aria-label="Gem navigation">
+  <p id="now-viewing">The Whole Vault</p>
+  <div class="nav-row">
+    <button id="prev-btn" class="nav-btn" type="button" aria-label="Previous gem">&#8249;</button>
+    <div id="dots" class="dots"></div>
+    <button id="next-btn" class="nav-btn" type="button" aria-label="Next gem">&#8250;</button>
+  </div>
+  <button id="hall-btn" class="btn btn-small" type="button">View whole vault</button>
+</nav>
+
+<footer class="hint">Drag to orbit &middot; Scroll to zoom &middot; Click a gem to inspect it &middot; &larr; &rarr; keys change gem &middot; Built by Rajesh Kodaganti</footer>
+
+<div id="loading" class="overlay">
+  <div class="spinner" aria-hidden="true"></div>
+  <p>Unlocking the vault&hellip;</p>
+</div>
+
+<div id="webgl-fail" class="overlay overlay-error" hidden>
+  <p><strong>The vault could not open.</strong><br>Your browser does not seem to support WebGL, which the 3D vault needs. Try a recent version of Chrome, Edge, Firefox or Safari.</p>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

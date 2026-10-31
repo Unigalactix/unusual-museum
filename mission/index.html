@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MissionVerse — Real NASA Spacecraft in 3D · The Unusual Museum</title>
+<meta name="description" content="Five real NASA spacecraft — space station, telescopes and a Mars rover — as interactive 3D models from NASA's public-domain 3D Resources. Part of The Unusual Museum.">
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand-block">
+    <a class="back-link" href="../index.html">&larr; Unusual Museum</a>
+    <h1>MissionVerse</h1>
+    <p class="subtitle">Real Machines, Real Missions</p>
+  </div>
+</header>
+
+<main id="stage" aria-label="Interactive 3D spacecraft gallery"></main>
+
+<div id="tooltip" role="status"></div>
+
+<aside class="list-panel" aria-label="Spacecraft list">
+  <p class="list-heading">The Fleet</p>
+  <ul id="craft-list" class="craft-list"></ul>
+  <p class="list-note">Every model is a real NASA 3D scan, served from NASA&rsquo;s public-domain 3D Resources collection.</p>
+</aside>
+
+<aside id="panel" class="panel" aria-live="polite">
+  <p class="eyebrow" id="panel-eyebrow">Welcome aboard</p>
+  <h2 id="panel-name">Five spacecraft, one sky</h2>
+  <p class="origin" id="panel-origin">NASA 3D Resources &middot; public domain</p>
+  <p class="tagline" id="panel-tagline">These are not artist&rsquo;s impressions &mdash; they are NASA&rsquo;s own 3D models of the real machines.</p>
+  <dl class="stats" id="panel-stats" hidden>
+    <div><dt>Agency</dt><dd id="stat-agency"></dd></div>
+    <div><dt>Launched</dt><dd id="stat-launch"></dd></div>
+    <div><dt>Type</dt><dd id="stat-type"></dd></div>
+  </dl>
+  <p class="description" id="panel-description">Drag to orbit the fleet, scroll to zoom, and click any spacecraft &mdash; or pick one from The Fleet list &mdash; to fly up close. A glowing ring marks your selection.</p>
+  <div class="fact" id="panel-fact-wrap">
+    <p class="fact-label">Did you know?</p>
+    <p class="fact-text" id="panel-fact">NASA publishes these models free for anyone to explore &mdash; the same files used by educators, filmmakers and museum builders around the world.</p>
+  </div>
+</aside>
+
+<footer class="hint">Drag to orbit &middot; Scroll to zoom &middot; Click a spacecraft to visit it<br>Built by Rajesh Kodaganti &middot; Models: NASA 3D Resources (public domain)</footer>
+
+<div id="loading" class="overlay">
+  <div class="spinner" aria-hidden="true"></div>
+  <p>Launching MissionVerse&hellip;</p>
+</div>
+
+<div id="webgl-fail" class="overlay overlay-error" hidden>
+  <p><strong>Mission control could not open the gallery.</strong><br>Your browser does not seem to support WebGL, which the 3D view needs. Try a recent version of Chrome, Edge, Firefox or Safari.</p>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

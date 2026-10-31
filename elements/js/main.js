@@ -53,6 +53,45 @@ controls.minDistance = 6;
 controls.maxDistance = 220;
 controls.autoRotateSpeed = 0.7;
 
+/* ---------------- responsive framing ----------------
+   The stage fills the viewport on desktop/tablet and becomes a 56vh
+   block in the mobile column layout, so sizing uses the stage rect.
+   On desktop/tablet a view offset shifts the projected centre into
+   the free space LEFT of the detail card — in atom view the atom is
+   centred in that free area, never behind the card. */
+const VIEW_SHIFT_DESKTOP = 175; // px the subject is pushed left, away from the detail card
+const VIEW_SHIFT_TABLET = 140;
+function viewRect() { return stage.getBoundingClientRect(); }
+function viewShiftX() {
+  const w = window.innerWidth;
+  if (w < 641) return 0;
+  return w < 1024 ? VIEW_SHIFT_TABLET : VIEW_SHIFT_DESKTOP;
+}
+function applyViewOffset() {
+  const s = viewShiftX();
+  if (s) camera.setViewOffset(window.innerWidth, window.innerHeight, s, 0, window.innerWidth, window.innerHeight);
+  else camera.clearViewOffset();
+}
+function resizeView() {
+  const r = viewRect();
+  const w = Math.max(1, Math.round(r.width));
+  const h = Math.max(1, Math.round(r.height));
+  camera.aspect = w / h;
+  applyViewOffset();
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false);
+  // CSS owns the canvas box (100% desktop, 56vh block on mobile) —
+  // drop any inline size left by the bootstrap setSize call.
+  renderer.domElement.style.width = "";
+  renderer.domElement.style.height = "";
+}
+function setPointerFromClient(cx, cy) {
+  const r = viewRect();
+  pointer.x = ((cx - r.left) / Math.max(1, r.width)) * 2 - 1;
+  pointer.y = -((cy - r.top) / Math.max(1, r.height)) * 2 + 1;
+}
+resizeView();
+
 scene.add(new THREE.AmbientLight(0xbfd4ff, 0.55));
 const key = new THREE.DirectionalLight(0xffffff, 1.6);
 key.position.set(30, 50, 60);
@@ -404,8 +443,7 @@ let downPos = null;
 
 renderer.domElement.addEventListener('pointermove', ev => {
   pointerPx = { x: ev.clientX, y: ev.clientY };
-  pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+  setPointerFromClient(ev.clientX, ev.clientY);
 });
 renderer.domElement.addEventListener('pointerdown', ev => { downPos = { x: ev.clientX, y: ev.clientY }; });
 renderer.domElement.addEventListener('pointerup', ev => {
@@ -413,8 +451,7 @@ renderer.domElement.addEventListener('pointerup', ev => {
   const moved = Math.hypot(ev.clientX - downPos.x, ev.clientY - downPos.y);
   downPos = null;
   if (moved > 6 || mode !== 'table') return;
-  pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+  setPointerFromClient(ev.clientX, ev.clientY);
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects(tiles, false);
   if (hits.length) selectElement(hits[0].object.userData.el);
@@ -519,11 +556,7 @@ function animate(now) {
 }
 requestAnimationFrame(animate);
 
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+window.addEventListener('resize', resizeView);
 
 /* ---------------- ready ---------------- */
 window.__elementumReady = true;

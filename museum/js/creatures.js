@@ -35,9 +35,10 @@ export const CREATURES = [
       'longship whole. Naturalists later decided the tales were probably giant ' +
       'squid, magnified by fear, fog and long nights at sea.',
     fact:
-      'Museum note: The suckers on this model are deliberately oversized. ' +
-      'Sailors swore each one was \u201Cbig as a dinner plate, and twice as ' +
-      'grabby\u201D \u2014 lean in close and you can judge for yourself.',
+      'Museum note: Sailors swore the suckers on each arm were \u201Cbig as a ' +
+      'dinner plate, and twice as grabby.\u201D Our specimen is a true giant ' +
+      'octopus standing in for its mythic cousin \u2014 count the arms: eight, ' +
+      'every one of them accounted for.',
   },
   {
     id: 'dragon',

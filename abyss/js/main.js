@@ -4,6 +4,7 @@
 
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { SPECIMENS } from "./specimens.js";
 
@@ -602,6 +603,48 @@ canvas.addEventListener("pointerup", (e) => {
   const i = tankFromEvent(e);
   if (i >= 0) showSpecimen(i);
 });
+
+/* ---------------- real licensed GLB: anglerfish (see ../CREDITS.md) ----------------
+   Tank 01 loads a real anglerfish model (CC BY, via Poly Pizza). On success
+   it replaces the procedural fish inside the same specimen group (so bobbing,
+   sway and picking behave identically); the procedural lure light + halo are
+   kept and re-seated at the model's head for the glow ambience, driven by the
+   same glow slider / sonar system. On any load error the procedural
+   anglerfish simply stays — Tank 01 is never empty. */
+{
+  const entry = tanks[0];
+  new GLTFLoader().load("assets/models/anglerfish.glb", (gltf) => {
+    const inner = gltf.scene;
+    const box = new THREE.Box3().setFromObject(inner);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const s = 2.1 / maxDim;
+    inner.scale.setScalar(s);
+    inner.position.set(-center.x * s, -center.y * s, -center.z * s);
+    inner.traverse((o) => {
+      if (o.isMesh) {
+        o.castShadow = true;
+        o.userData.tankIndex = 0;
+        pickTargets.push(o); // keep click/hover picking working on the real model
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        mats.forEach((m) => { if (m) { m.envMap = ENV_TEX; m.envMapIntensity = 0.35; } });
+      }
+    });
+    // Hide the procedural fish — except the glow halo, which is re-seated below.
+    const halo = entry.animated.halo;
+    entry.specimen.traverse((o) => { if (o.isMesh && o !== halo) o.visible = false; });
+    entry.specimen.add(inner);
+    // Glow lure: a bright core + the kept halo, placed at the model's
+    // top-front where its esca belongs; they pulse with the tank's glow.
+    const lurePos = new THREE.Vector3(0, size.y * s * 0.30, size.z * s * 0.55);
+    const glowCore = new THREE.Mesh(new THREE.SphereGeometry(0.07, 14, 10), glowMaterial(0x63ffd8, 3.2));
+    glowCore.position.copy(lurePos);
+    entry.specimen.add(glowCore);
+    if (halo) halo.position.copy(lurePos);
+    if (entry.animated.lureLight) entry.animated.lureLight.position.copy(lurePos);
+  }, undefined, () => { /* GLB failed — procedural anglerfish stays */ });
+}
 
 /* ---------------- HTML labels ---------------- */
 const labelsRoot = document.getElementById("labels");

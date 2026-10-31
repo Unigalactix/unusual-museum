@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MicroVerse — A Drop of Pond Water in 3D · The Unusual Museum</title>
+<meta name="description" content="MicroVerse is an interactive 3D microscope chamber: eight microbes — a bacteriophage, SARS-CoV-2, E. coli, influenza, a tardigrade, an amoeba, a paramecium and brewer's yeast — drifting in a drop of pond water. Built by Rajesh Kodaganti." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+  <canvas id="scene" aria-label="Interactive 3D chamber of microbes drifting in a drop of pond water"></canvas>
+
+  <div id="labels" aria-hidden="true"></div>
+  <div id="tooltip" aria-hidden="true"></div>
+
+  <div id="loading" role="status">
+    <div class="loader-ring"></div>
+    <p class="loader-title">MicroVerse</p>
+    <p class="loader-sub">Focusing the microscope…</p>
+  </div>
+
+  <div id="webgl-fail" hidden>
+    <div class="fail-card">
+      <h2>WebGL is not available</h2>
+      <p>MicroVerse needs WebGL to render the 3D chamber. Please try a modern browser
+         with hardware acceleration enabled.</p>
+      <p><a href="../index.html" style="color:inherit">← Back to The Unusual Museum</a></p>
+    </div>
+  </div>
+
+  <header class="panel glass" id="site-header">
+    <p class="byline"><a href="../index.html" style="color:inherit">← Unusual Museum</a></p>
+    <h1><span class="logo-dot"></span>MicroVerse</h1>
+    <p class="subtitle">A drop of pond water under the microscope — eight tiny lives, drifting in 3D. Tap any microbe to meet it.</p>
+    <p class="byline">Built by Rajesh Kodaganti</p>
+  </header>
+
+  <aside class="panel glass" id="sidebar" aria-label="Microbe explorer">
+    <div class="sidebar-head">
+      <h2>Meet the microbes</h2>
+      <div class="chips" role="group" aria-label="Filter microbes by type">
+        <button class="chip active" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" data-filter="virus" aria-pressed="false">Virus</button>
+        <button class="chip" data-filter="bacteria" aria-pressed="false">Bacteria</button>
+        <button class="chip" data-filter="other" aria-pressed="false">Other</button>
+      </div>
+    </div>
+    <ul id="microbe-list"></ul>
+    <p id="no-results" hidden>No microbes in this group.</p>
+    <p class="note">⚠ <strong>Sizes not to scale</strong> — in reality the viruses are thousands of times smaller than the tardigrade. They're shown together at similar sizes so you can explore them side by side.</p>
+
+    <div class="controls">
+      <div class="control-row btn-row">
+        <button id="toggle-motion" class="btn" aria-pressed="true">Motion: On</button>
+        <button id="reset-view" class="btn accent">Reset view</button>
+      </div>
+    </div>
+  </aside>
+
+  <section class="panel glass" id="info-panel" aria-live="polite">
+    <p class="info-eyebrow">Now viewing</p>
+    <h2 id="info-name">A drop of pond water</h2>
+    <p id="info-meta">Eight microbes · one drop</p>
+    <p id="info-tagline">A whole ecosystem, smaller than a pinhead.</p>
+    <p id="info-desc">Everything in this chamber is real: viruses that hunt bacteria, a bacterium that swims with a rotary motor, the toughest animal known, and the yeast that bakes bread. They drift together here at similar sizes so you can compare them — the true sizes are listed for each one. Click any microbe in the water, or pick one from the list, to take a closer look.</p>
+    <p id="info-fact-wrap"><span class="fact-label">Did you know?</span> <span id="info-fact">A single drop of pond water can hold thousands of micro-organisms — and most of them, like most of these eight, are completely harmless to us.</span></p>
+  </section>
+
+  <footer id="hint-bar">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click a microbe</footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

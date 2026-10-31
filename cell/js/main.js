@@ -101,6 +101,47 @@ controls.maxDistance = 55;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.7;
 
+/* ------------------------------------------------------------------ */
+/* Responsive framing                                                  */
+/* The canvas fills the viewport on desktop/tablet and becomes a 56vh  */
+/* block in the mobile column layout, so all sizing / projection math  */
+/* goes through the canvas rect, never the window. On desktop/tablet a */
+/* view offset shifts the projected centre into the free space beside  */
+/* the docked panels (right sidebar), so the cell is never behind UI.  */
+/* ------------------------------------------------------------------ */
+const VIEW_SHIFT_DESKTOP = 150; // px the subject is pushed left, away from the sidebar
+const VIEW_SHIFT_TABLET = 110;
+function viewRect() { return canvas.getBoundingClientRect(); }
+function viewShiftX() {
+  const w = window.innerWidth;
+  if (w < 641) return 0;
+  return w < 1024 ? VIEW_SHIFT_TABLET : VIEW_SHIFT_DESKTOP;
+}
+function applyViewOffset() {
+  const s = viewShiftX();
+  if (s) camera.setViewOffset(window.innerWidth, window.innerHeight, s, 0, window.innerWidth, window.innerHeight);
+  else camera.clearViewOffset();
+}
+function resizeView() {
+  const r = viewRect();
+  const w = Math.max(1, Math.round(r.width));
+  const h = Math.max(1, Math.round(r.height));
+  camera.aspect = w / h;
+  applyViewOffset();
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false);
+  // CSS owns the canvas box (100% desktop, 56vh block on mobile) —
+  // drop any inline size left by the bootstrap setSize call.
+  renderer.domElement.style.width = "";
+  renderer.domElement.style.height = "";
+}
+function setPointerFromClient(cx, cy) {
+  const r = viewRect();
+  pointer.x = ((cx - r.left) / Math.max(1, r.width)) * 2 - 1;
+  pointer.y = -((cy - r.top) / Math.max(1, r.height)) * 2 + 1;
+}
+resizeView();
+
 /* Lights */
 scene.add(new THREE.AmbientLight(0x8899bb, 0.75));
 const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
@@ -690,8 +731,7 @@ let pointerClient = { x: 0, y: 0 };
 let pointerDirty = false;
 
 canvas.addEventListener("pointermove", (e) => {
-  pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  setPointerFromClient(e.clientX, e.clientY);
   pointerClient = { x: e.clientX, y: e.clientY };
   pointerDirty = true;
 });
@@ -715,8 +755,7 @@ canvas.addEventListener("pointerup", (e) => {
   const moved = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
   downPos = null;
   if (moved > 6) return; // it was a drag, not a click
-  pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  setPointerFromClient(e.clientX, e.clientY);
   const hit = pickAtPointer();
   if (!hit) { deselect(true); return; }
   const unit = units.find((u) => u.typeId === hit.object.userData.typeId &&
@@ -764,9 +803,19 @@ function firstUnitOfType(typeId) {
   return units.find((u) => u.typeId === typeId);
 }
 const labelAnchorLocal = new THREE.Vector3();
+/* Label declutter: labels are placed greedily in screen space, highest
+   priority first (selected type, then primary organelles, then the rest);
+   any label whose pill would overlap an already-placed pill is hidden.
+   When zoomed far out (camera distance > 34) only primary labels compete
+   at all; closer in — or with any selection — everything competes and the
+   collision pass alone keeps the view tidy. */
+const LABEL_PRIMARY = new Set(["membrane", "nucleus", "mitochondria", "rough-er", "golgi", "vacuole"]);
 function updateLabels() {
   if (!labelsOn) return;
+  const rect = viewRect();
   const camDir = camera.position.clone().normalize();
+  const farZoom = camera.position.distanceTo(controls.target) > 34 && !selectedType;
+  const candidates = [];
   for (const o of ORGANELLES) {
     const div = labelDivs[o.id];
     const unit = firstUnitOfType(o.id);
@@ -777,10 +826,32 @@ function updateLabels() {
     const facing = labelAnchorLocal.dot(camDir);
     const projected = wp.clone().project(camera);
     const behind = projected.z > 1;
-    const x = (projected.x * 0.5 + 0.5) * window.innerWidth;
-    const y = (-projected.y * 0.5 + 0.5) * window.innerHeight;
+    const x = rect.left + (projected.x * 0.5 + 0.5) * rect.width;
+    const y = rect.top + (-projected.y * 0.5 + 0.5) * rect.height;
     div.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -160%)`;
-    div.style.opacity = behind ? "0" : String(THREE.MathUtils.clamp((facing - 0.05) * 2.2, 0, 1));
+    const baseOpacity = behind ? 0 : THREE.MathUtils.clamp((facing - 0.05) * 2.2, 0, 1);
+    let priority = 10;
+    if (LABEL_PRIMARY.has(o.id)) priority = 100;
+    if (o.id === selectedType) priority = 1000;
+    if (o.id === hoveredType) priority = 500;
+    candidates.push({
+      div, x, y, baseOpacity, priority,
+      w: div.offsetWidth || 70, h: div.offsetHeight || 16,
+      eligible: baseOpacity > 0.15 && (!farZoom || priority >= 100),
+    });
+  }
+  candidates.sort((a, b) => b.priority - a.priority);
+  const placed = [];
+  for (const c of candidates) {
+    if (!c.eligible) { c.div.style.opacity = "0"; continue; }
+    // The pill is drawn above its anchor (translate -50%, -160%).
+    const box = { l: c.x - c.w / 2 - 4, r: c.x + c.w / 2 + 4, t: c.y - c.h * 1.8 - 4, b: c.y };
+    if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) {
+      c.div.style.opacity = "0";
+      continue;
+    }
+    placed.push(box);
+    c.div.style.opacity = String(c.baseOpacity);
   }
 }
 
@@ -889,8 +960,4 @@ function animate() {
 }
 animate();
 
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+window.addEventListener("resize", resizeView);

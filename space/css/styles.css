@@ -38,7 +38,7 @@ html, body {
 
 /* ---------- HUD frame ---------- */
 .hud { position: fixed; left: 0; right: 0; z-index: 20; pointer-events: none; }
-.hud.top { top: 0; display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 22px; }
+.hud.top { top: 0; display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px; }
 .hud > * { pointer-events: auto; }
 
 .back {
@@ -79,7 +79,7 @@ html, body {
 
 /* ---------- explorer (left list panel) ---------- */
 .explorer {
-  position: fixed; z-index: 24; top: 104px; left: 22px; width: 248px;
+  position: fixed; z-index: 24; top: 104px; left: 20px; width: 260px;
   max-height: calc(100vh - 230px); display: flex; flex-direction: column;
   background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
   padding: 14px; backdrop-filter: blur(12px);
@@ -119,7 +119,7 @@ html, body {
 
 /* ---------- info panel ---------- */
 .panel {
-  position: fixed; z-index: 25; top: 104px; right: 22px; width: min(370px, calc(100vw - 44px));
+  position: fixed; z-index: 25; top: 104px; right: 20px; width: min(360px, calc(100vw - 40px));
   max-height: calc(100vh - 230px); overflow-y: auto;
   background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
   padding: 22px 24px 20px; backdrop-filter: blur(12px);
@@ -144,7 +144,7 @@ html, body {
 /* ---------- bottom controls ---------- */
 .hud.bottom {
   bottom: 34px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;
-  align-items: center; padding: 0 22px;
+  align-items: center; padding: 0 20px;
 }
 .controls-left, .controls-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .ctl {
@@ -169,15 +169,48 @@ input[type="range"] { accent-color: var(--accent); width: 110px; }
   pointer-events: none;
 }
 
-/* ---------- mobile ---------- */
-@media (max-width: 860px) {
+/* ---------- tablet ---------- */
+@media (max-width: 1023px) {
   .scale-note { display: none; }
-  .explorer { top: auto; bottom: 120px; left: 12px; width: 196px; max-height: 34vh; padding: 10px; }
-  .panel { top: auto; bottom: 120px; right: 12px; width: min(320px, calc(100vw - 230px)); max-height: 46vh; padding: 16px; }
-  .hud.bottom { bottom: 44px; padding: 0 12px; justify-content: center; }
-  .hint { display: none; }
+  .explorer { width: 232px; top: 100px; }
+  .panel { width: min(330px, calc(100vw - 40px)); top: 100px; }
+  .title-block h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
 }
-@media (max-width: 560px) {
-  .panel { width: calc(100vw - 24px); bottom: auto; top: 96px; max-height: 40vh; }
-  .explorer { bottom: 118px; max-height: 30vh; }
+
+/* ---------- mobile: single scrolling column ----------
+   header → canvas block (56vh, unobstructed) → explorer → info → controls. */
+@media (max-width: 640px) {
+  html, body { height: auto; overflow-y: auto; overflow-x: hidden; }
+  body { display: flex; flex-direction: column; min-height: 100vh; }
+  .hud.top {
+    position: relative; order: 1; padding: 12px; gap: 10px;
+    align-items: center; flex-wrap: wrap;
+  }
+  .title-block { text-align: left; padding: 0; }
+  .title-block h1 { font-size: 1.35rem; letter-spacing: 0.24em; text-indent: 0.24em; }
+  .subtitle { display: none; }
+  .scale-note { display: none; }
+  #scene { position: relative; order: 2; inset: auto; width: 100%; height: 56vh; flex: none; }
+  .explorer {
+    position: relative; order: 3; top: auto; left: auto;
+    width: auto; max-height: none; margin: 12px 12px 0;
+  }
+  .explorer .list { max-height: 30vh; }
+  .panel {
+    position: relative; order: 4; top: auto; right: auto;
+    width: auto; max-height: none; margin: 12px 12px 0; padding: 16px 18px;
+  }
+  .hud.bottom {
+    position: relative; order: 5; bottom: auto; padding: 12px;
+    flex-direction: column; align-items: stretch; gap: 10px;
+  }
+  .controls-left, .controls-right {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;
+  }
+  .controls-left .slider-wrap { grid-column: 1 / -1; justify-content: space-between; }
+  .controls-left .ctl, .controls-right .ctl { width: 100%; text-align: center; }
+  .segmented { grid-column: 1 / -1; }
+  .segmented .seg { flex: 1; }
+  input[type="range"] { flex: 1; }
+  .hint { display: none; }
 }

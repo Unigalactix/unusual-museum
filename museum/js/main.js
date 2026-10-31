@@ -1,12 +1,15 @@
 /*
  * Mythos Museum — interactive 3D gallery of creatures that never existed.
- * Every model is built procedurally from Three.js primitives and curves;
- * there are no external assets. Lighting has two moods — Day and Dusk —
+ * Each creature is built procedurally from Three.js primitives and curves;
+ * where a licensed real model exists (see ../CREDITS.md) it is loaded from
+ * local GLB files and the procedural build remains as the fallback.
+ * Lighting has two moods — Day and Dusk —
  * cross-faded by lerping every light, the fog and the floor tint.
  */
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { CREATURES } from './creatures.js';
 
@@ -822,6 +825,79 @@ scene.traverse((o) => {
 });
 
 /* ------------------------------------------------------------------ */
+/* Real licensed GLB models (Poly Pizza — see ../CREDITS.md).         */
+/* Loaded async per exhibit: on success the GLB replaces the          */
+/* procedural meshes, while the exhibit's particles and point light   */
+/* (embers, bubbles, sparkles — not meshes) keep running. On any      */
+/* load error the procedural build simply stays: the hall never       */
+/* shows an empty pedestal.                                           */
+/* ------------------------------------------------------------------ */
+
+const glbMixers = [];
+const gltfLoader = new GLTFLoader();
+
+function fitModel(obj, target) {
+  // Normalise: largest dimension -> target, centred on x/z, grounded at y=0.
+  const box = new THREE.Box3().setFromObject(obj);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z) || 1;
+  const s = target / maxDim;
+  obj.scale.setScalar(s);
+  obj.position.set(-center.x * s, -box.min.y * s, -center.z * s);
+}
+
+function swapExhibitWithGLB(index, url, { target = 3, clip = null, tint = null, emissive = null } = {}) {
+  gltfLoader.load(url, (gltf) => {
+    const ex = exhibits[index];
+    if (!ex) return;
+    const holder = new THREE.Group();
+    holder.userData.exhibitIndex = index;
+    const inner = gltf.scene;
+    fitModel(inner, target);
+    holder.add(inner);
+    inner.traverse((o) => {
+      if (o.isMesh) {
+        o.castShadow = true;
+        o.receiveShadow = true;
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        mats.forEach((m) => {
+          if (!m) return;
+          if ('envMapIntensity' in m) m.envMapIntensity = 0.35;
+          if (tint && m.color) m.color.multiply(tint);
+          if (emissive && 'emissive' in m) { m.emissive.setHex(emissive.hex); m.emissiveIntensity = emissive.intensity; }
+        });
+      }
+    });
+    // Hide the procedural meshes (Points particles and PointLights survive).
+    ex.model.traverse((o) => { if (o.isMesh) o.visible = false; });
+    ex.model.add(holder);
+    ex.glbHolder = holder;
+    if (gltf.animations && gltf.animations.length) {
+      const mixer = new THREE.AnimationMixer(inner);
+      const chosen = (clip && gltf.animations.find((a) => a.name.includes(clip))) || gltf.animations[0];
+      mixer.clipAction(chosen).play();
+      glbMixers.push(mixer);
+    }
+  }, undefined, () => { /* GLB failed — procedural fallback stays on the pedestal */ });
+}
+
+// Phoenix — built on an eagle model (CC BY, Poly by Google), flame-tinted
+// with a warm emissive so it reads as the firebird; embers keep rising.
+swapExhibitWithGLB(0, 'assets/models/eagle.glb', {
+  target: 2.9, tint: new THREE.Color(1.0, 0.60, 0.28), emissive: { hex: 0xff5a00, intensity: 0.14 },
+});
+// Kraken — an octopus model (CC BY, Poly by Google) scaled large and
+// teal-tinted; the plaque still tells the suckers story.
+swapExhibitWithGLB(1, 'assets/models/octopus.glb', {
+  target: 3.1, tint: new THREE.Color(0.78, 1.0, 1.02),
+});
+// Dragon — Quaternius (CC0), animated; the Flying clip idles on the rock.
+swapExhibitWithGLB(2, 'assets/models/dragon.glb', { target: 3.1, clip: 'Flying' });
+// Unicorn — Thomas DR (CC BY).
+swapExhibitWithGLB(3, 'assets/models/unicorn.glb', { target: 3.0 });
+
+/* ------------------------------------------------------------------ */
 /* Selection, panel and camera flights                                 */
 /* ------------------------------------------------------------------ */
 
@@ -1038,6 +1114,9 @@ function animate() {
 
   // Particles.
   for (const p of particleSystems) p.userData.update(dt);
+
+  // GLB animation clips (e.g. the dragon's idle flight).
+  for (const mx of glbMixers) mx.update(dt);
 
   // Camera flight.
   if (camAnim.active) {

@@ -1,0 +1,243 @@
+/* ============================================================
+   The Unusual Museum — PREMIUM landing layer
+   Loaded AFTER the hub's base styles; everything here enhances
+   or overrides them. Gallery folders are untouched.
+   ============================================================ */
+
+:root{
+  --gold:#d9a441;
+  --gold-soft:#ffd9a0;
+  --glass:rgba(15,17,32,.72);
+}
+
+html, body{ overflow-x:hidden; }
+
+::selection{ background:rgba(217,164,65,.88); color:#171106; }
+
+:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+  border-radius:6px;
+}
+
+::-webkit-scrollbar{ width:10px; }
+::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.16); border-radius:8px; }
+::-webkit-scrollbar-thumb:hover{ background:rgba(255,255,255,.28); }
+
+@media (prefers-reduced-motion: no-preference){
+  html{ scroll-behavior:smooth; }
+}
+
+/* ---------- Cinematic backdrop ---------- */
+#starfield{
+  position:fixed; inset:0;
+  width:100%; height:100%;
+  z-index:-2;
+  pointer-events:none;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(900px 520px at 88% -6%, rgba(88,64,190,.20), transparent 60%),
+    radial-gradient(820px 620px at 6% 108%, rgba(16,116,138,.15), transparent 62%),
+    radial-gradient(620px 380px at 50% 118%, rgba(217,164,65,.06), transparent 65%);
+}
+
+/* ---------- Hero ---------- */
+header{
+  position:relative;
+  background:radial-gradient(560px circle at var(--mx,50%) var(--my,30%), rgba(217,164,65,.09), transparent 62%);
+  border-radius:28px;
+}
+.eyebrow{
+  color:var(--gold);
+  display:flex; align-items:center; justify-content:center; gap:16px;
+}
+.eyebrow::before, .eyebrow::after{
+  content:""; height:1px; width:46px;
+}
+.eyebrow::before{ background:linear-gradient(90deg, transparent, var(--gold)); }
+.eyebrow::after{ background:linear-gradient(90deg, var(--gold), transparent); }
+
+h1{
+  font-size:clamp(46px, 8.5vw, 92px);
+  letter-spacing:-.015em;
+  background:linear-gradient(100deg, #fff 8%, var(--gold-soft) 34%, #9fd8ff 58%, #fff 88%);
+  background-size:220% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:sheen 9s ease-in-out infinite alternate;
+}
+@keyframes sheen{
+  from{ background-position:0% 0; }
+  to  { background-position:100% 0; }
+}
+
+.gold-rule{
+  width:128px; height:2px; margin:20px auto 6px; border-radius:2px;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.stat{ backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+.stat b{ color:var(--gold-soft); }
+
+/* ---------- Hero CTAs ---------- */
+.hero-ctas{
+  display:flex; flex-wrap:wrap; gap:12px; justify-content:center;
+  margin-top:28px;
+}
+.btn{
+  display:inline-block; text-decoration:none;
+  font-size:15px; font-weight:600;
+  padding:13px 28px; border-radius:999px;
+  transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+}
+.btn-primary{
+  background:linear-gradient(135deg, #eec26a, var(--gold));
+  color:#1a1408;
+  box-shadow:0 12px 32px -10px rgba(217,164,65,.55);
+}
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 18px 38px -10px rgba(217,164,65,.65); }
+.btn-ghost{
+  color:var(--text);
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--stroke);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+}
+.btn-ghost:hover{ transform:translateY(-2px); border-color:rgba(255,255,255,.35); background:rgba(255,255,255,.09); }
+
+/* ---------- Ticker / marquee ---------- */
+.ticker{
+  margin:34px auto 4px;
+  overflow:hidden;
+  border-top:1px solid var(--stroke);
+  border-bottom:1px solid var(--stroke);
+  padding:11px 0;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.ticker-track{
+  display:flex; width:max-content;
+  animation:ticker 32s linear infinite;
+}
+.ticker:hover .ticker-track{ animation-play-state:paused; }
+.ticker-chunk{
+  display:flex; align-items:center; gap:2.4em; padding-right:2.4em;
+  white-space:nowrap;
+  font-size:12px; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--muted);
+}
+.ticker-chunk i{ font-style:normal; color:var(--gold); }
+@keyframes ticker{
+  to{ transform:translateX(-50%); }
+}
+
+/* ---------- Gallery cards — premium glass ---------- */
+.grid a.card{
+  display:flex; flex-direction:column;
+  border:1px solid transparent;
+  background:
+    linear-gradient(90deg, var(--c, #fff), transparent) bottom left / 44% 3px no-repeat,
+    linear-gradient(var(--glass), var(--glass)) padding-box,
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--c, #fff) 58%, transparent),
+      rgba(255,255,255,.13) 42%,
+      rgba(255,255,255,.04)) border-box;
+  backdrop-filter:blur(14px) saturate(1.25);
+  -webkit-backdrop-filter:blur(14px) saturate(1.25);
+  transform:perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+  transition:transform .35s ease, box-shadow .35s ease, background-size .45s ease;
+  will-change:transform;
+}
+.grid a.card.tilting{ transition:transform .14s ease-out, box-shadow .35s ease, background-size .45s ease; }
+.grid a.card:hover{
+  --ty:-6px;
+  background-size:100% 3px, auto, auto;
+  box-shadow:
+    0 24px 55px -20px color-mix(in srgb, var(--c, #fff) 60%, transparent),
+    0 6px 20px rgba(0,0,0,.35);
+}
+.grid a.card::after{
+  content:"WING " attr(data-wing);
+  position:absolute; top:16px; right:16px;
+  font-size:10.5px; font-weight:700; letter-spacing:.18em;
+  color:color-mix(in srgb, var(--c, #fff) 78%, #fff);
+  background:color-mix(in srgb, var(--c, #fff) 14%, transparent);
+  border:1px solid color-mix(in srgb, var(--c, #fff) 38%, transparent);
+  padding:4px 10px; border-radius:999px;
+}
+.grid .icon{
+  width:62px; height:62px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:30px; line-height:1;
+  border:1px solid color-mix(in srgb, var(--c, #fff) 48%, transparent);
+  background:radial-gradient(circle at 32% 28%,
+    color-mix(in srgb, var(--c, #fff) 26%, transparent),
+    rgba(255,255,255,.03) 72%);
+  box-shadow:0 0 26px -6px color-mix(in srgb, var(--c, #fff) 55%, transparent);
+}
+.grid .card h2{ letter-spacing:.01em; }
+.grid .card p{ margin-bottom:16px; }
+.grid .card .count{
+  align-self:flex-start;
+  margin-top:auto;
+  background:color-mix(in srgb, var(--c, #fff) 15%, transparent);
+  border-color:color-mix(in srgb, var(--c, #fff) 38%, transparent);
+}
+.grid .card .go{ transition:transform .25s ease, color .25s ease; }
+.grid a.card:hover .go{ transform:translateX(4px); }
+
+/* ---------- "Why this museum" strip ---------- */
+.why{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;
+  margin-top:26px;
+}
+.why-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--stroke);
+  border-radius:16px;
+  padding:18px 20px;
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+}
+.why-card h3{ font-size:15px; font-weight:700; margin-bottom:6px; }
+.why-card h3 .why-ic{ color:var(--gold); margin-right:7px; }
+.why-card p{ color:var(--muted); font-size:13.5px; line-height:1.55; }
+
+/* ---------- Footer ---------- */
+footer{
+  border-top:1px solid var(--stroke);
+  padding-top:28px; margin-top:42px;
+}
+.foot-links{
+  display:flex; flex-wrap:wrap; gap:10px 22px; justify-content:center;
+  margin-bottom:16px;
+}
+.foot-links a{
+  color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:600;
+  letter-spacing:.04em;
+  transition:color .2s ease;
+}
+.foot-links a:hover{ color:var(--gold); }
+.smallprint{ font-size:12px; opacity:.72; margin-top:8px; }
+
+/* ---------- Scroll reveal (JS adds .rv, then .in) ---------- */
+.rv{ opacity:0; transform:translateY(16px); transition:opacity .7s ease, transform .7s ease; }
+.rv.in{ opacity:1; transform:translateY(0); }
+
+/* ---------- Responsive ---------- */
+@media (max-width:700px){
+  .why{ grid-template-columns:1fr; }
+  .hero-ctas .btn{ flex:1 1 100%; text-align:center; }
+  .ticker-chunk{ font-size:11px; gap:1.8em; padding-right:1.8em; }
+  .eyebrow::before, .eyebrow::after{ width:26px; }
+}
+
+/* ---------- Reduced motion: everything settles ---------- */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  h1{ animation:none; }
+  .ticker-track{ animation:none; }
+  .rv{ opacity:1 !important; transform:none !important; transition:none !important; }
+  .grid a.card, .btn, .grid .card .go{ transition:none !important; }
+  .grid a.card:hover{ --ty:0px; }
+}

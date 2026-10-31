@@ -36,7 +36,7 @@ body {
 }
 
 /* ---------- header ---------- */
-#site-header { top: 18px; left: 18px; padding: 14px 20px 16px; max-width: 340px; }
+#site-header { top: 20px; left: 20px; padding: 14px 20px 16px; width: 340px; max-width: calc(100vw - 40px); }
 .back-link { color: var(--accent2); text-decoration: none; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.02em; }
 .back-link:hover { text-decoration: underline; }
 #site-header h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: 0.01em; margin-top: 4px; }
@@ -44,7 +44,7 @@ body {
 #site-header .subtitle { color: var(--muted); font-size: 0.88rem; margin-top: 4px; line-height: 1.4; }
 
 /* ---------- explorer ---------- */
-#explorer { top: 18px; right: 18px; width: 292px; max-height: calc(100vh - 190px); display: flex; flex-direction: column; overflow: hidden; }
+#explorer { top: 20px; right: 20px; width: 320px; max-height: calc(100vh - 264px); display: flex; flex-direction: column; overflow: hidden; }
 .explorer-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--panel-border); }
 .explorer-head h2 { font-size: 1rem; margin-bottom: 10px; }
 #search {
@@ -75,7 +75,7 @@ body {
 .organ-item .empty-note { color: var(--muted); font-size: 0.85rem; padding: 6px; }
 
 /* ---------- info panel ---------- */
-#info-panel { left: 18px; bottom: 74px; width: 342px; max-width: calc(100vw - 36px); padding: 18px 20px; }
+#info-panel { left: 20px; bottom: 56px; width: 360px; max-width: calc(100vw - 40px); padding: 18px 20px; }
 #info-close { position: absolute; top: 8px; right: 12px; background: none; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; }
 #info-close:hover { color: var(--text); }
 .info-system { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent2); font-weight: 700; }
@@ -87,7 +87,7 @@ body {
 #info-fact { font-size: 0.87rem; line-height: 1.5; color: #dbe9f7; }
 
 /* ---------- controls ---------- */
-#controls { right: 18px; bottom: 74px; width: 292px; padding: 14px 16px; }
+#controls { right: 20px; bottom: 56px; width: 320px; padding: 14px 16px; }
 .control-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .control-row:last-child { margin-bottom: 0; }
 .control-row label { width: 58px; font-size: 0.82rem; color: var(--muted); flex: none; }
@@ -145,17 +145,48 @@ body {
 }
 #webgl-error p { color: var(--muted); margin-top: 8px; }
 
-/* ---------- responsive: bottom-sheet mode ---------- */
-@media (max-width: 860px) {
-  #site-header { max-width: 230px; padding: 10px 14px 12px; }
-  #site-header h1 { font-size: 1.4rem; }
-  #site-header .subtitle { display: none; }
-  #explorer { width: 216px; max-height: 44vh; top: 12px; right: 12px; }
-  #site-header { top: 12px; left: 12px; }
-  #info-panel {
-    left: 0; right: 0; bottom: 0; width: auto; max-width: none; max-height: 38vh; overflow-y: auto;
-    border-radius: 18px 18px 0 0; padding: 14px 16px 18px;
+/* ---------- tablet ---------- */
+@media (max-width: 1023px) {
+  #site-header { width: 296px; padding: 12px 16px 14px; }
+  #site-header h1 { font-size: 1.6rem; }
+  #explorer { width: 272px; max-height: calc(100vh - 264px); }
+  #controls { width: 272px; }
+  #info-panel { width: 320px; }
+}
+
+/* ---------- mobile: single scrolling column ----------
+   header → canvas block (56vh, unobstructed) → explorer → controls → info. */
+@media (max-width: 640px) {
+  html, body { height: auto; }
+  body { overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
+  #site-header {
+    order: 1; position: relative; top: auto; left: auto;
+    width: auto; max-width: none; margin: 12px 12px 0; padding: 10px 14px 12px;
   }
-  #controls { right: 12px; bottom: auto; top: calc(44vh + 22px); width: 216px; }
+  #site-header h1 { font-size: 1.35rem; }
+  #site-header .subtitle { display: none; }
+  #scene {
+    order: 2; position: relative; inset: auto;
+    width: 100%; height: 56vh; flex: none; margin-top: 12px;
+  }
+  #explorer {
+    order: 3; position: relative; top: auto; right: auto;
+    width: auto; max-height: none; margin: 12px 12px 0;
+  }
+  #organ-list { max-height: 32vh; }
+  #controls {
+    order: 4; position: relative; right: auto; bottom: auto;
+    width: auto; margin: 12px 12px 0;
+  }
+  .control-row { flex-direction: column; align-items: stretch; gap: 6px; }
+  .control-row label { width: auto; }
+  .control-row input[type="range"] { width: 100%; }
+  .control-row.buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .control-row.buttons button { width: 100%; padding: 9px 11px; }
+  #info-panel {
+    order: 5; position: relative; left: auto; bottom: auto;
+    width: auto; max-width: none; margin: 12px; max-height: none; overflow: visible;
+    padding: 14px 16px 18px;
+  }
   #hint { display: none; }
 }
