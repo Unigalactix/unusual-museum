@@ -748,6 +748,9 @@ function updateInfo(m) {
   infoTagline.style.color = m.color;
   infoDesc.textContent = m.description;
   infoFact.textContent = m.fact;
+  infoPanel.classList.remove("panel-in");
+  void infoPanel.offsetWidth;
+  infoPanel.classList.add("panel-in");
 }
 function selectUnit(unit, fly = true) {
   if (selectedUnit) setGlow(selectedUnit, 1);

@@ -666,6 +666,7 @@ function select(id, fly = true) {
   document.getElementById('info-uses').textContent = d.uses;
   document.getElementById('info-fact').textContent = d.fact;
   info.hidden = false;
+  info.classList.remove('panel-in'); void info.offsetWidth; info.classList.add('panel-in');
   if (fly) focusItem(rec);
 }
 document.getElementById('info-close').addEventListener('click', () => select(null));

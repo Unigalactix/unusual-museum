@@ -1146,6 +1146,9 @@ function showInfo(data) {
   factEl.textContent = data.fact;
   factWrap.hidden = false;
   panelEl.classList.remove('closed');
+  panelEl.classList.remove('panel-in');
+  void panelEl.offsetWidth;
+  panelEl.classList.add('panel-in');
 }
 
 function showWelcome() {
@@ -1156,6 +1159,9 @@ function showWelcome() {
   statsEl.hidden = true;
   factWrap.hidden = true;
   panelEl.classList.remove('closed');
+  panelEl.classList.remove('panel-in');
+  void panelEl.offsetWidth;
+  panelEl.classList.add('panel-in');
 }
 
 function selectExhibit(i, fly = true) {

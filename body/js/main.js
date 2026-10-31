@@ -4,6 +4,7 @@
 
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { ORGANS, SYSTEMS, ORGAN_BUILDERS, ORGAN_PLACEMENTS, ORGAN_FOCUS_DISTS } from "./organs.js";
 
@@ -342,6 +343,135 @@ for (const o of ORGANS) {
   registerOrgan(o.id, g, ORGAN_FOCUS_DISTS[o.id]);
 }
 
+/* ---------------- real anatomy (BodyParts3D) ----------------
+   The 17 GLBs in assets/models/ are real human anatomy meshes from
+   BodyParts3D (DBCLS, CC BY 4.0 — see CREDITS.md and
+   assets/models/MANIFEST.md). They were exported with vertices in the
+   dataset's single shared coordinate system (millimetres, LPS:
+   +X = body-left, +Y = posterior, +Z = up; fetched bbox
+   x −126.8…125.4, y −205.3…10.3, z 757.3…1630.5), so ONE global
+   transform assembles them into a correctly proportioned body —
+   never recenter or rescale per organ.
+
+   The transform (one matrix, applied to each loaded model):
+   scene = S · R · dataset + T, where R = rotateX(−90°) maps dataset
+   +Z (up) → scene +Y, dataset +Y (posterior) → scene −Z (back) and
+   dataset −Y (anterior) → scene +Z (front); dataset +X (body-left)
+   stays +X, matching the procedural builders' convention (heart and
+   liver land at the same scene-x signs as their procedural versions).
+
+   Calibration: S and ty come from a least-squares fit of the scene
+   placements in ORGAN_PLACEMENTS against the measured dataset
+   bbox-centre Z of the 14 organs whose procedural group origin ≈
+   geometry centre (lungs, diaphragm and spinal cord excluded —
+   their origins sit at the base/end by design):
+     S  = 0.01982   (1 scene unit ≈ 50.4 mm)
+     ty = −11.61    (dataset z 757.3…1630.5 → scene y ≈ 3.4…20.7;
+                     anchors: brain top lands at y 20.71 vs the
+                     procedural brain top 20.7, bladder bottom at
+                     4.04 vs procedural 3.98)
+     tx = +0.014    (dataset x mid is −0.7 mm, so x centres on 0)
+     tz = −1.933    (= −97.5 · S; dataset y mid −97.5 mm → scene
+                     z ≈ 0 via z_scene = −(y_dataset + 97.5) · S)
+   Residuals vs the procedural placements are within ±1.2 units for
+   every organ — the stylised figure is not a perfect scale model of
+   the dataset body, and the dataset's internal proportions win.
+
+   Swap-in (museum precedent): the procedural organs render first;
+   each GLB loads in the background and, on success, replaces that
+   organ's procedural children; on failure the procedural organ stays,
+   silently. Re-pivot: the organ GROUP moves to the real organ's bbox
+   centre (basePos = centre) with the model counter-offset inside a
+   pivot wrapper, because the animation loop scales groups for the
+   heartbeat, breathing and selection pulse — scaling about the
+   platform origin would make real organs bob. The net world
+   transform of every vertex is still exactly S · R · dataset + T.
+   Focus needs no change (selectOrgan reads the group world position,
+   now the organ's true centre); focus distance and label lift are
+   refreshed from the bbox, with ORGAN_FOCUS_DISTS as the fallback
+   for organs that stay procedural. Thyroid has no GLB (the gland is
+   absent from BodyParts3D) and stays procedural permanently. */
+const ANATOMY_S = 0.01982;
+const anatomyMatrix = new THREE.Matrix4()
+  .makeRotationX(-Math.PI / 2)
+  .premultiply(new THREE.Matrix4().makeScale(ANATOMY_S, ANATOMY_S, ANATOMY_S))
+  .setPosition(0.014, -11.61, -1.933);
+const REAL_ANATOMY_IDS = [
+  "brain", "spinal-cord", "trachea", "lungs", "heart", "aorta",
+  "diaphragm", "liver", "gallbladder", "stomach", "pancreas",
+  "spleen", "kidneys", "small-intestine", "large-intestine",
+  "appendix", "bladder",
+];
+// The GLBs are plain uncompressed trimesh exports (no extensionsUsed /
+// extensionsRequired in any file — probed), so no DRACOLoader is needed.
+const gltfLoader = new GLTFLoader();
+
+function swapInRealOrgan(id, modelRoot) {
+  const group = organGroups.get(id);
+  if (!group) return;
+  // One physical material per organ: selection highlight works because
+  // setEmissive() traverses only this group's meshes, and the material
+  // carries emissive = organ colour just like the procedural std().
+  const mat = new THREE.MeshPhysicalMaterial({
+    color: organById.get(id).color,
+    roughness: 0.32,
+    metalness: 0.02,
+    emissive: organById.get(id).color,
+    emissiveIntensity: 0,
+    clearcoat: 0.55,
+    clearcoatRoughness: 0.5,
+    sheen: 0.25,
+    sheenRoughness: 0.6,
+    sheenColor: organById.get(id).color,
+    envMapIntensity: 0.35,
+  });
+  modelRoot.applyMatrix4(anatomyMatrix);
+  modelRoot.traverse((c) => {
+    if (c.isMesh) {
+      c.material = mat;
+      c.castShadow = true;
+      c.receiveShadow = true;
+      c.userData.organId = id; // picking reads this
+    }
+  });
+  const box = new THREE.Box3().setFromObject(modelRoot);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  // Drop the procedural stand-in (textures are shared — not disposed).
+  for (const child of [...group.children]) {
+    group.remove(child);
+    child.traverse((c) => {
+      if (c.isMesh) { c.geometry.dispose(); c.material.dispose(); }
+    });
+  }
+  // Pivot at the organ's true centre; model counter-offset inside it.
+  const pivot = new THREE.Group();
+  pivot.position.copy(center);
+  modelRoot.position.sub(center);
+  pivot.add(modelRoot);
+  group.add(pivot);
+  group.position.copy(center);
+  group.userData.basePos.copy(center);
+  const dir = center.clone().sub(BODY_CENTER);
+  group.userData.explodeDir =
+    dir.lengthSq() > 0.01 ? dir.normalize() : new THREE.Vector3(0, 0, 1);
+  group.userData.focusDist = THREE.MathUtils.clamp(
+    Math.max(size.x, size.y, size.z) * 2.2, 6, 15
+  );
+  group.userData.labelLift = size.y / 2 + 0.35;
+  group.userData.realModel = true;
+  refreshHighlights(); // re-apply hover/selection glow to the new meshes
+}
+
+for (const id of REAL_ANATOMY_IDS) {
+  gltfLoader.load(
+    `assets/models/${id}.glb`,
+    (gltf) => swapInRealOrgan(id, gltf.scene),
+    undefined,
+    () => { /* load failed — the procedural organ stays */ }
+  );
+}
+
 /* ---------------- UI: explorer list, chips, search ---------------- */
 const listEl = document.getElementById("organ-list");
 const chipsEl = document.getElementById("system-chips");
@@ -410,6 +540,7 @@ const infoEls = {
   factWrap: document.getElementById("info-fact-wrap"),
   fact: document.getElementById("info-fact"),
 };
+const infoPanelEl = document.getElementById("info-panel");
 let selectedId = null;
 let hoveredId = null;
 let focusAnim = null; // { target: Vector3, camPos: Vector3 }
@@ -443,6 +574,7 @@ function selectOrgan(id, focus = false) {
   infoEls.desc.textContent = o.description;
   infoEls.fact.textContent = o.fact;
   infoEls.factWrap.hidden = false;
+  infoPanelEl.classList.remove("panel-in"); void infoPanelEl.offsetWidth; infoPanelEl.classList.add("panel-in");
   if (focus) {
     const g = organGroups.get(id);
     const wp = new THREE.Vector3();
@@ -543,7 +675,7 @@ function updateLabels() {
     g.getWorldPosition(_v);
     const facing = _c.copy(_v).sub(BODY_CENTER).normalize()
       .dot(camera.position.clone().sub(BODY_CENTER).normalize());
-    _v.y += 0.9;
+    _v.y += g.userData.labelLift ?? 0.9; // real organs lift by their bbox half-height
     _v.project(camera);
     if (_v.z > 1 || _v.z < -1) { d.style.opacity = "0"; continue; }
     const baseOpacity = THREE.MathUtils.clamp((facing + 0.45) / 0.9, 0.08, 1);

@@ -604,6 +604,9 @@ function showPanel(data) {
   panelDesc.textContent = data.description;
   panelFact.textContent = data.fact;
   panelEl.classList.remove('closed');
+  panelEl.classList.remove('panel-in');
+  void panelEl.offsetWidth;
+  panelEl.classList.add('panel-in');
 }
 
 function selectGem(i, fly = true) {
@@ -632,6 +635,9 @@ function showVault(fly = true) {
   panelDesc.textContent = WELCOME.description;
   panelFact.textContent = WELCOME.fact;
   panelEl.classList.remove('closed');
+  panelEl.classList.remove('panel-in');
+  void panelEl.offsetWidth;
+  panelEl.classList.add('panel-in');
   refreshChrome();
   if (fly) {
     const home = homeView();

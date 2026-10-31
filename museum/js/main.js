@@ -966,6 +966,7 @@ function showPanel(data) {
   panelDesc.textContent = data.description;
   panelFact.textContent = data.fact;
   panelEl.classList.remove('closed');
+  panelEl.classList.remove('panel-in'); void panelEl.offsetWidth; panelEl.classList.add('panel-in');
 }
 
 function selectExhibit(i, fly = true) {

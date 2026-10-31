@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FungiVerse — The Forest-Floor Wing: Mushrooms &amp; Toadstools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <script type="importmap">
 { "imports": {
@@ -14,9 +17,13 @@
 </head>
 <body>
 <div id="loading"><div class="shroom">🍄</div>
+<p class="loader-wordmark">The Unusual Museum</p>
+<div class="loader-bar" aria-hidden="true"><span></span></div>
 <div id="webgl-fail" hidden>
+  <div class="fail-card">
   <h2>🌧️ The forest could not wake here</h2>
   <p>Your browser could not start WebGL, which FungiVerse needs to render its 3D woodland. Try a recent version of Chrome, Edge, Firefox or Safari with hardware acceleration enabled.</p>
+  </div>
 </div>
 
 <div class="layout">

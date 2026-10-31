@@ -109,3 +109,84 @@ footer{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;z-index
   .panel-tools{order:6;margin:12px;width:calc(100% - 24px)}
   footer{display:none}
 }
+
+/* ================= PREMIUM UI SYSTEM (light-theme adaptation) ================= */
+/* Fonts & base */
+html,body{font-family:"Inter","Avenir Next","Segoe UI",system-ui,sans-serif}
+button,input,select,textarea{font:inherit}
+::selection{background:rgba(61,145,66,.28)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+*{scrollbar-width:thin;scrollbar-color:rgba(46,90,50,.35) transparent}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(46,90,50,.28);border-radius:99px}
+::-webkit-scrollbar-track{background:transparent}
+#zone-nav button,#item-list button,.back,#search{transition:background-color .18s ease-out,border-color .18s ease-out,color .18s ease-out,transform .18s ease-out,box-shadow .18s ease-out}
+#scene{cursor:grab}
+#scene:active{cursor:grabbing}
+
+/* Surfaces */
+.title-block,.panel-tools,#item-list,#info{
+  border:1px solid rgba(70,120,80,.22);border-radius:18px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),0 18px 50px rgba(31,53,38,.22);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);
+}
+
+/* Titles & eyebrows */
+.title-block h1{font-family:"Fraunces",Georgia,serif;font-weight:600;letter-spacing:-.01em}
+.title-block p{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.chip{font-size:11px;font-weight:600;letter-spacing:.14em}
+
+/* Controls */
+.back{display:inline-flex;align-items:center;min-height:34px}
+.back:hover{transform:translateY(-1px)}
+#zone-nav button{min-height:34px;display:inline-flex;align-items:center;font-size:13px;font-weight:500;
+  background:rgba(255,255,255,.55);border-color:rgba(70,120,80,.25)}
+#zone-nav button:hover{transform:translateY(-1px);border-color:var(--accent);background:#fff}
+#zone-nav button.active{background:linear-gradient(135deg,var(--accent),#5cad61);color:#fff;border-color:transparent;
+  box-shadow:0 6px 18px rgba(61,145,66,.35)}
+#search{height:38px;border-radius:12px;font-size:13px}
+#search:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(61,145,66,.25)}
+input[type="checkbox"]{accent-color:var(--accent)}
+
+/* List rows & group headers */
+#item-list h4{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--accent);
+  border-bottom:1px solid var(--line);padding-bottom:4px}
+#item-list button{min-height:40px;padding:8px 12px;border-radius:12px;font-size:13.5px}
+#item-list button:hover{background:rgba(90,160,95,.12);transform:translateX(2px)}
+#item-list button.selected{background:rgba(61,145,66,.14);box-shadow:inset 3px 0 0 var(--accent);font-weight:600}
+
+/* Info anatomy */
+#info h2{font-family:"Fraunces",Georgia,serif;font-size:26px;font-weight:600;letter-spacing:-.01em}
+#info-alt{font-style:italic}
+.tagline{font-style:italic;font-weight:500;color:var(--ink-soft)}
+#info h3{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+#info p{font-size:14px;line-height:1.65}
+#info-fact{background:rgba(61,145,66,.08);border-left:3px solid var(--accent);border-radius:12px;padding:12px 14px}
+@keyframes panelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#info.panel-in{animation:panelIn .35s ease-out}
+
+/* Tooltip, labels, hint */
+#tooltip{border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:6px 13px;
+  font-size:12px;font-weight:500;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.label{font-size:11px;font-weight:600;background:rgba(255,255,255,.85);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+footer{background:rgba(255,255,252,.75);-webkit-backdrop-filter:blur(10px) saturate(140%);
+  backdrop-filter:blur(10px) saturate(140%);font-size:12px}
+
+/* Stage vignette (softened for the bright greenhouse sky) */
+.stage::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(23,48,28,.20) 100%)}
+
+/* Loading & failure */
+#loading::before{content:"THE UNUSUAL MUSEUM";order:-1;font-size:11px;font-weight:600;
+  letter-spacing:.3em;color:var(--ink-soft)}
+#loading::after{content:"";width:160px;height:3px;border-radius:99px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  background-size:200% 100%;animation:loadSlide 1.2s linear infinite}
+@keyframes loadSlide{from{background-position:200% 0}to{background-position:-100% 0}}
+#webgl-fail h2{font-family:"Fraunces",Georgia,serif;font-size:22px;font-weight:600}
+
+@media (prefers-reduced-motion: reduce){
+  #info.panel-in,#loading::after,#loading .sprout{animation:none}
+  #zone-nav button,#item-list button,.back,#search{transition:none}
+}

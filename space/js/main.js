@@ -602,6 +602,8 @@ function fillPanel({ kicker, name, tagline, stats, desc, fact }) {
   $("p-desc").textContent = desc;
   $("p-fact").textContent = fact;
   $("info-panel").hidden = false;
+  const p = $("info-panel");
+  p.classList.remove("panel-in"); void p.offsetWidth; p.classList.add("panel-in");
 }
 
 function selectBody(id, fly = false) {

@@ -50,8 +50,9 @@ Commons Attribution license — the author and source for each are listed
 in the tables above. CC0 models are in the public domain; their authors
 are credited anyway, because it's polite.
 
-Everything else — the cell, the body, the solar system, the elements,
-the remaining sea specimens, garden produce and museum creatures, plus
+Everything else — the cell, the solar system, the elements,
+the remaining sea specimens, garden produce and museum creatures,
+BodyVerse's procedural fallback organs (including its thyroid), plus
 all code and text — is original to this project (MIT, see
 [LICENSE](LICENSE); the model files above remain under their own
 licenses).
@@ -71,6 +72,31 @@ and may be used freely; NASA endorsement is not implied.
 | Saturn V | mission/assets/models/saturn-v.glb | 3D Models/Saturn V |
 
 Full source paths are also listed in mission/model-sources.txt.
+
+## BodyVerse (`body/`) — BodyParts3D real anatomy (CC BY 4.0)
+
+BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International
+
+BodyVerse's organs are real human anatomy meshes from the
+**BodyParts3D** dataset (Release 4.0), maintained by the Database
+Center for Life Science (DBCLS), Japan — source:
+https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html
+One GLB per organ lives in `body/assets/models/` (full provenance,
+anatomical concept ids and per-file detail in
+`body/assets/models/MANIFEST.md`). The meshes are the dataset's
+web-grade release — its 99% polygon-reduced grade — converted without
+altering their shared body coordinate system (the brain was reduced
+slightly further only to meet a 6 MB file cap; see the manifest). If
+a model file ever fails to load, BodyVerse falls back to its original
+procedural organ automatically.
+
+Two honest exceptions:
+
+- **Thyroid** — the thyroid gland is *not* present in BodyParts3D
+  Release 4.0, so BodyVerse's thyroid is a stylised procedural model,
+  not dataset anatomy.
+- **Appendix** — the appendix *is* from the dataset (concept FMA14542,
+  single mesh FJ2565), like the other 16 organs.
 
 ## NASA 3D models — GalaxyVerse (public domain)
 

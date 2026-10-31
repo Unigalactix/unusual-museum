@@ -250,6 +250,8 @@ function selectElement(el, fly = true) {
   $('info-state').textContent = stateLabel(el.state);
   $('info-shells').textContent = el.shells.join(' · ') + '  (' + el.shells.length + ' shells)';
   $('info-blurb').textContent = el.blurb;
+  const ic = $('info-content');
+  ic.classList.remove('panel-in'); void ic.offsetWidth; ic.classList.add('panel-in');
   if (fly && mode === 'table') {
     const p = selectedTile.position;
     flyTo(new THREE.Vector3(p.x, p.y, 17), new THREE.Vector3(p.x, p.y, 0), 1200);

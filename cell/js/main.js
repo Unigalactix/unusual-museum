@@ -661,12 +661,19 @@ function flyTo(worldPos, distance) {
   };
 }
 
+function pulseInfo() {
+  infoPanel.classList.remove("panel-in");
+  void infoPanel.offsetWidth;
+  infoPanel.classList.add("panel-in");
+}
+
 function updateInfo(o) {
   infoName.textContent = o.name;
   infoTagline.textContent = o.tagline;
   infoTagline.style.color = o.color;
   infoDesc.textContent = o.description;
   infoFact.textContent = o.fact;
+  pulseInfo();
 }
 
 function selectUnit(unit, fly = true) {
@@ -701,6 +708,7 @@ function deselect(fly = true) {
     "Every structure inside this cell has a job — making energy, building proteins, recycling waste and protecting the DNA. Click any organelle in the model, or pick one from the list, to explore it up close.";
   infoFact.textContent =
     "Your body contains roughly 37 trillion cells, and almost every one of them carries a full copy of your DNA.";
+  pulseInfo();
   if (fly) {
     camAnim = {
       t: 0, dur: 1.1,

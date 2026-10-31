@@ -187,3 +187,157 @@ footer{
   .info-actions{flex-direction:row}
   footer{display:none}
 }
+
+/* ============================================================
+   PREMIUM UI SYSTEM — visual + micro-interaction layer.
+   Appended last so it refines (never restructures) the layout
+   above. Accent identity: --acc = --accent (cyan).
+   ============================================================ */
+:root { --acc: var(--accent); }
+
+body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
+
+/* ---------- fonts & type ---------- */
+.titles h1, #info-name, #info-empty h2, #webgl-fail h2 {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  letter-spacing: -0.01em;
+}
+#info-name { font-size: 26px; }
+#webgl-fail h2 { font-size: 22px; }
+#webgl-fail p { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 460px; }
+
+/* ---------- surfaces ---------- */
+header, #controls, #info-panel {
+  background: color-mix(in srgb, var(--panel) 84%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 50px rgba(0, 0, 0, 0.45);
+  border-radius: 18px;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* ---------- controls ---------- */
+#search {
+  height: 38px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  font-size: 13px;
+}
+#search:focus {
+  border-color: var(--acc);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--acc) 22%, transparent);
+}
+.chip {
+  min-height: 34px; padding: 6px 13px 6px 10px;
+  font-size: 13px; font-weight: 500;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  transition: all 0.18s ease-out;
+}
+.chip:hover { transform: translateY(-1px); border-color: var(--acc); }
+.chip.active {
+  background: linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 78%, #fff));
+  color: #0b0e18; border-color: transparent; font-weight: 600;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--acc) 45%, transparent);
+}
+.autorotate {
+  min-height: 34px; padding: 6px 13px;
+  font-size: 13px; font-weight: 500;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  transition: all 0.18s ease-out;
+}
+.autorotate:hover { transform: translateY(-1px); border-color: var(--acc); }
+.info-actions button {
+  min-height: 34px; border-radius: 999px;
+  font-size: 13px; font-weight: 500;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  transition: all 0.18s ease-out;
+}
+.info-actions button:hover {
+  transform: translateY(-1px); border-color: var(--acc);
+  background: rgba(255, 255, 255, 0.06);
+}
+#atom-btn {
+  background: linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 78%, #fff));
+  color: #0b0e18; border-color: transparent; font-weight: 600;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--acc) 45%, transparent);
+}
+#atom-btn:hover { background: linear-gradient(135deg, var(--acc), color-mix(in srgb, var(--acc) 78%, #fff)); }
+
+/* ---------- info panel anatomy ---------- */
+#info-meta { font-style: italic; color: var(--muted); }
+#info-blurb { font-size: 14px !important; line-height: 1.65; }
+.facts div { border-radius: 12px; padding: 10px 12px; }
+.facts dt { font-size: 10px; letter-spacing: 0.1em; }
+.facts dd { font-size: 15px; font-weight: 600; }
+#atom-caption {
+  background: color-mix(in srgb, var(--acc) 8%, transparent);
+  border: 1px solid transparent; border-left: 3px solid var(--acc);
+  border-radius: 12px; padding: 12px 14px;
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+#info-content.panel-in { animation: panelIn 0.38s ease-out; }
+
+/* ---------- overlays ---------- */
+#loading::before {
+  content: "THE UNUSUAL MUSEUM";
+  font-size: 11px; font-weight: 600; letter-spacing: 0.3em; color: var(--muted);
+}
+#loading::after {
+  content: ""; width: 160px; height: 3px; border-radius: 3px;
+  background:
+    linear-gradient(90deg, transparent, var(--acc), transparent) 0 0 / 50% 100% no-repeat,
+    rgba(255, 255, 255, 0.10);
+  animation: loadSlide 1.2s ease-in-out infinite;
+}
+@keyframes loadSlide {
+  from { background-position: -50% 0, 0 0; }
+  to { background-position: 200% 0, 0 0; }
+}
+
+/* ---------- tooltip / hint ---------- */
+#tooltip {
+  background: rgba(10, 13, 22, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  font-size: 12px; font-weight: 500; border-radius: 16px;
+}
+footer {
+  left: 50%; right: auto; transform: translateX(-50%); bottom: 12px;
+  max-width: calc(100% - 24px); text-align: center;
+  font-size: 12px; color: var(--muted);
+  background: rgba(10, 13, 22, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 999px;
+  padding: 7px 16px; pointer-events: none;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+
+/* ---------- stage depth ---------- */
+#stage::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.38));
+}
+
+/* ---------- micro ---------- */
+::selection { background: var(--acc); color: #0b0e18; }
+:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+#stage canvas { cursor: grab; }
+#stage canvas:active { cursor: grabbing; }
+#info-panel { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.16) transparent; }
+#info-panel::-webkit-scrollbar { width: 10px; }
+#info-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.16); border-radius: 8px; }
+#info-panel::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.28); }
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #info-content.panel-in { animation: none; }
+  #loading::after { animation: none; }
+  .spinner { animation: none; }
+  .chip, .autorotate, .info-actions button { transition: none; }
+}

@@ -553,6 +553,7 @@ function showSpecimen(i, fly = true) {
   el("p-desc").textContent = d.description;
   el("p-fact").textContent = d.fact;
   panel.hidden = false;
+  panel.classList.remove("panel-in"); void panel.offsetWidth; panel.classList.add("panel-in");
   setActiveButtons();
   if (fly) flyTo(new THREE.Vector3(...d.camera.pos), new THREE.Vector3(...d.camera.target));
 }

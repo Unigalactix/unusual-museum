@@ -440,6 +440,10 @@ let selected = -1;
 function updatePanel() {
   if (selected < 0) return;
   const { craft, failed, model } = rigs[selected];
+  const panelEl = document.getElementById('panel');
+  panelEl.classList.remove('panel-in');
+  void panelEl.offsetWidth;
+  panelEl.classList.add('panel-in');
   panel.eyebrow.textContent = 'Now viewing · ' + craft.type;
   panel.name.textContent = craft.name;
   panel.origin.textContent = 'Model: NASA 3D Resources · public domain';

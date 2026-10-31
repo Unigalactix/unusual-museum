@@ -433,6 +433,11 @@ const panel = {
 function updatePanel() {
   if (selected < 0) return;
   const ex = EXHIBITS[selected];
+  const panelEl = document.getElementById('panel');
+  panelEl.classList.remove('panel-in');
+  void panelEl.offsetWidth;
+  panelEl.classList.add('panel-in');
+  document.getElementById('panel-fact-wrap').classList.toggle('is-loading', ex.kind === 'glb' && (modelCache.get(ex.id) || {}).status === 'loading');
   panel.eyebrow.textContent = ex.group + ' · Exhibit ' + (selected + 1) + ' of ' + EXHIBITS.length;
   panel.name.textContent = ex.name;
   panel.tagline.textContent = ex.hook;

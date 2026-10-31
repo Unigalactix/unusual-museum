@@ -4,7 +4,7 @@
 
 🔗 **Live site:** https://unigalactix.github.io/unusual-museum/
 
-Every exhibit is real, explorable 3D built with [Three.js](https://threejs.org/) — no pre-rendered images, no build step, no backend. Most models are procedural (built from geometry in code) and all text was written for this project; thirteen exhibits use real licensed model files instead (eight CC0/CC BY models via Poly Pizza, five public-domain NASA models), with the procedural version kept as an automatic fallback where one exists — see [3D model credits](#3d-model-credits) and CREDITS.md.
+Every exhibit is real, explorable 3D built with [Three.js](https://threejs.org/) — no pre-rendered images, no build step, no backend. Most models are procedural (built from geometry in code) and all text was written for this project; 38 exhibits use real licensed model files instead (eight CC0/CC BY models via Poly Pizza, thirteen public-domain NASA models — five in MissionVerse and eight in GalaxyVerse — and seventeen BodyParts3D anatomy meshes, CC BY 4.0, © The Database Center for Life Science), with the procedural version kept as an automatic fallback where one exists — see [3D model credits](#3d-model-credits) and CREDITS.md.
 
 ## The galleries
 
