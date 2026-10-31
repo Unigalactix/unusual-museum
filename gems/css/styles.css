@@ -449,3 +449,6 @@ body { display: flex; flex-direction: column; }
 
   .hint { position: static; order: 5; padding: 14px 12px 18px; }
 }
+
+/* The fail overlay must obey its hidden attribute (author display rules would otherwise override it) */
+#webgl-fail[hidden]{display:none !important}

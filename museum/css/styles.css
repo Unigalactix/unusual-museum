@@ -345,3 +345,6 @@ html, body {
   .exhibit-nav { bottom: 54px; width: calc(100% - 24px); }
   .hint { font-size: 11px; bottom: 8px; }
 }
+
+/* The fail overlay must obey its hidden attribute (author display rules would otherwise override it) */
+#webgl-fail[hidden]{display:none !important}

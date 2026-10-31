@@ -367,3 +367,6 @@ html, body {
     font-size: 11.5px;
   }
 }
+
+/* The fail overlay must obey its hidden attribute (author display rules would otherwise override it) */
+#webgl-fail[hidden]{display:none !important}

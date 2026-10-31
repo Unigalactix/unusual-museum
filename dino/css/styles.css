@@ -359,3 +359,6 @@ body {
     max-width: none;
   }
 }
+
+/* The fail overlay must obey its hidden attribute (author display rules would otherwise override it) */
+#webgl-fail[hidden]{display:none !important}
