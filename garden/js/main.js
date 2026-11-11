@@ -658,7 +658,7 @@ function select(id, fly = true) {
   const info = document.getElementById('info');
   if (!id) { info.hidden = true; return; }
   const rec = registry.get(id), d = rec.data;
-  document.getElementById('info-zone').textContent = ZONES[d.zone].icon + ' ' + ZONES[d.zone].label;
+  document.getElementById('info-zone').textContent = (ZONES[d.zone].icon ? ZONES[d.zone].icon + ' ' : '') + ZONES[d.zone].label;
   document.getElementById('info-name').textContent = d.name;
   document.getElementById('info-alt').textContent = d.altName || '';
   document.getElementById('info-tagline').textContent = d.tagline;
@@ -713,7 +713,7 @@ function buildList(filter = '') {
       (!f || (p.name + ' ' + (p.altName || '') + ' ' + p.uses).toLowerCase().includes(f)));
     if (!items.length) continue;
     any = true;
-    const h = document.createElement('h4'); h.textContent = ZONES[zone].icon + ' ' + ZONES[zone].label; listEl.appendChild(h);
+    const h = document.createElement('h4'); h.textContent = (ZONES[zone].icon ? ZONES[zone].icon + ' ' : '') + ZONES[zone].label; listEl.appendChild(h);
     for (const item of items) {
       const b = document.createElement('button');
       b.dataset.id = item.id;

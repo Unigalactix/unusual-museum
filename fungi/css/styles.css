@@ -34,14 +34,14 @@ body.night{background:linear-gradient(#07130d,#0d2015)}
 /* ------------------------------- header -------------------------------- */
 header{position:fixed;top:var(--mx);left:var(--mx);z-index:20;display:flex;align-items:flex-start;gap:.7rem;max-width:calc(100vw - var(--panel-w) - var(--mx)*3)}
 .back{align-self:center;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);
-  padding:.42rem .8rem;border-radius:999px;font-size:.86rem;box-shadow:var(--shadow);backdrop-filter:blur(8px);white-space:nowrap}
+  padding:.42rem .8rem;border-radius:999px;font-size:.86rem;box-shadow:var(--shadow);white-space:nowrap}
 .back:hover{filter:brightness(1.05)}
-.title-block{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:.45rem 1rem .55rem;box-shadow:var(--shadow);backdrop-filter:blur(14px) saturate(140%)}
-.title-block h1{margin:0;font-family:"Fraunces",Georgia,serif;font-size:1.55rem;font-weight:600;letter-spacing:-.01em;color:var(--title)}
+.title-block{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:.45rem 1rem .55rem;box-shadow:var(--shadow);}
+.title-block h1{margin:0;font-family:"Archivo",Georgia,serif;font-size:1.55rem;font-weight:600;letter-spacing:-.01em;color:var(--title)}
 .title-block p{margin:.05rem 0 0;font-size:.8rem;color:var(--ink-soft)}
 .controls{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center}
 .ctl-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;
-  padding:.5rem .85rem;font-size:13px;font-weight:500;min-height:36px;cursor:pointer;box-shadow:var(--shadow);backdrop-filter:blur(8px);
+  padding:.5rem .85rem;font-size:13px;font-weight:500;min-height:36px;cursor:pointer;box-shadow:var(--shadow);
   display:inline-flex;align-items:center;justify-content:center;gap:.35rem;font-family:inherit}
 .ctl-btn:hover{filter:brightness(1.05)}
 #daynight[aria-pressed="true"]{background:#173d24;color:#c9f5c0;border-color:#2c5c3a}
@@ -52,10 +52,10 @@ header{position:fixed;top:var(--mx);left:var(--mx);z-index:20;display:flex;align
 #panel{position:fixed;top:var(--mx);right:var(--mx);bottom:var(--mx);z-index:15;width:var(--panel-w);
   display:flex;flex-direction:column;gap:.6rem}
 .panel-tools{display:flex;gap:.5rem;align-items:center;background:var(--paper);border:1px solid var(--line);
-  border-radius:18px;padding:.5rem .6rem;box-shadow:var(--shadow);backdrop-filter:blur(14px) saturate(140%)}
+  border-radius:18px;padding:.5rem .6rem;box-shadow:var(--shadow);}
 #search{flex:1;min-width:0;height:38px;border:1px solid var(--line);border-radius:12px;padding:.45rem .6rem;font-size:.85rem;background:transparent;color:var(--ink)}
 #fungus-list{flex:1;overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:18px;
-  box-shadow:var(--shadow);backdrop-filter:blur(14px) saturate(140%);padding:.55rem .6rem}
+  box-shadow:var(--shadow);padding:.55rem .6rem}
 #fungus-list button{display:flex;align-items:center;gap:.5rem;width:100%;text-align:left;border:0;background:transparent;
   min-height:40px;padding:8px 12px;border-radius:12px;font-size:.88rem;color:var(--ink);cursor:pointer;font-family:inherit;
   transition:background .18s ease,transform .18s ease,box-shadow .18s ease}
@@ -71,7 +71,7 @@ header{position:fixed;top:var(--mx);left:var(--mx);z-index:20;display:flex;align
 #info{position:fixed;left:var(--mx);bottom:calc(var(--mx) + 52px);z-index:16;
   width:min(430px,calc(100vw - var(--panel-w) - var(--mx)*3));
   background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
-  backdrop-filter:blur(14px) saturate(140%);padding:.85rem 1rem .95rem;max-height:52vh;overflow-y:auto}
+  padding:.85rem 1rem .95rem;max-height:52vh;overflow-y:auto}
 #info[hidden]{display:none}
 #info-close{position:absolute;top:.35rem;right:.55rem;border:0;background:none;font-size:1.25rem;color:var(--ink-soft);cursor:pointer}
 .chip{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
@@ -88,24 +88,24 @@ body.night .ed-grey{color:#b9c4b4}
 body.night #fungus-list .ed-green{color:#8fe3a0}
 body.night #fungus-list .ed-red{color:#ff9d94}
 body.night #fungus-list .ed-grey{color:#b9c4b4}
-#info h2{margin:.45rem 0 0;font-family:"Fraunces",Georgia,serif;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--title)}
+#info h2{margin:.45rem 0 0;font-family:"Archivo",Georgia,serif;font-size:26px;font-weight:600;letter-spacing:-.01em;color:var(--title)}
 #info-latin{color:var(--ink-soft);font-size:.86rem;font-style:italic}
 .tagline{font-weight:500;font-style:italic;color:var(--ink-soft)}
-#info h3{margin:.7rem 0 .15rem;font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;color:var(--accent)}
+#info h3{margin:.7rem 0 .15rem;font-size:11px;letter-spacing:0.01em;font-weight:600;color:var(--accent)}
 #info p{margin:.1rem 0;font-size:14px;line-height:1.65}
 
 /* ------------------------------ stage bits ------------------------------ */
 #tooltip{position:absolute;z-index:30;pointer-events:none;background:rgba(24,44,22,.88);color:#f0fae8;font-size:.8rem;
-  padding:.3rem .7rem;border-radius:999px;transform:translate(12px,14px);white-space:nowrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  padding:.3rem .7rem;border-radius:999px;transform:translate(12px,14px);white-space:nowrap;}
 #labels{position:absolute;inset:0;z-index:10;pointer-events:none;overflow:hidden}
 .label{position:absolute;transform:translate(-50%,-130%);font-size:11px;font-weight:600;color:#23401c;
-  background:rgba(255,255,255,.8);border:1px solid var(--line);padding:.1rem .42rem;border-radius:999px;white-space:nowrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  background:rgba(255,255,255,.92);border:1px solid var(--line);padding:.1rem .42rem;border-radius:999px;white-space:nowrap;}
 body.night .label{background:rgba(12,30,18,.82);color:#d6f2cf}
 
 /* -------------------------------- footer -------------------------------- */
 footer{position:fixed;left:50%;transform:translateX(-50%);bottom:var(--mx);z-index:20;background:var(--paper);
   border:1px solid var(--line);border-radius:18px;padding:.42rem 1rem;font-size:.8rem;color:var(--ink-soft);
-  box-shadow:var(--shadow);backdrop-filter:blur(14px) saturate(140%);text-align:center;max-width:min(680px,94vw)}
+  box-shadow:var(--shadow);text-align:center;max-width:min(680px,94vw)}
 footer .smallprint{font-size:.68rem;letter-spacing:.02em;margin-top:.1rem}
 
 /* -------------------------------- tablet -------------------------------- */
@@ -185,7 +185,7 @@ body.night #stage::after {
 @keyframes panelIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .panel-in { animation: panelIn 0.45s cubic-bezier(0.22, 0.8, 0.32, 1); }
 #search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
-.loader-wordmark { font-family: "Inter", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-soft); margin: 0.4rem 0 0; }
+.loader-wordmark { font-family: "Inter", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.01em; color: var(--ink-soft); margin: 0.4rem 0 0; }
 .loader-bar { width: 160px; height: 3px; border-radius: 99px; background: rgba(36, 56, 31, 0.14); overflow: hidden; }
 body.night .loader-bar { background: rgba(255, 255, 255, 0.10); }
 .loader-bar span { display: block; height: 100%; width: 40%; border-radius: 99px; background: var(--accent); animation: loadslide 1.2s ease-in-out infinite; }
@@ -193,9 +193,8 @@ body.night .loader-bar { background: rgba(255, 255, 255, 0.10); }
 .fail-card {
   background: var(--paper); border: 1px solid var(--line); border-radius: 18px;
   padding: 28px 30px; max-width: 540px; box-shadow: var(--shadow);
-  backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
-.fail-card h2 { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--title); margin: 0 0 8px; }
+.fail-card h2 { font-family: "Archivo", Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--title); margin: 0 0 8px; }
 .fail-card p { margin: 0; line-height: 1.6; }
 #info-fact {
   background: color-mix(in srgb, var(--accent) 8%, transparent);

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Unusual Museum — Interactive 3D Galleries</title>
-<meta name="description" content="The Unusual Museum: thirteen interactive 3D galleries you can rotate, zoom and explore — a living cell, the human body, creatures that never existed, deep-sea specimens, the cosmos, all 118 elements, a garden of lentils and greens, dinosaurs, microbes, gemstones, real NASA spacecraft and glowing fungi. Built by Rajesh Kodaganti." />
+<title>The Unusual Museum: Interactive 3D Galleries</title>
+<meta name="description" content="The Unusual Museum: thirteen interactive 3D galleries you can rotate, zoom and explore: a living cell, the human body, creatures that never existed, deep-sea specimens, the cosmos, all 118 elements, a garden of lentils and greens, dinosaurs, microbes, gemstones, real NASA spacecraft and glowing fungi. Built by Rajesh Kodaganti." />
 <style>
   :root{
     --bg:#07080f; --panel:rgba(255,255,255,.055); --stroke:rgba(255,255,255,.12);
@@ -16,7 +16,7 @@
     min-height:100vh; padding:48px 20px 64px;}
   .wrap{max-width:1320px; margin:0 auto}
   header{text-align:center; margin-bottom:14px}
-  .eyebrow{letter-spacing:.35em; text-transform:uppercase; font-size:12px; color:var(--accent); font-weight:700}
+  .eyebrow{letter-spacing:.01em; font-size:12px; color:var(--accent); font-weight:700}
   h1{font-size:clamp(38px, 6vw, 64px); font-weight:800; line-height:1.05; margin:14px 0 12px;
      background:linear-gradient(92deg,#fff 20%, #ffd9a0 45%, #9fd8ff 75%); -webkit-background-clip:text; background-clip:text; color:transparent}
   .sub{color:var(--muted); font-size:clamp(15px,2.2vw,18px); max-width:720px; margin:0 auto; line-height:1.55}
@@ -31,7 +31,7 @@
   a.card::before{content:""; position:absolute; inset:0 0 auto 0; height:4px; background:var(--c, #fff)}
   .icon{font-size:38px; line-height:1}
   .card h2{font-size:22px; margin:14px 0 4px}
-  .wing{font-size:11.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:700}
+  .wing{font-size:11.5px; letter-spacing:.01em; color:var(--accent); font-weight:700}
   .card p{color:var(--muted); font-size:14.5px; line-height:1.55; margin-top:8px}
   .count{display:inline-block; margin-top:auto; padding:5px 11px; font-size:12.5px; color:var(--text); background:rgba(255,255,255,.09);
     border:1px solid var(--stroke); border-radius:999px; align-self:flex-start}
@@ -54,7 +54,7 @@
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/premium.css" />
 </head>
 <body>
@@ -64,7 +64,7 @@
     <p class="eyebrow">An Interactive 3D Museum</p>
     <h1>The Unusual Museum</h1>
     <div class="gold-rule" aria-hidden="true"></div>
-    <p class="sub">Thirteen galleries of things you can spin, zoom and take apart in your browser —
+    <p class="sub">Thirteen galleries of things you can spin, zoom and take apart in your browser:
       from a single living cell to the edge of the observable universe, by way of creatures that never existed,
       dinosaurs, gemstones, real NASA spacecraft, the galaxies themselves and a bowl of lentils. Every exhibit is real 3D: drag to rotate, scroll to zoom, click anything that catches your eye.</p>
     <div class="stats">
@@ -77,135 +77,129 @@
       <span class="stat"><b>0</b> exhibits behind glass</span>
     </div>
     <div class="hero-ctas">
-      <a class="btn btn-primary" href="#galleries">Enter the Museum ↓</a>
-      <a class="btn btn-ghost" href="cell/">Start with CellVerse →</a>
+      <a class="btn btn-primary" href="#galleries">Enter the Museum</a>
+      <a class="btn btn-ghost" href="cell/">Start with CellVerse</a>
     </div>
   </header>
 
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker-track">
-      <span class="ticker-chunk"><span>Now exhibiting</span><i>✦</i><span>A beating heart</span><i>✦</i><span>A flying dragon</span><i>✦</i><span>118 atoms</span><i>✦</i><span>The deepest fish</span><i>✦</i><span>A cell you can pull apart</span><i>✦</i><span>Saturn's rings</span><i>✦</i><span>Every lentil worth a dal</span><i>✦</i><span>A T. rex, life-size attitude</span><i>✦</i><span>Real NASA spacecraft</span><i>✦</i><span>Mushrooms that glow</span><i>✦</i><span>Every James Webb ever modelled</span><i>✦</i><span>A black hole, slowly spinning</span><i>✦</i></span>
-      <span class="ticker-chunk"><span>Now exhibiting</span><i>✦</i><span>A beating heart</span><i>✦</i><span>A flying dragon</span><i>✦</i><span>118 atoms</span><i>✦</i><span>The deepest fish</span><i>✦</i><span>A cell you can pull apart</span><i>✦</i><span>Saturn's rings</span><i>✦</i><span>Every lentil worth a dal</span><i>✦</i><span>A T. rex, life-size attitude</span><i>✦</i><span>Real NASA spacecraft</span><i>✦</i><span>Mushrooms that glow</span><i>✦</i><span>Every James Webb ever modelled</span><i>✦</i><span>A black hole, slowly spinning</span><i>✦</i></span>
-    </div>
-  </div>
 
   <main class="grid" id="galleries">
     <a class="card" href="cell/" data-wing="01" style="--c:#57e6a9">
-      <div class="icon">🧬</div>
-      <h2>CellVerse</h2><span class="wing">Gallery I · The Living Cell</span>
+      <div class="icon">I</div>
+      <h2>CellVerse</h2><span class="wing">Gallery I: The Living Cell</span>
       <p>A living animal cell, floating in the dark. Pull it apart with the exploded view, X-ray the membrane,
          and tap the mitochondria, nucleus, Golgi and friends to see what each tiny machine does.</p>
-      <span class="count">14 organelles</span><span class="go">→</span>
+      <span class="count">14 organelles</span>
     </a>
 
     <a class="card" href="body/" data-wing="02" style="--c:#ff7a90">
-      <div class="icon">🫀</div>
-      <h2>BodyVerse</h2><span class="wing">Gallery II · The Human Body</span>
+      <div class="icon">II</div>
+      <h2>BodyVerse</h2><span class="wing">Gallery II: The Human Body</span>
       <p>A glass figure with everything inside: a heart that actually beats, lungs that breathe, brain, liver,
-         kidneys, stomach, intestines and the great vessels — arranged by body system.</p>
-      <span class="count">18 organs</span><span class="go">→</span>
+         kidneys, stomach, intestines and the great vessels, arranged by body system.</p>
+      <span class="count">18 organs</span>
     </a>
 
     <a class="card" href="museum/" data-wing="03" style="--c:#ffb454">
-      <div class="icon">🐉</div>
-      <h2>Mythos Museum</h2><span class="wing">Gallery III · Creatures That Never Existed</span>
+      <div class="icon">III</div>
+      <h2>Mythos Museum</h2><span class="wing">Gallery III: Creatures That Never Existed</span>
       <p>The Phoenix, the Kraken, a Dragon and a Unicorn, on pedestals in a marble hall.
          Grab one and spin it, zoom into the Kraken's suckers, then flip the hall from day to dusk.</p>
-      <span class="count">4 legendary exhibits</span><span class="go">→</span>
+      <span class="count">4 legendary exhibits</span>
     </a>
 
     <a class="card" href="abyss/" data-wing="04" style="--c:#4fd8e8">
-      <div class="icon">🐙</div>
-      <h2>The Abyss</h2><span class="wing">Gallery IV · Deep-Sea Specimens</span>
+      <div class="icon">IV</div>
+      <h2>The Abyss</h2><span class="wing">Gallery IV: Deep-Sea Specimens</span>
       <p>Three specimens in glass tanks, 1,800 metres down: the glowing anglerfish, the unclosable fangs of the
          viperfish, and a dumbo octopus flapping its ears through the dark.</p>
-      <span class="count">3 specimens</span><span class="go">→</span>
+      <span class="count">3 specimens</span>
     </a>
 
     <a class="card" href="space/" data-wing="05" style="--c:#9fb4ff">
-      <div class="icon">🪐</div>
-      <h2>Cosmos</h2><span class="wing">Gallery V · Solar System &amp; Stars</span>
-      <p>The Sun and all eight planets on their orbits — ride along with Earth, count Saturn's rings —
+      <div class="icon">V</div>
+      <h2>Cosmos</h2><span class="wing">Gallery V: Solar System &amp; Stars</span>
+      <p>The Sun and all eight planets on their orbits: ride along with Earth, count Saturn's rings,
          then visit twelve famous stars standing next to the Sun, for scale. Betelgeuse is rude.</p>
-      <span class="count">8 planets · 12 stars</span><span class="go">→</span>
+      <span class="count">8 planets, 12 stars</span>
     </a>
 
     <a class="card" href="elements/" data-wing="06" style="--c:#c792ff">
-      <div class="icon">⚛️</div>
-      <h2>Elementum</h2><span class="wing">Gallery VI · The Periodic Table</span>
+      <div class="icon">VI</div>
+      <h2>Elementum</h2><span class="wing">Gallery VI: The Periodic Table</span>
       <p>All 118 elements as minted 3D tiles in the classic table. Pick any one and open its atom:
          a nucleus built from its actual protons and neutrons, electrons orbiting in their real shells.</p>
-      <span class="count">118 elements</span><span class="go">→</span>
+      <span class="count">118 elements</span>
     </a>
 
     <a class="card" href="garden/" data-wing="07" style="--c:#8ee06a">
-      <div class="icon">🥬</div>
-      <h2>Verdant</h2><span class="wing">Gallery VII · The Garden</span>
+      <div class="icon">VII</div>
+      <h2>Verdant</h2><span class="wing">Gallery VII: The Garden</span>
       <p>A sunlit greenhouse market: every kind of lentil in heaped bowls, eighteen vegetables in their crates,
-         and twelve leafy greens swaying in the beds — each with its nutrition and its best dishes.</p>
-      <span class="count">40 exhibits</span><span class="go">→</span>
+         and twelve leafy greens swaying in the beds, each with its nutrition and its best dishes.</p>
+      <span class="count">40 exhibits</span>
     </a>
 
     <a class="card" href="dino/" data-wing="08" style="--c:#d9903f">
-      <div class="icon">🦖</div>
-      <h2>DinoVerse</h2><span class="wing">Gallery VIII · The Prehistoric Hall</span>
+      <div class="icon">VIII</div>
+      <h2>DinoVerse</h2><span class="wing">Gallery VIII: The Prehistoric Hall</span>
       <p>Eight giants in a sandstone hall: a T. rex with its jaw open, a stegosaurus wearing its plates,
-         a brachiosaurus grazing the ceiling beams — and a pteranodon circling above them all.</p>
-      <span class="count">8 prehistoric exhibits</span><span class="go">→</span>
+         a brachiosaurus grazing the ceiling beams, and a pteranodon circling above them all.</p>
+      <span class="count">8 prehistoric exhibits</span>
     </a>
 
     <a class="card" href="micro/" data-wing="09" style="--c:#2dd4bf">
-      <div class="icon">🦠</div>
-      <h2>MicroVerse</h2><span class="wing">Gallery IX · The Invisible World</span>
+      <div class="icon">IX</div>
+      <h2>MicroVerse</h2><span class="wing">Gallery IX: The Invisible World</span>
       <p>A drop of pond water, magnified: the alien-lander bacteriophage, a tardigrade paddling by,
          viruses wearing their spikes, and an amoeba reaching out a slow pseudopod.</p>
-      <span class="count">8 microbes</span><span class="go">→</span>
+      <span class="count">8 microbes</span>
     </a>
 
     <a class="card" href="gems/" data-wing="10" style="--c:#ffd166">
-      <div class="icon">💎</div>
-      <h2>GemVerse</h2><span class="wing">Gallery X · The Jeweller's Vault</span>
+      <div class="icon">X</div>
+      <h2>GemVerse</h2><span class="wing">Gallery X: The Jeweller's Vault</span>
       <p>Eight stones under glass, each with its own lamp: a diamond with rainbow fire, an opal holding
          a tiny aurora, an emerald with its garden of inclusions inside.</p>
-      <span class="count">8 gemstones</span><span class="go">→</span>
+      <span class="count">8 gemstones</span>
     </a>
 
     <a class="card" href="mission/" data-wing="11" style="--c:#7aa2ff">
-      <div class="icon">🚀</div>
-      <h2>MissionVerse</h2><span class="wing">Gallery XI · Real Spacecraft</span>
+      <div class="icon">XI</div>
+      <h2>MissionVerse</h2><span class="wing">Gallery XI: Real Spacecraft</span>
       <p>NASA's own 3D models, public domain and rendered live: the ISS, James Webb's golden mirror,
          Hubble, the Perseverance rover and the mighty Saturn V.</p>
-      <span class="count">5 NASA spacecraft</span><span class="go">→</span>
+      <span class="count">5 NASA spacecraft</span>
     </a>
 
     <a class="card" href="fungi/" data-wing="12" style="--c:#b5c168">
-      <div class="icon">🍄</div>
-      <h2>FungiVerse</h2><span class="wing">Gallery XII · The Forest Floor</span>
-      <p>Eight fungi on mossy mounds — the storybook fly agaric, a honeycombed morel, the deadly death cap —
-         then turn out the lights and watch the glowcaps light the forest floor.</p>
-      <span class="count">8 fungi</span><span class="go">→</span>
+      <div class="icon">XII</div>
+      <h2>FungiVerse</h2><span class="wing">Gallery XII: The Forest Floor</span>
+      <p>Eight fungi on mossy mounds: the storybook fly agaric, a honeycombed morel, the deadly death cap.
+         Then turn out the lights and watch the glowcaps light the forest floor.</p>
+      <span class="count">8 fungi</span>
     </a>
 
     <a class="card" href="galaxy/" data-wing="13" style="--c:#a78bfa">
-      <div class="icon">🌌</div>
-      <h2>GalaxyVerse</h2><span class="wing">Gallery XIII · Deep Space</span>
+      <div class="icon">XIII</div>
+      <h2>GalaxyVerse</h2><span class="wing">Gallery XIII: Deep Space</span>
       <p>Every James Webb model NASA ever released, the supernova remnant Cassiopeia A in three generations
-         of data, six great galaxies built star by star — and Sagittarius A*, the black hole at our galaxy's heart.</p>
-      <span class="count">15 deep-space exhibits</span><span class="go">→</span>
+         of data, six great galaxies built star by star, and Sagittarius A*, the black hole at our galaxy's heart.</p>
+      <span class="count">15 deep-space exhibits</span>
     </a>
   </main>
 
   <section class="why" aria-label="Why this museum">
     <div class="why-card">
-      <h3><span class="why-ic">✦</span>Built with Three.js — real-time 3D</h3>
-      <p>Every exhibit is rendered live in your browser — not a video, not a picture. If it spins, it's real geometry.</p>
+      <h3>Built with Three.js: real-time 3D</h3>
+      <p>Every exhibit is rendered live in your browser, not a video, not a picture. If it spins, it's real geometry.</p>
     </div>
     <div class="why-card">
-      <h3><span class="why-ic">✦</span>Real licensed 3D models</h3>
-      <p>A flying dragon, an anglerfish and more, from real artists under CC0 &amp; CC BY — full credits in CREDITS.</p>
+      <h3>Real licensed 3D models</h3>
+      <p>A flying dragon, an anglerfish and more, from real artists under CC0 &amp; CC BY. Full credits in CREDITS.</p>
     </div>
     <div class="why-card">
-      <h3><span class="why-ic">✦</span>Works on any device</h3>
+      <h3>Works on any device</h3>
       <p>Phone, tablet or desktop: drag, pinch and tap your way through all seven wings, no installs, no tickets.</p>
     </div>
   </section>
@@ -216,8 +210,8 @@
       <a href="https://github.com/Unigalactix/unusual-museum/blob/main/CREDITS.md">Model Credits</a>
       <a href="https://github.com/Unigalactix">github.com/Unigalactix</a>
     </div>
-    <p><b>The Unusual Museum</b> — built by Rajesh Kodaganti, with Three.js and vanilla JavaScript. No exhibits were harmed; several were rotated at high speed.</p>
-    <p class="smallprint">Models: CC0 / CC BY via Poly Pizza · Textures &amp; code: original</p>
+    <p><b>The Unusual Museum</b>, built by Rajesh Kodaganti, with Three.js and vanilla JavaScript. No exhibits were harmed; several were rotated at high speed.</p>
+    <p class="smallprint">Models: CC0 / CC BY via Poly Pizza. Textures &amp; code: original</p>
   </footer>
 </div>
 <script src="js/landing.js" defer></script>

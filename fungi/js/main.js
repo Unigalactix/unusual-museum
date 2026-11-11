@@ -566,7 +566,7 @@ const tmpC = new THREE.Color();
 document.getElementById('daynight').addEventListener('click', (ev) => {
   nightTarget = nightTarget ? 0 : 1;
   ev.currentTarget.setAttribute('aria-pressed', String(!!nightTarget));
-  ev.currentTarget.textContent = nightTarget ? '☀️ Day' : '🌙 Night';
+  ev.currentTarget.textContent = nightTarget ? 'Day' : 'Night';
   document.body.classList.toggle('night', !!nightTarget);
 });
 function applyDayNight() {

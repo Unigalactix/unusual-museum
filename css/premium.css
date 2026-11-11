@@ -7,7 +7,7 @@
 :root{
   --gold:#d9a441;
   --gold-soft:#ffd9a0;
-  --glass:rgba(15,17,32,.72);
+  :rgba(15,17,32,0.92);
 }
 
 html, body{ overflow-x:hidden; }
@@ -78,7 +78,7 @@ h1{
   background:linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 
-.stat{ backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+.stat{ }
 .stat b{ color:var(--gold-soft); }
 
 /* ---------- Hero CTAs ---------- */
@@ -102,35 +102,9 @@ h1{
   color:var(--text);
   background:rgba(255,255,255,.045);
   border:1px solid var(--stroke);
-  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
 }
 .btn-ghost:hover{ transform:translateY(-2px); border-color:rgba(255,255,255,.35); background:rgba(255,255,255,.09); }
 
-/* ---------- Ticker / marquee ---------- */
-.ticker{
-  margin:34px auto 4px;
-  overflow:hidden;
-  border-top:1px solid var(--stroke);
-  border-bottom:1px solid var(--stroke);
-  padding:11px 0;
-  -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-          mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-}
-.ticker-track{
-  display:flex; width:max-content;
-  animation:ticker 32s linear infinite;
-}
-.ticker:hover .ticker-track{ animation-play-state:paused; }
-.ticker-chunk{
-  display:flex; align-items:center; gap:2.4em; padding-right:2.4em;
-  white-space:nowrap;
-  font-size:12px; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
-  color:var(--muted);
-}
-.ticker-chunk i{ font-style:normal; color:var(--gold); }
-@keyframes ticker{
-  to{ transform:translateX(-50%); }
-}
 
 /* ---------- Gallery cards — premium glass ---------- */
 .grid a.card{
@@ -143,8 +117,6 @@ h1{
       color-mix(in srgb, var(--c, #fff) 58%, transparent),
       rgba(255,255,255,.13) 42%,
       rgba(255,255,255,.04)) border-box;
-  backdrop-filter:blur(14px) saturate(1.25);
-  -webkit-backdrop-filter:blur(14px) saturate(1.25);
   transform:perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
   transition:transform .35s ease, box-shadow .35s ease, background-size .45s ease;
   will-change:transform;
@@ -197,7 +169,6 @@ h1{
   border:1px solid var(--stroke);
   border-radius:16px;
   padding:18px 20px;
-  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
 }
 .why-card h3{ font-size:15px; font-weight:700; margin-bottom:6px; }
 .why-card h3 .why-ic{ color:var(--gold); margin-right:7px; }
@@ -228,7 +199,6 @@ footer{
 @media (max-width:700px){
   .why{ grid-template-columns:1fr; }
   .hero-ctas .btn{ flex:1 1 100%; text-align:center; }
-  .ticker-chunk{ font-size:11px; gap:1.8em; padding-right:1.8em; }
   .eyebrow::before, .eyebrow::after{ width:26px; }
 }
 
@@ -236,7 +206,6 @@ footer{
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
   h1{ animation:none; }
-  .ticker-track{ animation:none; }
   .rv{ opacity:1 !important; transform:none !important; transition:none !important; }
   .grid a.card, .btn, .grid .card .go{ transition:none !important; }
   .grid a.card:hover{ --ty:0px; }
@@ -244,20 +213,20 @@ footer{
 
 /* ============================================================
    PREMIUM UI SYSTEM — hub layer (appended).
-   Fraunces display type, Inter UI type, eyebrow-spec pills and
+   Archivo display type, Inter UI type, eyebrow-spec pills and
    chips, control-spec CTAs, surface-spec why-cards + footer.
-   Starfield, ticker, tilt and reveal above are untouched.
+   Starfield, tilt and reveal above are untouched.
    ============================================================ */
 
 body{ font-family:"Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
 
 h1{
-  font-family:"Fraunces", Georgia, "Times New Roman", serif;
+  font-family:"Archivo", Georgia, "Times New Roman", serif;
   font-weight:700;
   letter-spacing:-0.01em;
 }
 .grid .card h2{
-  font-family:"Fraunces", Georgia, "Times New Roman", serif;
+  font-family:"Archivo", Georgia, "Times New Roman", serif;
   font-weight:600;
   letter-spacing:-0.01em;
   font-size:23px;
@@ -276,12 +245,11 @@ h1{
   font-family:"Inter", sans-serif;
   font-size:11px; font-weight:600; letter-spacing:.14em;
 }
-.ticker-chunk{ font-family:"Inter", sans-serif; }
 
 /* stat pills: eyebrow typography on a glass pill, gold numerals */
 .stat{
   font-family:"Inter", sans-serif;
-  font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  font-size:11px; font-weight:600; letter-spacing:0.01em; 
   min-height:34px; display:inline-flex; align-items:center; gap:.45em;
   border-radius:999px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
@@ -318,25 +286,21 @@ h1{
 
 /* why-cards: full surface spec */
 .why-card{
-  background:color-mix(in srgb, var(--glass) 84%, transparent);
+  background:color-mix(in srgb, var(--glass) 92%, transparent);
   border:1px solid rgba(255,255,255,.08);
   border-radius:18px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 18px 50px rgba(0,0,0,.45);
-  backdrop-filter:blur(14px) saturate(140%);
-  -webkit-backdrop-filter:blur(14px) saturate(140%);
 }
 .why-card h3{
-  font-family:"Fraunces", Georgia, serif;
+  font-family:"Archivo", Georgia, serif;
   font-size:16px; font-weight:600; letter-spacing:-0.01em;
 }
 
 /* footer: surface card */
 footer{
-  background:color-mix(in srgb, var(--glass) 84%, transparent);
+  background:color-mix(in srgb, var(--glass) 92%, transparent);
   border:1px solid rgba(255,255,255,.08);
   border-radius:18px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 18px 50px rgba(0,0,0,.45);
-  backdrop-filter:blur(14px) saturate(140%);
-  -webkit-backdrop-filter:blur(14px) saturate(140%);
   padding:28px 24px;
 }

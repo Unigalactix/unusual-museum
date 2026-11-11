@@ -5,7 +5,7 @@
   --dim: #7d99a8;
   --accent: #63ffd8;
   --accent2: #7db4ff;
-  --glass: rgba(8, 22, 32, 0.78);
+  : rgba(8, 22, 32, 0.92);
   --line: rgba(120, 200, 220, 0.22);
 }
 
@@ -51,7 +51,7 @@ html, body {
   transition: opacity 0.9s ease;
 }
 #loading.done { opacity: 0; pointer-events: none; }
-.load-inner { text-align: center; color: var(--dim); letter-spacing: 0.25em; text-transform: uppercase; font-size: 0.75rem; }
+.load-inner { text-align: center; color: var(--dim); letter-spacing: 0.01em; font-size: 0.75rem; }
 .load-glyph { font-size: 2.4rem; color: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 0%,100% { opacity: 0.25; transform: scale(0.9);} 50% { opacity: 1; transform: scale(1.1);} }
 
@@ -66,7 +66,7 @@ html, body {
 .header-card {
   flex: none; display: flex; flex-direction: column; align-items: stretch; gap: 12px;
   padding: 18px; border: 1px solid var(--line); border-radius: 16px;
-  background: var(--glass); backdrop-filter: blur(12px);
+  background: var(--glass); 
   box-shadow: inset 0 1px 0 rgba(160,230,255,0.08);
 }
 .header-card .back { align-self: flex-start; }
@@ -74,24 +74,23 @@ html, body {
 .back {
   color: var(--dim); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.08em;
   border: 1px solid var(--line); padding: 7px 13px; border-radius: 999px; background: var(--glass);
-  backdrop-filter: blur(6px);
 }
 .back:hover { color: var(--accent); border-color: var(--accent); }
 
 .title-block { text-align: left; }
 .title-block h1 {
-  margin: 0; font-size: clamp(1.7rem, 2.6vw, 2.3rem); font-weight: 200; letter-spacing: 0.32em;
-  text-transform: uppercase; text-indent: 0.42em;
+  margin: 0; font-size: clamp(1.7rem, 2.6vw, 2.3rem); font-weight: 200; letter-spacing: 0.01em;
+   text-indent: 0.42em;
   background: linear-gradient(180deg, #eafcff, #6fb7cf 75%, #2b5b74);
   -webkit-background-clip: text; background-clip: text; color: transparent;
   text-shadow: 0 0 42px rgba(99, 255, 216, 0.12);
 }
-.subtitle { margin: 4px 0 0; color: var(--dim); font-size: 0.78rem; letter-spacing: 0.3em; text-transform: uppercase; }
+.subtitle { margin: 4px 0 0; color: var(--dim); font-size: 0.78rem; letter-spacing: 0.01em; }
 
 .depth-gauge {
   display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
   text-align: right; border: 1px solid var(--line); border-radius: 10px; padding: 7px 12px;
-  background: var(--glass); backdrop-filter: blur(6px); min-width: 110px;
+  background: var(--glass);  min-width: 110px;
 }
 .dg-label { display: block; font-size: 0.6rem; letter-spacing: 0.3em; color: var(--dim); }
 .dg-value { font-size: 1rem; color: var(--accent); font-variant-numeric: tabular-nums; }
@@ -100,7 +99,7 @@ html, body {
 #labels { position: absolute; inset: 0; z-index: 10; pointer-events: none; overflow: hidden; }
 .spec-label {
   position: absolute; transform: translate(-50%, -130%); white-space: nowrap;
-  font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: #bfe9f5;
+  font-size: 0.68rem; letter-spacing: 0.01em;  color: #bfe9f5;
   text-shadow: 0 1px 8px #000;
 }
 .spec-label::after {
@@ -110,7 +109,6 @@ html, body {
 #tooltip {
   position: absolute; z-index: 30; pointer-events: none; padding: 6px 11px; border-radius: 8px;
   background: var(--glass); border: 1px solid var(--line); font-size: 0.8rem; color: var(--ink);
-  backdrop-filter: blur(6px);
 }
 
 /* ---------- info panel ---------- */
@@ -118,7 +116,7 @@ html, body {
   position: relative; z-index: 25; width: auto;
   flex: 1 1 auto; min-height: 0; max-height: none; overflow-y: auto;
   background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
-  padding: 22px 24px 24px; backdrop-filter: blur(12px);
+  padding: 22px 24px 24px; 
   box-shadow: 0 24px 70px rgba(0,0,0,0.65), inset 0 1px 0 rgba(160,230,255,0.08);
   animation: rise 0.45s cubic-bezier(.2,.9,.25,1);
 }
@@ -129,13 +127,13 @@ html, body {
   font-size: 1.5rem; cursor: pointer; line-height: 1;
 }
 .panel-close:hover { color: var(--accent); }
-.panel-kicker { margin: 0 0 6px; font-size: 0.66rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); }
+.panel-kicker { margin: 0 0 6px; font-size: 0.66rem; letter-spacing: 0.01em; color: var(--accent); }
 .panel h2 { margin: 0; font-size: 1.65rem; font-weight: 300; letter-spacing: 0.03em; }
 .p-sci { margin: 2px 0 10px; font-style: italic; color: var(--accent2); }
 .p-tag { margin: 0 0 14px; color: #bfe0ec; font-size: 0.95rem; line-height: 1.45; }
 .p-stats { margin: 0 0 14px; display: grid; gap: 9px; }
 .p-stats div { border-left: 2px solid var(--line); padding-left: 10px; }
-.p-stats dt { font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--dim); }
+.p-stats dt { font-size: 0.62rem; letter-spacing: 0.01em; color: var(--dim); }
 .p-stats dd { margin: 2px 0 0; font-size: 0.88rem; line-height: 1.4; }
 .p-desc { font-size: 0.92rem; line-height: 1.6; color: #c8dde7; margin: 0 0 12px; }
 .p-fact { font-size: 0.88rem; line-height: 1.6; color: #9fd8c9; margin: 0; border-top: 1px dashed var(--line); padding-top: 12px; }
@@ -151,7 +149,7 @@ html, body {
 .ctl {
   pointer-events: auto; cursor: pointer; color: var(--ink); background: var(--glass);
   border: 1px solid var(--line); border-radius: 999px; padding: 9px 15px; font-size: 0.82rem;
-  letter-spacing: 0.04em; backdrop-filter: blur(8px); transition: border-color .2s, color .2s, background .2s;
+  letter-spacing: 0.04em;  transition: border-color .2s, color .2s, background .2s;
 }
 .ctl:hover { border-color: var(--accent); color: #fff; }
 .ctl.active { background: rgba(99, 255, 216, 0.14); border-color: var(--accent); color: #eafffa; }
@@ -159,13 +157,13 @@ html, body {
 .slider-wrap {
   display: flex; align-items: center; gap: 9px; color: var(--dim); font-size: 0.78rem;
   letter-spacing: 0.08em; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px;
-  background: var(--glass); backdrop-filter: blur(8px);
+  background: var(--glass); 
 }
 input[type="range"] { accent-color: var(--accent); width: 110px; }
 
 .hint {
   position: absolute; bottom: 10px; left: 0; right: 0; z-index: 15; text-align: center;
-  color: rgba(125, 153, 168, 0.85); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(125, 153, 168, 0.85); font-size: 0.72rem; letter-spacing: 0.01em; 
   pointer-events: none;
 }
 
@@ -228,16 +226,14 @@ button, input { transition: background-color 0.18s ease-out, border-color 0.18s 
 
 /* Surfaces */
 .header-card, .panel {
-  background: color-mix(in srgb, #081620 84%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  backdrop-filter: blur(14px) saturate(140%);
+  background: color-mix(in srgb, #081620 92%, transparent);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 50px rgba(0, 0, 0, 0.45);
 }
 
 /* Titles & instrument labels */
-.title-block h1 { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: -0.01em; text-indent: 0; }
+.title-block h1 { font-family: "Archivo", Georgia, serif; font-weight: 600; letter-spacing: -0.01em; text-indent: 0; }
 .subtitle { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--accent); }
 .dg-label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; }
 .dg-value { font-size: 15px; font-weight: 600; }
@@ -268,7 +264,7 @@ input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius
 
 /* Info panel anatomy */
 .panel-kicker { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; }
-.panel h2 { font-family: "Fraunces", Georgia, serif; font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
+.panel h2 { font-family: "Archivo", Georgia, serif; font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
 .p-tag { font-style: italic; color: #a9c6d2; font-size: 14px; }
 .p-stats dt { font-size: 10px; letter-spacing: 0.14em; }
 .p-stats dd { font-size: 15px; font-weight: 600; }
@@ -284,18 +280,17 @@ input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius
 /* Tooltip, labels, hint */
 #tooltip {
   background: rgba(10, 13, 22, 0.92); border: 1px solid rgba(255, 255, 255, 0.08);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   border-radius: 999px; padding: 6px 13px; font-size: 12px; font-weight: 500;
 }
 .spec-label {
-  background: rgba(10, 13, 22, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  background: rgba(10, 13, 22, 0.92);  
   border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 999px; padding: 3px 9px;
   font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-shadow: none;
 }
 .hint {
   left: 50%; right: auto; transform: translateX(-50%); bottom: 14px;
   width: max-content; max-width: calc(100% - 24px);
-  background: rgba(10, 13, 22, 0.55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  background: rgba(10, 13, 22, 0.92);  
   border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 999px; padding: 7px 16px;
   font-size: 12px; letter-spacing: 0.06em; text-transform: none; color: #a9c6d2; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
@@ -319,13 +314,12 @@ input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius
 }
 @keyframes loadSlide { from { background-position: 200% 0; } to { background-position: -100% 0; } }
 .fail-card {
-  background: color-mix(in srgb, #081620 84%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
+  background: color-mix(in srgb, #081620 92%, transparent);
   border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 50px rgba(0, 0, 0, 0.45);
   color: var(--dim); line-height: 1.6;
 }
-.fail-card h2 { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); margin-top: 0; }
+.fail-card h2 { font-family: "Archivo", Georgia, serif; letter-spacing: -0.01em; font-size: 22px; font-weight: 600; color: var(--ink); margin-top: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .panel.panel-in, .load-inner::after, .load-glyph { animation: none; }

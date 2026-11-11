@@ -6,7 +6,7 @@
 <title>FungiVerse — The Forest-Floor Wing: Mushrooms &amp; Toadstools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <script type="importmap">
 { "imports": {
@@ -16,12 +16,14 @@
 </script>
 </head>
 <body>
-<div id="loading"><div class="shroom">🍄</div>
+<div id="loading"><div class="shroom"></div>
 <p class="loader-wordmark">The Unusual Museum</p>
 <div class="loader-bar" aria-hidden="true"><span></span></div>
+</div>
+
 <div id="webgl-fail" hidden>
   <div class="fail-card">
-  <h2>🌧️ The forest could not wake here</h2>
+  <h2>The forest could not wake here</h2>
   <p>Your browser could not start WebGL, which FungiVerse needs to render its 3D woodland. Try a recent version of Chrome, Edge, Firefox or Safari with hardware acceleration enabled.</p>
   </div>
 </div>
@@ -41,9 +43,9 @@
   <h2 id="info-name"></h2>
   <div id="info-latin"></div>
   <p id="info-tagline" class="tagline"></p>
-  <h3>🌲 Habitat</h3><p id="info-habitat"></p>
-  <h3>🍄 About</h3><p id="info-desc"></p>
-  <h3>✨ Did you know?</h3><p id="info-fact"></p>
+  <h3>Habitat</h3><p id="info-habitat"></p>
+  <h3>About</h3><p id="info-desc"></p>
+  <h3>Did you know?</h3><p id="info-fact"></p>
 </article>
   </aside>
 
@@ -59,8 +61,8 @@
 
   <aside class="col-right">
   <div class="controls">
-    <button id="daynight" class="ctl-btn" aria-pressed="false">🌙 Night</button>
-    <button id="reset-view" class="ctl-btn">🧭 Reset view</button>
+    <button id="daynight" class="ctl-btn" aria-pressed="false">Night</button>
+    <button id="reset-view" class="ctl-btn">Reset view</button>
     <label class="ctl-btn toggle"><input type="checkbox" id="labels-toggle" checked> Labels</label>
   </div>
 

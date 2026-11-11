@@ -133,7 +133,7 @@
   }
 
   /* ---------- Scroll reveal ---------- */
-  var targets = document.querySelectorAll(".grid a.card, .why-card, .ticker, .stats");
+  var targets = document.querySelectorAll(".grid a.card, .why-card, .stats");
   Array.prototype.forEach.call(targets, function (el) { el.classList.add("rv"); });
 
   function revealAll() {

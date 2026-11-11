@@ -1,9 +1,9 @@
 // Verdant — produce data. All text is original; nutrition lines are general,
 // well-established facts about each food, written in our own words.
 export const ZONES = {
-  lentils: { label: 'Lentils & Legumes', icon: '🫘' },
-  vegetables: { label: 'Vegetable Garden', icon: '🥕' },
-  leafy: { label: 'Leafy Greens', icon: '🥬' },
+  lentils: { label: 'Lentils & Legumes', icon: '' },
+  vegetables: { label: 'Vegetable Garden', icon: '' },
+  leafy: { label: 'Leafy Greens', icon: '' },
 };
 
 export const PRODUCE = [

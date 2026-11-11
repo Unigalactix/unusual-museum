@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import { ORGANS, SYSTEMS, ORGAN_BUILDERS, ORGAN_PLACEMENTS, ORGAN_FOCUS_DISTS } from "./organs.js";
 
 const organById = new Map(ORGANS.map((o) => [o.id, o]));
@@ -192,7 +193,161 @@ function std(color, opts = {}) {
   });
 }
 function organMat(id, opts = {}) {
-  return std(organById.get(id).color, opts);
+  const m = std(organById.get(id).color, opts);
+  applyFlesh(m, id, false);
+  return m;
+}
+
+/* ---------------- lifelike flesh shading ----------------
+   The anatomy meshes (real and procedural alike) ship with flat
+   single-colour materials, which reads as plastic. applyFlesh()
+   upgrades a physical material with procedural tissue detail,
+   computed in 3D object space (the meshes have no UVs, so texture
+   maps cannot do this job):
+     - low-frequency mottling + fine speckle in the diffuse colour,
+     - darker vascular streaks (ridged noise) on the organs that
+       show them,
+     - screen-space bump from the same noise field, so the surface
+       catches light like tissue instead of a moulded toy,
+     - roughness variation and a fresnel "subsurface" glow in the
+       organ's own colour — light wrapping into flesh,
+     - a whisper of vertex displacement so silhouettes are organic,
+       never faceted (safe: displacement is a pure function of
+       position, and real-organ geometry is vertex-welded first, so
+       no cracks can open between primitives).
+   One shared program for every organ (customProgramCacheKey); the
+   per-organ character lives in uniforms from FLESH_PROFILES.
+   `real` materials work in dataset millimetres (~50.45 units per
+   scene unit), so frequencies and displacements are rescaled. */
+const MM_PER_UNIT = 1 / 0.01982;
+const FLESH_DEFAULT = {
+  mottle: 0.3, speckle: 0.2, veins: 0.2, rough: 0.45, clear: 0.5,
+  sss: 0.45, freq: 2.0, bump: 0.45, disp: 0.01,
+};
+const FLESH_PROFILES = {
+  "brain":          { tint: 0xcf9aa4, mottle: 0.35, speckle: 0.25, veins: 0.15, rough: 0.55, clear: 0.25, sss: 0.5,  freq: 2.2, bump: 0.5 },
+  "spinal-cord":    { mottle: 0.2,  speckle: 0.15, veins: 0.1,  rough: 0.5,  clear: 0.4,  sss: 0.35 },
+  "thyroid":        { mottle: 0.3,  speckle: 0.2,  veins: 0.2,  rough: 0.45, clear: 0.5,  sss: 0.5 },
+  "trachea":        { tint: 0xd8b49e, mottle: 0.2, speckle: 0.12, veins: 0.08, rough: 0.5, clear: 0.3, sss: 0.3 },
+  "lungs":          { tint: 0xd8a3a3, mottle: 0.4, speckle: 0.35, veins: 0.15, rough: 0.6, clear: 0.35, sss: 0.55, freq: 2.6, bump: 0.5 },
+  "heart":          { mottle: 0.3,  speckle: 0.2,  veins: 0.5,  rough: 0.38, clear: 0.7,  sss: 0.6,  bump: 0.55 },
+  "aorta":          { mottle: 0.25, speckle: 0.15, veins: 0.3,  rough: 0.4,  clear: 0.6,  sss: 0.5 },
+  "diaphragm":      { mottle: 0.3,  speckle: 0.2,  veins: 0.2,  rough: 0.5,  clear: 0.4,  sss: 0.4 },
+  "liver":          { tint: 0x8f3527, mottle: 0.4, speckle: 0.2, veins: 0.35, rough: 0.34, clear: 0.75, sss: 0.55, bump: 0.4 },
+  "gallbladder":    { tint: 0x7d9b4a, mottle: 0.25, speckle: 0.15, veins: 0.15, rough: 0.3, clear: 0.8, sss: 0.5 },
+  "stomach":        { mottle: 0.3,  speckle: 0.2,  veins: 0.25, rough: 0.42, clear: 0.6,  sss: 0.55 },
+  "pancreas":       { tint: 0xe3c07f, mottle: 0.35, speckle: 0.3, veins: 0.1, rough: 0.55, clear: 0.4, sss: 0.4, bump: 0.6 },
+  "spleen":         { tint: 0x74436b, mottle: 0.3, speckle: 0.25, veins: 0.1, rough: 0.4, clear: 0.6, sss: 0.5 },
+  "kidneys":        { tint: 0x8e2f3f, mottle: 0.3, speckle: 0.2, veins: 0.25, rough: 0.32, clear: 0.8, sss: 0.55 },
+  "small-intestine":{ tint: 0xd9906f, mottle: 0.35, speckle: 0.16, veins: 0.2, rough: 0.45, clear: 0.55, sss: 0.55 },
+  "large-intestine":{ tint: 0xbf7a4e, mottle: 0.35, speckle: 0.16, veins: 0.2, rough: 0.45, clear: 0.55, sss: 0.55 },
+  "appendix":       { tint: 0xd9906f, mottle: 0.35, speckle: 0.25, veins: 0.2, rough: 0.45, clear: 0.55, sss: 0.55 },
+  "bladder":        { tint: 0xdfa184, mottle: 0.3, speckle: 0.15, veins: 0.3, rough: 0.4, clear: 0.6, sss: 0.6 },
+};
+const FLESH_GLSL = /* glsl */`
+  float fleshHash(vec3 p) {
+    p = fract(p * 0.3183099 + vec3(0.1, 0.17, 0.13));
+    p *= 17.0;
+    return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+  }
+  float fleshNoise(vec3 p) {
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(mix(fleshHash(i), fleshHash(i + vec3(1, 0, 0)), f.x),
+          mix(fleshHash(i + vec3(0, 1, 0)), fleshHash(i + vec3(1, 1, 0)), f.x), f.y),
+      mix(mix(fleshHash(i + vec3(0, 0, 1)), fleshHash(i + vec3(1, 0, 1)), f.x),
+          mix(fleshHash(i + vec3(0, 1, 1)), fleshHash(i + vec3(1, 1, 1)), f.x), f.y),
+      f.z);
+  }
+  float fleshFbm(vec3 p) {
+    float a = 0.5;
+    float s = 0.0;
+    for (int i = 0; i < 4; i++) { s += a * fleshNoise(p); p *= 2.03; a *= 0.5; }
+    return s;
+  }
+`;
+function applyFlesh(material, id, real) {
+  const prof = { ...FLESH_DEFAULT, ...(FLESH_PROFILES[id] || {}) };
+  if (prof.tint !== undefined) material.color.set(prof.tint);
+  material.roughness = prof.rough;
+  material.clearcoat = prof.clear;
+  material.clearcoatRoughness = Math.min(0.6, prof.rough + 0.1);
+  const base = new THREE.Color(material.color);
+  const dark = base.clone().multiplyScalar(0.62).lerp(new THREE.Color(0x30060a), 0.18);
+  const light = base.clone().lerp(new THREE.Color(0xffe3d9), 0.26);
+  const vein = base.clone().multiplyScalar(0.42).lerp(new THREE.Color(0x2a0208), 0.35);
+  const scale = real ? 1 / MM_PER_UNIT : 1;      // positions are mm on real organs
+  const grow = real ? MM_PER_UNIT : 1;
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uFFreq = { value: prof.freq * scale };
+    shader.uniforms.uFDisp = { value: prof.disp * grow };
+    shader.uniforms.uFMottle = { value: prof.mottle };
+    shader.uniforms.uFSpeckle = { value: prof.speckle };
+    shader.uniforms.uFVeins = { value: prof.veins };
+    shader.uniforms.uFBump = { value: prof.bump * (real ? 1.5 : 0.6) };
+    shader.uniforms.uFSSS = { value: prof.sss };
+    shader.uniforms.uFColDark = { value: dark };
+    shader.uniforms.uFColLight = { value: light };
+    shader.uniforms.uFColVein = { value: vein };
+    shader.uniforms.uFColSSS = { value: base.clone().lerp(new THREE.Color(0xd4202e), 0.45) };
+    shader.vertexShader = shader.vertexShader
+      .replace("#include <common>",
+        "#include <common>\nvarying vec3 vFleshPos;\nuniform float uFFreq;\nuniform float uFDisp;\n" + FLESH_GLSL)
+      .replace("#include <begin_vertex>",
+        `#include <begin_vertex>
+         vFleshPos = position;
+         transformed += objectNormal * (fleshFbm(position * uFFreq) - 0.5) * uFDisp;`);
+    shader.fragmentShader = shader.fragmentShader
+      .replace("#include <common>",
+        `#include <common>
+         varying vec3 vFleshPos;
+         uniform float uFFreq, uFMottle, uFSpeckle, uFVeins, uFBump, uFSSS;
+         uniform vec3 uFColDark, uFColLight, uFColVein, uFColSSS;
+        ` + FLESH_GLSL + /* glsl */`
+         vec3 fleshPerturb(vec3 surfPos, vec3 surfNorm, vec2 dHdxy) {
+           vec3 vSigmaX = dFdx(surfPos);
+           vec3 vSigmaY = dFdy(surfPos);
+           vec3 R1 = cross(vSigmaY, surfNorm);
+           vec3 R2 = cross(surfNorm, vSigmaX);
+           float fDet = dot(vSigmaX, R1) * (float(gl_FrontFacing) * 2.0 - 1.0);
+           vec3 vGrad = sign(fDet) * (dHdxy.x * R1 + dHdxy.y * R2);
+           return normalize(abs(fDet) * surfNorm - vGrad);
+         }`)
+      .replace("#include <color_fragment>",
+        `#include <color_fragment>
+         {
+           float fmot = fleshFbm(vFleshPos * uFFreq);
+           float fspe = fleshNoise(vFleshPos * uFFreq * 7.0);
+           vec3 fcol = mix(uFColDark, uFColLight, smoothstep(0.15, 0.85, fmot));
+           float ridge = 1.0 - abs(2.0 * fleshFbm(vFleshPos * uFFreq * 0.7 + 13.1) - 1.0);
+           fcol = mix(fcol, uFColVein, pow(ridge, 6.0) * uFVeins);
+           fcol *= 1.0 + (fspe - 0.5) * uFSpeckle * 0.15;
+           diffuseColor.rgb = mix(diffuseColor.rgb, fcol, 0.12 + uFMottle * 0.35);
+         }`)
+      .replace("#include <roughnessmap_fragment>",
+        `#include <roughnessmap_fragment>
+         roughnessFactor = clamp(roughnessFactor
+           + (fleshFbm(vFleshPos * uFFreq * 1.7) - 0.5) * 0.2, 0.06, 1.0);`)
+      .replace("#include <normal_fragment_maps>",
+        `#include <normal_fragment_maps>
+         {
+           float fh = fleshFbm(vFleshPos * uFFreq * 3.0);
+           vec2 dH = vec2(dFdx(fh), dFdy(fh)) * uFBump;
+           if (abs(dH.x) + abs(dH.y) > 0.0) {
+             normal = fleshPerturb(-vViewPosition, normal, dH);
+           }
+         }`)
+      .replace("#include <emissivemap_fragment>",
+        `#include <emissivemap_fragment>
+         {
+           float fres = pow(1.0 - clamp(dot(normal, normalize(vViewPosition)), 0.0, 1.0), 2.4);
+           totalEmissiveRadiance += uFColSSS * fres * uFSSS * 0.1;
+         }`);
+  };
+  material.customProgramCacheKey = () => "flesh-v1";
+  return material;
 }
 // Slightly displace sphere vertices with trig "wrinkles" (brain folds, texture).
 function wrinkle(geo, amp = 0.05, freq = 7) {
@@ -415,22 +570,23 @@ function swapInRealOrgan(id, modelRoot) {
   // One physical material per organ: selection highlight works because
   // setEmissive() traverses only this group's meshes, and the material
   // carries emissive = organ colour just like the procedural std().
-  const mat = new THREE.MeshPhysicalMaterial({
+  // applyFlesh() adds the procedural tissue detail (see above).
+  const mat = applyFlesh(new THREE.MeshPhysicalMaterial({
     color: organById.get(id).color,
     roughness: 0.32,
     metalness: 0.02,
     emissive: organById.get(id).color,
     emissiveIntensity: 0,
-    clearcoat: 0.55,
-    clearcoatRoughness: 0.5,
-    sheen: 0.25,
-    sheenRoughness: 0.6,
-    sheenColor: organById.get(id).color,
     envMapIntensity: 0.35,
-  });
+  }), id, true);
   modelRoot.applyMatrix4(anatomyMatrix);
   modelRoot.traverse((c) => {
     if (c.isMesh) {
+      // The exports carry position only: weld duplicate vertices and
+      // compute smooth normals, or the organs shade as faceted
+      // low-poly shells however good the material is.
+      c.geometry = mergeVertices(c.geometry, 1e-4);
+      c.geometry.computeVertexNormals();
       c.material = mat;
       c.castShadow = true;
       c.receiveShadow = true;

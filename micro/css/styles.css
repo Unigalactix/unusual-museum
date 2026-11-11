@@ -1,7 +1,7 @@
 :root {
   --bg: #04100d;
   --margin: 20px;
-  --panel: rgba(10, 26, 24, 0.62);
+  : rgba(10, 26, 24, 0.92);
   --panel-border: rgba(110, 230, 200, 0.18);
   --text: #eafff8;
   --muted: #9fd1c2;
@@ -27,7 +27,7 @@ body {
     var(--bg);
 }
 
-h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
+h1, h2 { font-family: "Archivo", Georgia, serif; letter-spacing: -0.01em; margin: 0; }
 
 #scene {
   position: fixed;
@@ -44,8 +44,6 @@ h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 50px rgba(0, 0, 0, 0.45);
   padding: 18px 20px;
 }
@@ -172,8 +170,8 @@ h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
 /* ---------- info panel ---------- */
 #info-panel { left: var(--margin); bottom: 56px; width: 360px; max-width: calc(100vw - 40px); }
 .info-eyebrow {
-  margin: 0 0 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--accent-1);
+  margin: 0 0 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
+   color: var(--accent-1);
 }
 #info-name { font-size: 26px; letter-spacing: -0.01em; }
 #info-meta { margin: 3px 0 0; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -191,9 +189,8 @@ h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
   position: fixed; z-index: 10;
   bottom: 14px; left: 50%; transform: translateX(-50%);
   color: var(--muted); font-size: 0.82rem; letter-spacing: 0.03em;
-  background: rgba(6, 20, 17, 0.5);
+  background: rgba(6, 20, 17, 0.92);
   padding: 6px 16px; border-radius: 999px;
-  backdrop-filter: blur(8px);
   white-space: nowrap;
 }
 
@@ -204,12 +201,10 @@ h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
   display: flex; align-items: center; gap: 6px;
   font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
   color: var(--text);
-  background: rgba(5, 19, 15, 0.55);
+  background: rgba(5, 19, 15, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   padding: 2px 8px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
   transform: translate(-50%, -160%);
   white-space: nowrap;
@@ -226,8 +221,6 @@ h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
   color: var(--text);
   font-size: 0.8rem; font-weight: 600;
   padding: 5px 12px; border-radius: 999px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   transform: translate(12px, 14px);
   opacity: 0; transition: opacity 0.12s ease;
 }
@@ -247,7 +240,7 @@ h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
   animation: spin 0.9s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loader-title { font-family: "Fraunces", Georgia, serif; font-size: 1.6rem; font-weight: 800; margin: 8px 0 0; }
+.loader-title { font-family: "Archivo", Georgia, serif; letter-spacing: -0.01em; font-size: 1.6rem; font-weight: 800; margin: 8px 0 0; }
 .loader-sub { color: var(--muted); margin: 0; }
 
 #webgl-fail {
@@ -259,8 +252,6 @@ h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
   background: rgba(8, 22, 19, 0.88); border: 1px solid var(--panel-border);
   border-radius: 18px; padding: 28px 30px; max-width: 540px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 50px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 .fail-card h2 { font-size: 22px; margin-bottom: 8px; }
 .fail-card p { margin: 0 0 6px; color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
@@ -404,7 +395,7 @@ h1, h2 { font-family: "Fraunces", Georgia, serif; margin: 0; }
 #info-panel { scrollbar-width: thin; scrollbar-color: rgba(63, 217, 182, 0.35) transparent; }
 @keyframes panelIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .panel-in { animation: panelIn 0.45s cubic-bezier(0.22, 0.8, 0.32, 1); }
-.loader-wordmark { font-family: "Inter", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; color: var(--muted); margin: 10px 0 0; }
+.loader-wordmark { font-family: "Inter", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.01em; color: var(--muted); margin: 10px 0 0; }
 .loader-bar { width: 160px; height: 3px; border-radius: 99px; background: rgba(255, 255, 255, 0.10); overflow: hidden; margin-top: 6px; }
 .loader-bar span { display: block; height: 100%; width: 40%; border-radius: 99px; background: var(--accent-1); animation: loadslide 1.2s ease-in-out infinite; }
 @keyframes loadslide { 0% { transform: translateX(-110%); } 100% { transform: translateX(280%); } }
