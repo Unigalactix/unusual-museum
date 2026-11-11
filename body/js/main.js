@@ -284,7 +284,10 @@ const shellMat = new THREE.MeshPhysicalMaterial({
 const shell = new THREE.Group();
 {
   const profile = [
-    [0.01, 4.4], [2.15, 4.7], [2.85, 6.4], [3.0, 9.0], [2.9, 11.5],
+    // pelvis closes at y 3.0 (not 4.4) so the real bladder and the
+    // large intestine's rectum (dataset bottom y ≈ 3.4) stay inside
+    // the glass instead of poking through its floor.
+    [0.01, 3.0], [1.3, 3.3], [1.95, 4.0], [2.15, 4.7], [2.85, 6.4], [3.0, 9.0], [2.9, 11.5],
     [3.3, 13.4], [3.45, 15.1], [2.55, 16.1], [1.05, 16.6], [0.92, 17.5],
   ].map((p) => new THREE.Vector2(p[0], p[1]));
   const torso = new THREE.Mesh(new THREE.LatheGeometry(profile, 48), shellMat);
@@ -445,8 +448,11 @@ function swapInRealOrgan(id, modelRoot) {
     });
   }
   // Pivot at the organ's true centre; model counter-offset inside it.
+  // The GROUP is moved to the centre below, so the pivot itself must
+  // stay at the group origin — offsetting the pivot by the centre as
+  // well would apply the centre twice and render every real organ one
+  // centre-vector away from its label anchor.
   const pivot = new THREE.Group();
-  pivot.position.copy(center);
   modelRoot.position.sub(center);
   pivot.add(modelRoot);
   group.add(pivot);
