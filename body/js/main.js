@@ -229,11 +229,11 @@ const FLESH_PROFILES = {
   "spinal-cord":    { mottle: 0.2,  speckle: 0.15, veins: 0.1,  rough: 0.5,  clear: 0.4,  sss: 0.35 },
   "thyroid":        { mottle: 0.3,  speckle: 0.2,  veins: 0.2,  rough: 0.45, clear: 0.5,  sss: 0.5 },
   "trachea":        { tint: 0xd8b49e, mottle: 0.2, speckle: 0.12, veins: 0.08, rough: 0.5, clear: 0.3, sss: 0.3 },
-  "lungs":          { tint: 0xd8a3a3, mottle: 0.4, speckle: 0.35, veins: 0.15, rough: 0.6, clear: 0.35, sss: 0.55, freq: 2.6, bump: 0.5 },
-  "heart":          { mottle: 0.3,  speckle: 0.2,  veins: 0.5,  rough: 0.38, clear: 0.7,  sss: 0.6,  bump: 0.55 },
-  "aorta":          { mottle: 0.25, speckle: 0.15, veins: 0.3,  rough: 0.4,  clear: 0.6,  sss: 0.5 },
+  "lungs":          { tint: 0xd8a3a3, mottle: 0.4, speckle: 0.35, veins: 0.3, rough: 0.6, clear: 0.35, sss: 0.55, freq: 2.6, bump: 0.5, veinTint: 0x7a3050, veinMix: 0.4 },
+  "heart":          { tint: 0xb92f3e, mottle: 1.4,  speckle: 0.1,  veins: 0.95, rough: 0.38, clear: 0.75, sss: 0.6,  bump: 0.35, veinTint: 0x6e2158, veinMix: 0.85 },
+  "aorta":          { mottle: 0.25, speckle: 0.15, veins: 0.5,  rough: 0.4,  clear: 0.6,  sss: 0.5, veinTint: 0x571f4d, veinMix: 0.5 },
   "diaphragm":      { mottle: 0.3,  speckle: 0.2,  veins: 0.2,  rough: 0.5,  clear: 0.4,  sss: 0.4 },
-  "liver":          { tint: 0x8f3527, mottle: 0.4, speckle: 0.2, veins: 0.35, rough: 0.34, clear: 0.75, sss: 0.55, bump: 0.4 },
+  "liver":          { tint: 0x8f3527, mottle: 0.9, speckle: 0.2, veins: 0.35, rough: 0.34, clear: 0.75, sss: 0.55, bump: 0.4 },
   "gallbladder":    { tint: 0x7d9b4a, mottle: 0.25, speckle: 0.15, veins: 0.15, rough: 0.3, clear: 0.8, sss: 0.5 },
   "stomach":        { mottle: 0.3,  speckle: 0.2,  veins: 0.25, rough: 0.42, clear: 0.6,  sss: 0.55 },
   "pancreas":       { tint: 0xe3c07f, mottle: 0.35, speckle: 0.3, veins: 0.1, rough: 0.55, clear: 0.4, sss: 0.4, bump: 0.6 },
@@ -273,11 +273,11 @@ function applyFlesh(material, id, real) {
   if (prof.tint !== undefined) material.color.set(prof.tint);
   material.roughness = prof.rough;
   material.clearcoat = prof.clear;
-  material.clearcoatRoughness = Math.min(0.6, prof.rough + 0.1);
+  material.clearcoatRoughness = Math.max(0.12, 0.55 - prof.clear * 0.45);
   const base = new THREE.Color(material.color);
   const dark = base.clone().multiplyScalar(0.62).lerp(new THREE.Color(0x30060a), 0.18);
   const light = base.clone().lerp(new THREE.Color(0xffe3d9), 0.26);
-  const vein = base.clone().multiplyScalar(0.42).lerp(new THREE.Color(0x2a0208), 0.35);
+  const vein = base.clone().multiplyScalar(0.42).lerp(new THREE.Color(prof.veinTint ?? 0x2a0208), prof.veinMix ?? 0.35);
   const scale = real ? 1 / MM_PER_UNIT : 1;      // positions are mm on real organs
   const grow = real ? MM_PER_UNIT : 1;
   material.onBeforeCompile = (shader) => {
@@ -319,11 +319,15 @@ function applyFlesh(material, id, real) {
         `#include <color_fragment>
          {
            float fmot = fleshFbm(vFleshPos * uFFreq);
-           float fspe = fleshNoise(vFleshPos * uFFreq * 7.0);
+           float fspe = fleshNoise(vFleshPos * uFFreq * 5.0);
            vec3 fcol = mix(uFColDark, uFColLight, smoothstep(0.15, 0.85, fmot));
            float ridge = 1.0 - abs(2.0 * fleshFbm(vFleshPos * uFFreq * 0.7 + 13.1) - 1.0);
-           fcol = mix(fcol, uFColVein, pow(ridge, 6.0) * uFVeins);
-           fcol *= 1.0 + (fspe - 0.5) * uFSpeckle * 0.15;
+           float ridge2 = 1.0 - abs(2.0 * fleshFbm(vFleshPos * uFFreq * 2.2 + 4.7) - 1.0);
+           float veinAmt = pow(ridge, 8.0) * 1.2 + 0.6 * pow(ridge2, 10.0);
+           fcol = mix(fcol, uFColVein, clamp(veinAmt, 0.0, 1.0) * uFVeins);
+           fcol *= 1.0 + (fspe - 0.5) * uFSpeckle * 0.09;
+           float fcap = smoothstep(0.62, 0.92, fleshNoise(vFleshPos * uFFreq * 6.0 + 7.3));
+           fcol = mix(fcol, vec3(0.5, 0.14, 0.17), fcap * 0.10);
            diffuseColor.rgb = mix(diffuseColor.rgb, fcol, 0.12 + uFMottle * 0.35);
          }`)
       .replace("#include <roughnessmap_fragment>",
@@ -346,7 +350,7 @@ function applyFlesh(material, id, real) {
            totalEmissiveRadiance += uFColSSS * fres * uFSSS * 0.1;
          }`);
   };
-  material.customProgramCacheKey = () => "flesh-v1";
+  material.customProgramCacheKey = () => "flesh-v2";
   return material;
 }
 // Slightly displace sphere vertices with trig "wrinkles" (brain folds, texture).
@@ -725,6 +729,7 @@ function refreshHighlights() {
 function selectOrgan(id, focus = false) {
   selectedId = id;
   refreshHighlights();
+  if (id) enterSolo(id); else exitSolo();
   document.querySelectorAll(".organ-item").forEach((el) =>
     el.classList.toggle("selected", el.dataset.id === id)
   );
@@ -748,6 +753,94 @@ function selectOrgan(id, focus = false) {
     focusAnim = { target: wp, camPos };
   }
 }
+
+/* ---------------- atelier solo mode ----------------
+   Selecting an organ restages it the way a specimen atlas would: the
+   rest of the body steps away, the stage becomes a soft light studio
+   (cream backdrop, gentle shadow pooled under the organ, brighter
+   even light) and the organ sits alone in the frame. Deselecting
+   (close button, reset, clicking empty space) restores the museum. */
+const _soloBg = new THREE.Color(0xf7ede4);
+const _soloFog = scene.fog;
+let soloId = null;
+const backdropObjs = [];
+scene.traverse((o) => {
+  if (o.isPoints || o.isLineSegments) backdropObjs.push(o);
+  else if (o.isMesh && (o.geometry.type === "CircleGeometry" || o.geometry.type === "RingGeometry")) backdropObjs.push(o);
+});
+const soloAmbient = new THREE.AmbientLight(0xfff2e6, 0);
+scene.add(soloAmbient);
+const soloShadow = (() => {
+  const c = document.createElement("canvas");
+  c.width = c.height = 256;
+  const ctx = c.getContext("2d");
+  const grd = ctx.createRadialGradient(128, 128, 8, 128, 128, 126);
+  grd.addColorStop(0, "rgba(43,26,20,0.42)");
+  grd.addColorStop(0.55, "rgba(43,26,20,0.22)");
+  grd.addColorStop(1, "rgba(43,26,20,0)");
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, 256, 256);
+  const m = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false })
+  );
+  m.rotation.x = -Math.PI / 2;
+  m.visible = false;
+  m.renderOrder = 1;
+  scene.add(m);
+  return m;
+})();
+function _soloEnv(g, on) {
+  g.traverse((c) => {
+    if (c.isMesh && c.material) {
+      if (c.material.userData._env0 === undefined) c.material.userData._env0 = c.material.envMapIntensity ?? 1;
+      c.material.envMapIntensity = on ? 0.5 : c.material.userData._env0;
+    }
+  });
+}
+function enterSolo(id) {
+  if (soloId === id) return;
+  if (soloId) exitSolo();
+  const g = organGroups.get(id);
+  if (!g) return;
+  soloId = id;
+  document.body.classList.add("solo");
+  shell.visible = false;
+  for (const o of backdropObjs) o.visible = false;
+  for (const [oid, og] of organGroups) og.visible = oid === id;
+  scene.fog = null;
+  scene.background = _soloBg;
+  key.intensity = 1.9;
+  rim.intensity = 8;
+  warm.intensity = 10;
+  soloAmbient.intensity = 0.45;
+  _soloEnv(g, true);
+  const wp = new THREE.Vector3();
+  g.getWorldPosition(wp);
+  const halfH = g.userData.labelLift ?? g.userData.focusDist * 0.3;
+  const w = g.userData.focusDist * 0.7;
+  soloShadow.scale.set(w, w, 1);
+  soloShadow.position.set(wp.x, wp.y - halfH - 0.5, wp.z);
+  soloShadow.visible = true;
+}
+function exitSolo() {
+  if (!soloId) return;
+  const g = organGroups.get(soloId);
+  soloId = null;
+  document.body.classList.remove("solo");
+  shell.visible = true;
+  for (const o of backdropObjs) o.visible = true;
+  for (const og of organGroups.values()) og.visible = true;
+  scene.fog = _soloFog;
+  scene.background = null;
+  key.intensity = 1.6;
+  rim.intensity = 60;
+  warm.intensity = 32;
+  soloAmbient.intensity = 0;
+  if (g) _soloEnv(g, false);
+  soloShadow.visible = false;
+}
+
 document.getElementById("info-close").addEventListener("click", () => {
   selectOrgan(null);
   infoEls.system.textContent = "Welcome";
@@ -834,6 +927,7 @@ function updateLabels() {
   const candidates = [];
   for (const [id, g] of organGroups) {
     const d = labelDivs.get(id);
+    if (!g.visible) { d.style.opacity = "0"; continue; }
     g.getWorldPosition(_v);
     const facing = _c.copy(_v).sub(BODY_CENTER).normalize()
       .dot(camera.position.clone().sub(BODY_CENTER).normalize());
